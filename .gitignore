@@ -1,0 +1,17 @@
+/.idea
+/target
+/logs
+.idea/
+.svn/
+*.iml
+*.ipr
+*.iws
+*/*.log
+*/target/
+*.DS_Store
+*.classpath
+*.settings
+*.project
+.flattened-pom.xml
+.gradle
+build

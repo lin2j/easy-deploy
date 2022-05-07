@@ -1,0 +1,48 @@
+<idea-plugin>
+    <id>tech.lin2j.simple-deploy</id>
+    <name>Simple Deploy</name>
+    <vendor email="linjinjia047@163.com" url="https://www.lin2j.tech">Lin2j</vendor>
+
+    <description><![CDATA[
+    Simple Deploy is a plugin for IntelliJ Idea.
+    Help developers deploy applications by clicking the button.<br>
+    <br>
+    Features:<br>
+    <ul>
+        <li>Manage your servers</li>
+        <li>Upload the file you want to deploy to the remote server</li>
+        <li>Storage your command and execute it</li>
+    <ul>
+    ]]></description>
+
+    <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
+         on how to target different products -->
+    <depends>com.intellij.modules.platform</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <!-- Add your extensions here -->
+    </extensions>
+
+    <actions>
+        <!-- Add your actions here -->
+    </actions>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <toolWindow
+                factoryClass="tech.lin2j.idea.plugin.factory.MessageToolWindowFactory"
+                id="Messages"
+                anchor="bottom"
+                canCloseContents="false"
+                icon="MyIcons.MESSAGE_BLUE"
+        />
+
+        <toolWindow
+                factoryClass="tech.lin2j.idea.plugin.factory.DeployConsoleToolWindowFactory"
+                id="Deploy"
+                anchor="bottom"
+                canCloseContents="false"
+                icon="MyIcons.DEPLOY_BLUE"
+        />
+        <applicationService serviceImplementation="tech.lin2j.idea.plugin.domain.model.ConfigPersistence"/>
+    </extensions>
+</idea-plugin>

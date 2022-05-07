@@ -1,0 +1,38 @@
+plugins {
+    id 'org.jetbrains.intellij' version '1.5.3'
+    id 'java'
+}
+
+group 'tech.lin2j'
+version '1.0.0'
+
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
+    implementation 'ch.ethz.ganymed:ganymed-ssh2:build210'
+}
+
+// See https://github.com/JetBrains/gradle-intellij-plugin/
+intellij {
+    version = '2021.3'
+    plugins = [
+            "org.jetbrains.plugins.terminal"
+    ]
+}
+patchPluginXml {
+    changeNotes = """
+    <h2>release 1.0.0</h2>
+    <ul>
+      <li>basic functionality of the plugin</li>
+    </ul>
+        
+      """
+}
+test {
+    useJUnitPlatform()
+}
