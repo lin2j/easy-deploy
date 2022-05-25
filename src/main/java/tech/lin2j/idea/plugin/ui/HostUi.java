@@ -1,5 +1,9 @@
 package tech.lin2j.idea.plugin.ui;
 
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import org.jdesktop.swingx.prompt.PromptSupport;
@@ -43,10 +47,12 @@ public class HostUi extends DialogWrapper {
     private JPanel hostTab;
     private JPanel mainPanel;
 
+    private final Project project;
     private final SshService sshClient = SshService.getInstance();
 
-    public HostUi() {
+    public HostUi(Project project) {
         super(true);
+        this.project = project;
         uiInit();
         setTitle("Add Host");
         init();
@@ -89,13 +95,27 @@ public class HostUi extends DialogWrapper {
         @Override
         public void actionPerformed(ActionEvent e) {
             SshServer sshServer = getSshServer();
-            SshStatus status = sshClient.isValid(sshServer);
-            if (status.isSuccess()) {
-                Messages.showMessageDialog("Test success", "Test", Messages.getInformationIcon());
-                ApplicationContext.getApplicationContext().publishEvent(new TableRefreshEvent());
-            } else {
-                Messages.showErrorDialog(status.getMessage(), "Test");
-            }
+            String title = String.format("Testing %s:%s", sshServer.getIp(), sshServer.getPort());
+            ProgressManager.getInstance().run(new Task.Backgroundable(project, title) {
+                SshStatus status = null;
+
+                @Override
+                public void run(@NotNull ProgressIndicator indicator) {
+                    indicator.setIndeterminate(false);
+                    status = sshClient.isValid(sshServer);
+                    indicator.setFraction(1.0);
+                }
+
+                @Override
+                public void onFinished() {
+                    if (status.isSuccess()) {
+                        Messages.showMessageDialog("Test success", "Test", Messages.getInformationIcon());
+                        ApplicationContext.getApplicationContext().publishEvent(new TableRefreshEvent());
+                    } else {
+                        Messages.showErrorDialog(status.getMessage(), "Test");
+                    }
+                }
+            });
         }
     }
 

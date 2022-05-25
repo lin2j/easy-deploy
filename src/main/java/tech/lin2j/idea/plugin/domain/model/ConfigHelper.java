@@ -22,6 +22,8 @@ public class ConfigHelper {
 
     private static Map<Integer, List<SshUpload>> UPLOAD_MAP;
 
+    private static Map<Integer, List<UploadProfile>> UPLOAD_PROFILE_MAP;
+
     static {
         SSH_SERVER_MAP = CONFIG_PERSISTENCE.getSshServers().stream()
                 .collect(Collectors.toMap(SshServer::getId, s -> s, (s1, s2) -> s1));
@@ -31,6 +33,9 @@ public class ConfigHelper {
 
         UPLOAD_MAP = CONFIG_PERSISTENCE.getSshUploads().stream()
                 .collect(Collectors.groupingBy(SshUpload::getSshId));
+
+        UPLOAD_PROFILE_MAP = CONFIG_PERSISTENCE.getUploadProfiles().stream()
+                .collect(Collectors.groupingBy(UploadProfile::getSshId));
     }
 
     public static SshServer getSshServerById(int id) {
@@ -109,5 +114,21 @@ public class ConfigHelper {
 
     public static List<SshUpload> getSshUploadsBySshId(int sshId) {
         return UPLOAD_MAP.getOrDefault(sshId, new ArrayList<>());
+    }
+
+    public static List<UploadProfile> getUploadProfileBySshId(int sshId) {
+        return UPLOAD_PROFILE_MAP.getOrDefault(sshId, new ArrayList<>());
+    }
+
+    public static void addUploadProfile(UploadProfile uploadProfile) {
+        CONFIG_PERSISTENCE.getUploadProfiles().add(uploadProfile);
+        UPLOAD_PROFILE_MAP = CONFIG_PERSISTENCE.getUploadProfiles().stream()
+                .collect(Collectors.groupingBy(UploadProfile::getSshId));
+    }
+
+    public static void removeUploadProfile(UploadProfile uploadProfile) {
+        CONFIG_PERSISTENCE.getUploadProfiles().remove(uploadProfile);
+        UPLOAD_PROFILE_MAP = CONFIG_PERSISTENCE.getUploadProfiles().stream()
+                .collect(Collectors.groupingBy(UploadProfile::getSshId));
     }
 }

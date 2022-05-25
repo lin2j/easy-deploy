@@ -17,7 +17,7 @@ public class DeployConsoleView extends SimpleToolWindowPanel {
     public DeployConsoleView(Project project) {
         super(false, true);
         this.project = project;
-        this.consoleUi = new ConsoleUi();
+        this.consoleUi = new ConsoleUi(project);
 
         JBSplitter splitter = new JBSplitter(false);
         splitter.setSplitterProportionKey("main.splitter.key");

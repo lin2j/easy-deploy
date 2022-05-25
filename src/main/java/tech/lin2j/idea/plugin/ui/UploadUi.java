@@ -1,53 +1,61 @@
 package tech.lin2j.idea.plugin.ui;
 
-import com.intellij.openapi.fileChooser.FileChooser;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.CommandUtil;
 import tech.lin2j.idea.plugin.domain.model.Command;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
-import tech.lin2j.idea.plugin.domain.model.NoneCommand;
 import tech.lin2j.idea.plugin.domain.model.SshServer;
 import tech.lin2j.idea.plugin.domain.model.SshStatus;
-import tech.lin2j.idea.plugin.domain.model.SshUpload;
+import tech.lin2j.idea.plugin.domain.model.UploadProfile;
+import tech.lin2j.idea.plugin.domain.model.event.UploadProfileAddEvent;
+import tech.lin2j.idea.plugin.domain.model.event.UploadProfileSelectedEvent;
+import tech.lin2j.idea.plugin.event.ApplicationContext;
+import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.service.SshService;
 
+import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.List;
 
 /**
  * @author linjinjia
  * @date 2022/4/25 22:25
  */
-public class UploadUi extends DialogWrapper {
-    private JButton browserBtn;
+public class UploadUi extends DialogWrapper implements ApplicationListener<UploadProfileAddEvent> {
     private JButton uploadBtn;
     private JButton cancelBtn;
     private JPanel mainPanel;
     private JLabel hostLabel;
-    private JComboBox<Command> cmdList;
-    private JComboBox<String> fileInputBox;
-    private JComboBox<String> locationBox;
+    private JComboBox<UploadProfile> profileBox;
+    private JLabel fileLabel;
+    private JLabel locationLabel;
+    private JLabel commandLabel;
+    private JButton actionBtn;
 
-    private SshServer sshServer;
-    private SshService sshService = SshService.getInstance();
+    private final Project project;
+    private final SshServer sshServer;
+    private final SshService sshService = SshService.getInstance();
 
-    public UploadUi(SshServer sshServer) {
+    public UploadUi(Project project, SshServer sshServer) {
         super(true);
+        this.project = project;
         this.sshServer = sshServer;
         uiInit();
         setTitle("Upload");
@@ -56,62 +64,68 @@ public class UploadUi extends DialogWrapper {
 
     private void uiInit() {
         Toolkit tk = Toolkit.getDefaultToolkit();
-        mainPanel.setMinimumSize(new Dimension(tk.getScreenSize().width / 2, 0));
+        mainPanel.setMinimumSize(new Dimension(tk.getScreenSize().width / 2, tk.getScreenSize().height / 4));
 
         hostLabel.setText(sshServer.getIp());
 
-        locationBox.setEditable(true);
-        List<SshUpload> sshUploadList = ConfigHelper.getSshUploadsBySshId(sshServer.getId());
-        if (sshUploadList.size() > 0) {
-            for (int i = 0; i < sshUploadList.size(); i++) {
-                SshUpload sshUpload = sshUploadList.get(i);
-                // selected or the last one in the list
-                boolean select = sshUpload.getSelected() || i == sshUploadList.size() - 1;
-                if (select) {
-                    fileInputBox.addItem(sshUpload.getLocalFile());
-                    locationBox.addItem(sshUpload.getRemoteFile());
-                }
-            }
-        }
+        reloadProfileBox();
 
-        browserBtn.addActionListener(e -> {
-            Project project = ProjectManager.getInstance().getDefaultProject();
-            FileChooserDescriptor chooserDescriptor = new FileChooserDescriptor(true, true, true, true, true, true);
-            VirtualFile virtualFile = FileChooser.chooseFile(chooserDescriptor, project, null);
-            if (virtualFile != null) {
-                jComboBoxSet(fileInputBox, virtualFile.getPath());
-            }
+        profileBox.addItemListener(e -> {
+            updateProfileInfo((UploadProfile) e.getItem());
         });
 
         cancelBtn.addActionListener(e -> close(CANCEL_EXIT_CODE));
 
         uploadBtn.addActionListener(e -> {
-            String filePath = (String) fileInputBox.getSelectedItem();
-            String location = (String) locationBox.getSelectedItem();
-
-            boolean add = ConfigHelper.addSshUpload(new SshUpload(sshServer.getId(), filePath, location));
-            // location may not exist in the box, because the box is editable
-            // add is true if the location is not exist
-            if (add) {
-                jComboBoxSet(locationBox, location);
-            }
+            UploadProfile profile = (UploadProfile) profileBox.getSelectedItem();
+            profile.setSelected(true);
+            String filePath = profile.getFile();
+            String location = profile.getLocation();
 
             SshStatus status = sshService.scpPut(sshServer, filePath, location);
             if (!status.isSuccess()) {
                 Messages.showErrorDialog(status.getMessage(), "Upload");
                 return;
             }
-            Command cmd = (Command) cmdList.getSelectedItem();
-            if (NoneCommand.INSTANCE.equals(cmd)) {
+            if (profile.getCommandId() == null) {
                 Messages.showInfoMessage("Upload success", "Upload");
                 close(OK_EXIT_CODE);
                 return;
             }
-            CommandUtil.executeAndShowMessages(cmd, sshServer, this);
+            Command cmd = ConfigHelper.getCommandById(profile.getCommandId());
+            CommandUtil.executeAndShowMessages(project, cmd, sshServer, this);
+            ApplicationContext.getApplicationContext().publishEvent(new UploadProfileSelectedEvent(profile));
         });
 
-        cmdList.addItem(NoneCommand.INSTANCE);
-        ConfigHelper.getCommandsBySshId(sshServer.getId()).forEach(cmd -> cmdList.addItem(cmd));
+        actionBtn.setText("Action ▼");
+        actionBtn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                JPopupMenu menu = new JPopupMenu();
+                menu.add(new JMenuItem(new AbstractAction("Add") {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        new AddUploadProfile(sshServer.getId(), null).showAndGet();
+                    }
+                }));
+                menu.add(new JMenuItem(new AbstractAction("Edit") {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        UploadProfile profile = (UploadProfile) profileBox.getSelectedItem();
+                        new AddUploadProfile(sshServer.getId(), profile).showAndGet();
+                    }
+                }));
+                menu.add(new JMenuItem(new AbstractAction("Remove") {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        UploadProfile profile = (UploadProfile) profileBox.getSelectedItem();
+                        ConfigHelper.removeUploadProfile(profile);
+                        reloadProfileBox();
+                    }
+                }));
+                menu.show(actionBtn, 0, actionBtn.getHeight());
+            }
+        });
     }
 
     @Override
@@ -126,22 +140,44 @@ public class UploadUi extends DialogWrapper {
         return new Action[]{};
     }
 
-    private void jComboBoxSet(JComboBox<String> box, String value) {
-        boolean isRepeat = false;
-        int repeatIndex = 0;
-        for (int i = 0; i < box.getItemCount(); i++) {
-            isRepeat = box.getItemAt(i).equals(value);
-            if (isRepeat) {
-                repeatIndex = i;
-                break;
-            }
-        }
-        // select the item if it is repeating, or add the item into the box
-        if (isRepeat) {
-            box.setSelectedIndex(repeatIndex);
+    private void updateProfileInfo(UploadProfile profile) {
+        fileLabel.setText(profile.getFile());
+        locationLabel.setText(profile.getLocation());
+        if (profile.getCommandId() != null) {
+            Command cmd = ConfigHelper.getCommandById(profile.getCommandId());
+            commandLabel.setText(cmd.toString());
         } else {
-            box.addItem(value);
-            box.setSelectedIndex(box.getItemCount() - 1);
+            commandLabel.setText("");
         }
+    }
+
+    private void reloadProfileBox() {
+        profileBox.removeAllItems();
+        List<UploadProfile> profiles = ConfigHelper.getUploadProfileBySshId(sshServer.getId());
+        if (profiles.size() > 0) {
+            int i = 0;
+            boolean hasSelected = false;
+            for (UploadProfile profile : profiles) {
+                profileBox.addItem(profile);
+                if (profile.getSelected()) {
+                    profileBox.setSelectedIndex(i);
+                    updateProfileInfo(profile);
+                    hasSelected = true;
+                }
+                i++;
+            }
+            if (!hasSelected) {
+                updateProfileInfo(profiles.get(0));
+            }
+        } else {
+            fileLabel.setText("");
+            locationLabel.setText("");
+            commandLabel.setText("");
+        }
+    }
+
+    @Override
+    public void onApplicationEvent(UploadProfileAddEvent event) {
+        reloadProfileBox();
     }
 }

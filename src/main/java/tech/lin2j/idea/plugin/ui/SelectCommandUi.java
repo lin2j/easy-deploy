@@ -1,6 +1,7 @@
 package tech.lin2j.idea.plugin.ui;
 
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -47,10 +48,12 @@ public class SelectCommandUi extends DialogWrapper implements ApplicationListene
     private static final Logger LOG = Logger.getInstance(SelectCommandUi.class);
     private static final BlockingQueue<CommandExecuteEvent> EVENT_QUEUE = new LinkedBlockingQueue<>(100);
 
-    private Integer sshId;
+    private final Project project;
+    private final Integer sshId;
 
-    public SelectCommandUi(Integer sshId) {
+    public SelectCommandUi(Project project, Integer sshId) {
         super(true);
+        this.project = project;
         this.sshId = sshId;
         setTitle("Select Command");
 
@@ -90,7 +93,7 @@ public class SelectCommandUi extends DialogWrapper implements ApplicationListene
         runBtn.addActionListener(e -> {
             Command cmd = cmdList.getSelectedValue();
             SshServer server = ConfigHelper.getSshServerById(cmd.getSshId());
-            CommandUtil.executeAndShowMessages(cmd, server, this);
+            CommandUtil.executeAndShowMessages(project, cmd, server, this);
         });
 
         closeBtn.addActionListener(e -> close(CANCEL_EXIT_CODE));

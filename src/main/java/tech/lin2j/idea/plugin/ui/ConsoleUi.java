@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.ui;
 
+import com.intellij.openapi.project.Project;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.SshServer;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
@@ -10,8 +11,6 @@ import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.util.List;
 
 /**
@@ -26,21 +25,18 @@ public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
     private JButton refreshBtn;
     String[] columnNames = {"ID", "Address", "UserName", "Description", "Actions"};
 
-    public ConsoleUi() {
-        uiInit();
+    private final Project project;
+
+    public ConsoleUi(Project project) {
+        this.project = project;
+        initUi();
         loadTableData();
     }
 
-    private void uiInit() {
+    private void initUi() {
         addHostBtn.addActionListener(e -> {
             // 显示 HostUi
-            new HostUi().showAndGet();
-        });
-        hostTable.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseEntered(MouseEvent e) {
-
-            }
+            new HostUi(project).showAndGet();
         });
 
         refreshBtn.addActionListener(e -> {
@@ -67,7 +63,7 @@ public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
         hostTable.setModel(tableModel);
 
-        TableActionUi tableActionUi = new TableActionUi();
+        TableActionUi tableActionUi = new TableActionUi(project);
         TableColumn actionColumn = hostTable.getColumn("Actions");
         actionColumn.setCellRenderer(tableActionUi);
         actionColumn.setCellEditor(tableActionUi);

@@ -41,14 +41,17 @@ public class TableActionUi extends JLabel implements TableCellRenderer, TableCel
     private int selectedCol;
 
     private int sshId;
+    private final Project project;
 
     private int verticalAlignment = CENTER;
 
     Map<String, TableActionUi> uiMap = new ConcurrentHashMap<>();
 
-    public TableActionUi() {
+    public TableActionUi(Project project) {
         super();
         setName("Table.cellRenderer");
+
+        this.project = project;
 
         uploadBtn.addActionListener(new UploadActionListener());
         commandBtn.addActionListener(new ExecuteActionListener());
@@ -91,7 +94,7 @@ public class TableActionUi extends JLabel implements TableCellRenderer, TableCel
         String location = row + ":" + column;
         TableActionUi ui = uiMap.get(location);
         if (ui == null) {
-            ui = new TableActionUi();
+            ui = new TableActionUi(project);
             ui.selectedRow = row;
             ui.selectedCol = column;
             Object sshId = table.getModel().getValueAt(row, 0);
@@ -104,14 +107,16 @@ public class TableActionUi extends JLabel implements TableCellRenderer, TableCel
     class UploadActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            new UploadUi(ConfigHelper.getSshServerById(sshId)).showAndGet();
+            UploadUi ui = new UploadUi(project, ConfigHelper.getSshServerById(sshId));
+            ApplicationContext.getApplicationContext().addApplicationListener(ui);
+            ui.showAndGet();
         }
     }
 
     class ExecuteActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            SelectCommandUi ui = new SelectCommandUi(sshId);
+            SelectCommandUi ui = new SelectCommandUi(project, sshId);
             ApplicationContext.getApplicationContext().addApplicationListener(ui);
             ui.showAndGet();
         }

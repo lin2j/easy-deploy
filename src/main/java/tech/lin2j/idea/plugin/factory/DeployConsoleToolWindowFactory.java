@@ -7,6 +7,7 @@ import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
+import tech.lin2j.idea.plugin.event.listener.UploadProfileSelectedListener;
 import tech.lin2j.idea.plugin.module.DeployConsoleView;
 
 /**
@@ -23,5 +24,6 @@ public class DeployConsoleToolWindowFactory implements ToolWindowFactory {
         toolWindow.getContentManager().addContent(content);
 
         ApplicationContext.getApplicationContext().addApplicationListener(deployConsoleView.getConsoleUi());
+        ApplicationContext.getApplicationContext().addApplicationListener(new UploadProfileSelectedListener());
     }
 }
