@@ -1,13 +1,13 @@
 package tech.lin2j.idea.plugin.ui;
 
 
-import com.intellij.ide.DataManager;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.DataKey;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.remote.RemoteCredentialsHolder;
+//import com.jetbrains.plugins.remotesdk.console.SshTerminalDirectRunner;
+import com.jetbrains.plugins.remotesdk.console.SshTerminalDirectRunner;
+import org.jetbrains.plugins.terminal.TerminalView;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
+import tech.lin2j.idea.plugin.domain.model.SshServer;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 
@@ -22,6 +22,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.nio.charset.Charset;
 import java.util.EventObject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -125,10 +126,16 @@ public class TableActionUi extends JLabel implements TableCellRenderer, TableCel
     class TerminalActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            DataContext dataContext = DataManager.getInstance().getDataContext();
-            Project project = dataContext.getData(DataKey.create("project"));
-            ToolWindow terminal = ToolWindowManager.getInstance(project).getToolWindow("Terminal");
-            terminal.activate(null);
+            SshServer server = ConfigHelper.getSshServerById(sshId);
+            RemoteCredentialsHolder credentials = new RemoteCredentialsHolder();
+            credentials.setHost(server.getIp());
+            credentials.setPort(server.getPort());
+            credentials.setUserName(server.getUsername());
+            credentials.setPassword(server.getPassword());
+
+            SshTerminalDirectRunner runner = new SshTerminalDirectRunner(project, credentials, Charset.defaultCharset());
+            TerminalView terminalView = TerminalView.getInstance(project);
+            terminalView.createNewSession(runner);
         }
     }
 

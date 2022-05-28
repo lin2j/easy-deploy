@@ -2,6 +2,7 @@
     <id>tech.lin2j.simple-deploy</id>
     <name>Simple Deploy</name>
     <vendor email="linjinjia047@163.com" url="https://www.lin2j.tech">Lin2j</vendor>
+    <idea-version since-build="213" until-build="213.*" />
 
     <description><![CDATA[
     Simple Deploy is a plugin for IntelliJ Idea.
@@ -15,9 +16,30 @@
     <ul>
     ]]></description>
 
+    <change-notes><![CDATA[
+    <h2>release 1.2.0</h2>
+    <ul>
+        <li>develop the functions of terminal button</li>
+    </ul>
+
+    <h2>release 1.1.0</h2>
+    <ul>
+        <li>change the way to upload file</li>
+        <li>use background task to execute ssh command</li>
+    </ul>
+
+    <h2>release 1.0.0</h2>
+    <ul>
+      <li>basic functionality of the plugin</li>
+    </ul>
+    ]]></change-notes>
+
     <!-- please see https://plugins.jetbrains.com/docs/intellij/plugin-compatibility.html
          on how to target different products -->
     <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.ultimate</depends>
+    <depends>org.jetbrains.plugins.terminal</depends>
+    <depends>org.jetbrains.plugins.remote-run</depends>
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
