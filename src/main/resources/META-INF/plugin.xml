@@ -17,6 +17,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.2.1</h2>
+    <ul>
+        <li>fixed NullPointerException when adding a command</li>
+    </ul>
+
     <h2>release 1.2.0</h2>
     <ul>
         <li>develop the functions of terminal button</li>
