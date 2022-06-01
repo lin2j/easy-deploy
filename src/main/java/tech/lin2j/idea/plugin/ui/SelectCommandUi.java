@@ -100,7 +100,9 @@ public class SelectCommandUi extends DialogWrapper implements ApplicationListene
 
         cmdList.addListSelectionListener(e -> {
             Command command = cmdList.getSelectedValue();
-            cmdShow.setText(command.toString());
+            if (command != null) {
+                cmdShow.setText(command.toString());
+            }
         });
 
     }
