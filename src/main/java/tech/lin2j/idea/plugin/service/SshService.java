@@ -5,8 +5,8 @@ import ch.ethz.ssh2.SCPClient;
 import ch.ethz.ssh2.Session;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
-import tech.lin2j.idea.plugin.domain.model.SshServer;
-import tech.lin2j.idea.plugin.domain.model.SshStatus;
+import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.ssh.SshStatus;
 
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;

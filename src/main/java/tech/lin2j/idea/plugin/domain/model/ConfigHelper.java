@@ -1,6 +1,7 @@
 package tech.lin2j.idea.plugin.domain.model;
 
 import com.intellij.openapi.application.ApplicationManager;
+import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import java.util.ArrayList;
 import java.util.List;

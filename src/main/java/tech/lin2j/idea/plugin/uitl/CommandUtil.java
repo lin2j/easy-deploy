@@ -1,9 +1,5 @@
-package tech.lin2j.idea.plugin;
+package tech.lin2j.idea.plugin.uitl;
 
-import com.intellij.ide.DataManager;
-import com.intellij.openapi.actionSystem.DataContext;
-import com.intellij.openapi.actionSystem.DataKey;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
@@ -13,8 +9,8 @@ import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.domain.model.Command;
-import tech.lin2j.idea.plugin.domain.model.SshServer;
-import tech.lin2j.idea.plugin.domain.model.SshStatus;
+import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.domain.model.event.CommandExecuteEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.service.SshService;

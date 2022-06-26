@@ -1,10 +1,10 @@
 plugins {
-    id 'org.jetbrains.intellij' version '1.5.3'
+    id 'org.jetbrains.intellij' version '1.6.0'
     id 'java'
 }
 
 group 'tech.lin2j'
-version '1.2.1-213'
+version '1.2.1'
 
 
 repositories {
@@ -19,13 +19,9 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = 'IU-2021.3'
+    version = '2021.3'
     plugins = [
             "org.jetbrains.plugins.terminal",
-// the remote-run plugin need IntelliJ IDEA Ultimate
-// please enable plugin FTP/SFTP Connectivity if
-// the prompt is missing 'remote-run'
-            "org.jetbrains.plugins.remote-run",
     ]
 }
 

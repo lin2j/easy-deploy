@@ -2,7 +2,7 @@ package tech.lin2j.idea.plugin.ui;
 
 import com.intellij.openapi.project.Project;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
-import tech.lin2j.idea.plugin.domain.model.SshServer;
+import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 

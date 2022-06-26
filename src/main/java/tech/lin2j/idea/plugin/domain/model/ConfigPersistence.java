@@ -6,6 +6,7 @@ import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import java.io.Serializable;
 import java.util.List;

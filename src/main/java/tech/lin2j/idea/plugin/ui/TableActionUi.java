@@ -1,15 +1,21 @@
 package tech.lin2j.idea.plugin.ui;
 
 
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import com.intellij.remote.RemoteCredentialsHolder;
-//import com.jetbrains.plugins.remotesdk.console.SshTerminalDirectRunner;
-import com.jetbrains.plugins.remotesdk.console.SshTerminalDirectRunner;
+import com.intellij.openapi.ui.Messages;
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.terminal.AbstractTerminalRunner;
 import org.jetbrains.plugins.terminal.TerminalView;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
-import tech.lin2j.idea.plugin.domain.model.SshServer;
+import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
+import tech.lin2j.idea.plugin.ssh.SshStatus;
+import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
+import tech.lin2j.idea.plugin.terminal.CustomSshTerminalRunner;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -26,6 +32,7 @@ import java.nio.charset.Charset;
 import java.util.EventObject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author linjinjia
@@ -127,15 +134,33 @@ public class TableActionUi extends JLabel implements TableCellRenderer, TableCel
         @Override
         public void actionPerformed(ActionEvent e) {
             SshServer server = ConfigHelper.getSshServerById(sshId);
-            RemoteCredentialsHolder credentials = new RemoteCredentialsHolder();
-            credentials.setHost(server.getIp());
-            credentials.setPort(server.getPort());
-            credentials.setUserName(server.getUsername());
-            credentials.setPassword(server.getPassword());
+            SshStatus status = new SshStatus(false, null);
+            String title = String.format("opening terminal %s:%s", server.getIp(), server.getPort());
+            ProgressManager.getInstance().run(new Task.Backgroundable(project, title) {
+                CustomSshTerminalRunner runner = null;
+                @Override
+                public void run(@NotNull ProgressIndicator indicator) {
+                    indicator.setIndeterminate(false);
+                    try {
+                        runner = new CustomSshTerminalRunner(project, server, Charset.defaultCharset());
+                        status.setSuccess(true);
+                    } catch (RemoteSdkException ex) {
+                        status.setMessage("Error connecting server: " + ex.getMessage());
+                    } finally {
+                        indicator.setFraction(1);
+                    }
+                }
 
-            SshTerminalDirectRunner runner = new SshTerminalDirectRunner(project, credentials, Charset.defaultCharset());
-            TerminalView terminalView = TerminalView.getInstance(project);
-            terminalView.createNewSession(runner);
+                @Override
+                public void onFinished() {
+                    if(!status.isSuccess()) {
+                        Messages.showErrorDialog(status.getMessage(), "Error");
+                        return ;
+                    }
+                    TerminalView terminalView = TerminalView.getInstance(project);
+                    terminalView.createNewSession(runner);
+                }
+            });
         }
     }
 

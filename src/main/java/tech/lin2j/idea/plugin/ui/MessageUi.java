@@ -27,8 +27,9 @@ public class MessageUi implements ApplicationListener<CommandExecuteEvent> {
 
     @Override
     public void onApplicationEvent(CommandExecuteEvent event) {
+        String time = String.format("%tF %<tT", System.currentTimeMillis());
         Command cmd = event.getCommand();
-        retContent.setText(String.format("[INFO] user custom command: {%s}\n", cmd.generateCmdLine()));
+        retContent.setText(String.format("[INFO] %s user custom command: {%s}\n", time, cmd.generateCmdLine()));
         retContent.append(event.getExecResult());
     }
 
