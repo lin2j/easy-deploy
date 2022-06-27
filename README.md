@@ -4,10 +4,11 @@
 
 ---
 
+
 <div align="center">
     <a href="#"><img src="https://img.shields.io/badge/version-1.2.2-red"></a>
     <a href="#"><img src = "https://img.shields.io/github/license/lin2j/simple-deploy" ></a>
-    <a href="www.lin2j.tech"><img src="https://img.shields.io/badge/author-lin2j-brightgreen"></a>
+    <a href="https://www.lin2j.tech"><img src="https://img.shields.io/badge/author-lin2j-brightgreen"></a>
     <a href="#"><img src="https://img.shields.io/badge/idea-213.5744%2B-yellow"></a>
 </div>
 
