@@ -2,9 +2,6 @@
 
 <h1 align="center">Simple Deployment</h1>
 
----
-
-
 <div align="center">
     <a href="#"><img src="https://img.shields.io/badge/version-1.2.2-red"></a>
     <a href="#"><img src = "https://img.shields.io/github/license/lin2j/simple-deploy" ></a>
