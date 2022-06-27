@@ -36,7 +36,8 @@ Simple Deployment 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便
 
 考虑之后，我还是决定自己实现一个 TerminalRunner，照顾一下社区版的用户。
 
-![](/docs/media/Add-Server.gif)
+<img src="docs/media/Add-Server.gif" alt="add server">
+
 
 ## 命令管理
 
@@ -48,7 +49,8 @@ Simple Deployment 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便
 
 如果使用了像`tail -f`不是一次性返回所有信息的命令，会导致当前线程阻塞，因为读取的流一直没有给一个终止符。
 
-![](/docs/media/Command.gif)
+<img src="docs/media/Command.gif" alt="command">
+
 
 ## 文件上传
 
@@ -62,7 +64,7 @@ Simple Deployment 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便
 
 部署方案其实就是在上传配置的基础上，选择上传后需要执行的命令。
 
-![](/docs/media/Upload.gif)
+<img src="docs/media/Upload.gif" alt="upload">
 
 # 待实现
 
