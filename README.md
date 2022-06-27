@@ -1,6 +1,20 @@
+<p align="center"><img src="docs/media/small-logo.svg" alt="Simple Deployment" width="100" height="100"></p>
+
+<h1 align="center">Simple Deployment</h1>
+
+---
+
+<div align="center">
+    <a href="#"><img src="https://img.shields.io/badge/version-1.2.2-red"></a>
+    <a href="#"><img src = "https://img.shields.io/github/license/lin2j/simple-deploy" ></a>
+    <a href="www.lin2j.tech"><img src="https://img.shields.io/badge/author-lin2j-brightgreen"></a>
+    <a href="#"><img src="https://img.shields.io/badge/idea-213.5744%2B-yellow"></a>
+</div>
+
+
 # 前言
 
-Simple Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己在开发过程中部署服务的插件。
+Simple Deployment 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己在开发过程中部署服务的插件。
 
 相比较 Aliabab Cloud Toolkit，我开发的插件功能会少很多很多，因为 ACT 很多的功能我都用不上，它对于我来说有点臃肿。
 
@@ -16,13 +30,27 @@ Simple Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自�
 
 你可以用这个插件添加多台服务器，然后以此为基础进行命令执行、文件上传和应用部署。
 
+添加服务器之后，可以直接通过终端按钮建立一个SSH连接。
+
+这个功能是自己实现了一个 AbstractTerminalRunner 的子类，这样社区版的 Idea 也可以使用这个功能。
+
+其实旗舰版的平台下有一个 remote-run 插件已经有一个实现好的 AbstractTerminalRunner，只不过社区版用不了这个插件。
+
+考虑之后，我还是决定自己实现一个 TerminalRunner，照顾一下社区版的用户。
+
+![](docs/media/Add-Server.gif)
+
 ## 命令管理
 
 你可以为某一台服务器添加一些备用命令，然后直接执行。每一台服务器的命令都是隔离的，这样有助于命令的管理。
 
 命令在添加的时候，需要使用绝对路径来指定命令执行时所在的目录。
 
-目前可能还不适合使用命令脚本去执行，不过接下来会处理这方面的问题。
+目前只能执行简单的命令，太过复杂的命令建议写成脚本放到服务器之后再执行脚本，我平时部署服务也是用这种方式。
+
+如果使用了像`tail -f`不是一次性返回所有信息的命令，会导致当前线程阻塞，因为读取的流一直没有给一个终止符。
+
+![](docs/media/Command.gif)
 
 ## 文件上传
 
@@ -36,19 +64,19 @@ Simple Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自�
 
 部署方案其实就是在上传配置的基础上，选择上传后需要执行的命令。
 
-# 添加主机
+![](docs/media/Upload.gif)
 
-# 添加命令
+# 待实现
 
-# 添加部署方案
-
-# 打开终端
-
-# 待完善
-
-- [ ] 不能执行多行脚本
+- [x] 添加/删除服务器
+- [x] 添加/编辑/删除命令
+- [x] 上传文件
+- [x] 部署服务
+- [x] 打开终端
+- [ ] 配置导入/导出
+- [ ] 执行多行脚本
 - [ ] 服务器搜索
-- [ ] 发布版本的方式
+- [ ] 执行命令/部署时可以选择多台服务器
 
 # 联系我🐾
 
@@ -56,6 +84,6 @@ Simple Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自�
 
 如果你有什么建议或者遇到什么bug，可以提 issues 也可以邮箱联系我，我会尽快回复你。
 
-📮linjinjia047@163.com
+📮 linjinjia047@163.com
 
-👉https://github.com/lin2j/simple-deploy
+👉 https://github.com/lin2j/simple-deploy

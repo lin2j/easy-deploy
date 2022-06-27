@@ -1,12 +1,12 @@
 <idea-plugin>
-    <id>tech.lin2j.simple-deploy</id>
-    <name>Simple Deploy</name>
+    <id>tech.lin2j.simple-deployment</id>
+    <name>Simple Deployment</name>
     <vendor email="linjinjia047@163.com" url="https://www.lin2j.tech">Lin2j</vendor>
-    <idea-version since-build="213" until-build="213.*" />
+    <idea-version since-build="213" />
 
     <description><![CDATA[
-    Simple Deploy is a plugin for IntelliJ Idea.
-    Help developers deploy applications by clicking the button.<br>
+    Simple Deployment is a plugin for IntelliJ platform that
+    helps developers deploy applications by clicking the button.<br>
     <br>
     Features:<br>
     <ul>
@@ -17,6 +17,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.2.2</h2>
+    <ul>
+        <li>change plugin name</li>
+        <li>use custom terminal runner instead of remote-run plugin</li>
+    </ul>
+
     <h2>release 1.2.1</h2>
     <ul>
         <li>fixed NullPointerException when adding a command</li>

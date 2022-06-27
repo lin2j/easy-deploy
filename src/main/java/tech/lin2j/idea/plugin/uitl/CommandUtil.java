@@ -25,7 +25,7 @@ public class CommandUtil {
     private static final SshService sshService = SshService.getInstance();
 
     public static void executeAndShowMessages(Project project, Command cmd, SshServer server, DialogWrapper dialogWrapper) {
-        String title = String.format("execute command on %s:%s", server.getIp(), server.getPort());
+        String title = String.format("executing command on %s:%s", server.getIp(), server.getPort());
         ToolWindow messages = ToolWindowManager.getInstance(project).getToolWindow("Messages");
         messages.setTitle(title);
         messages.activate(null);
