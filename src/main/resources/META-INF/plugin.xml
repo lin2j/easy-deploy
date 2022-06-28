@@ -17,6 +17,9 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.2.3</h2>
+    <ul>fix compatibility issues with 222.* version of IDEs</ul>
+
     <h2>release 1.2.2</h2>
     <ul>
         <li>change plugin name</li>
