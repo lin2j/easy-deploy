@@ -2,12 +2,10 @@ package tech.lin2j.idea.plugin.terminal;
 
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.openapi.project.Project;
-import com.intellij.terminal.JBTerminalWidget;
 import com.jediterm.terminal.TtyConnector;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.terminal.AbstractTerminalRunner;
-import org.jetbrains.plugins.terminal.TerminalProcessOptions;
 import tech.lin2j.idea.plugin.ssh.CustomTtyConnector;
 import tech.lin2j.idea.plugin.ssh.CustomTtyConnectorFactory;
 import tech.lin2j.idea.plugin.ssh.SshProcess;
@@ -43,8 +41,7 @@ public class CustomSshTerminalRunner extends AbstractTerminalRunner<SshProcess> 
     }
 
     @Override
-    public @NotNull SshProcess createProcess(@NotNull TerminalProcessOptions options,
-                                             @Nullable JBTerminalWidget widget) throws ExecutionException {
+    public SshProcess createProcess(@Nullable String directory) throws ExecutionException {
         return sshProcess;
     }
 
@@ -68,7 +65,6 @@ public class CustomSshTerminalRunner extends AbstractTerminalRunner<SshProcess> 
         return title;
     }
 
-    @Override
     public boolean isTerminalSessionPersistent() {
         return false;
     }

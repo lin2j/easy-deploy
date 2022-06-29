@@ -21,4 +21,6 @@ public interface CustomTtyConnector extends TtyConnector {
     OutputStream getOutputStream();
 
     void setName(String title);
+
+    void resizeImmediately();
 }

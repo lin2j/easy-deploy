@@ -4,12 +4,12 @@ import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jediterm.terminal.Questioner;
-import org.jetbrains.plugins.terminal.TerminalView;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.lin2j.idea.plugin.ssh.CustomTtyConnector;
 import tech.lin2j.idea.plugin.ssh.SshConnection;
 
+import java.awt.Dimension;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -34,11 +34,36 @@ public class JSchTtyConnector implements CustomTtyConnector {
     private InputStream inputStream;
     private InputStreamReader inputStreamReader;
     private OutputStream outputStream;
+    private Dimension pendingTermSize;
+    private Dimension pendingPixelSize;
     private final AtomicBoolean isInitiated = new AtomicBoolean(false);
 
     public JSchTtyConnector(SshConnection sshConnection) {
         this.sshConnection = (JSchConnection) sshConnection;
         init(null);
+    }
+
+    @Override
+    public void resize(Dimension termSize, Dimension pixelSize) {
+        this.pendingTermSize = termSize;
+        this.pendingPixelSize = pixelSize;
+        if (this.channelShell != null) {
+            this.resizeImmediately();
+        }
+
+    }
+
+    private void setPtySize(ChannelShell channel, int col, int row, int wp, int hp) {
+        channel.setPtySize(col, row, wp, hp);
+    }
+
+    @Override
+    public void resizeImmediately() {
+        if (this.pendingTermSize != null && this.pendingPixelSize != null) {
+            this.setPtySize(this.channelShell, this.pendingTermSize.width, this.pendingTermSize.height, this.pendingPixelSize.width, this.pendingPixelSize.height);
+            this.pendingTermSize = null;
+            this.pendingPixelSize = null;
+        }
     }
 
     @Override
@@ -123,7 +148,7 @@ public class JSchTtyConnector implements CustomTtyConnector {
         return channelShell.getExitStatus();
     }
 
-    @Override
+//    @Override
     public boolean ready() throws IOException {
         return inputStreamReader.ready();
     }

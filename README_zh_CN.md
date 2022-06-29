@@ -8,7 +8,7 @@
     <a href="#"><img src="https://img.shields.io/badge/version-1.2.3-red"></a>
     <a href="#"><img src = "https://img.shields.io/github/license/lin2j/simple-deploy" ></a>
     <a href="https://www.lin2j.tech"><img src="https://img.shields.io/badge/author-lin2j-brightgreen"></a>
-    <a href="#"><img src="https://img.shields.io/badge/idea-213.5744%2B-yellow"></a>
+    <a href="#"><img src="https://img.shields.io/badge/idea-193.5662%2B-yellow"></a>
 </div>
 
 [**English**](README.md) 📎
@@ -22,6 +22,14 @@ Simple Deployment 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便
 我给这个插件起这个名是因为它的功能真的很少很简单，不过我会不断地优化它，完善它的功能。
 
 这也是我开发的第一款 Idea 插件，很多问题都是通过长时间的搜索才一点一点的解决的，后续我也打算将开发插件的过程写出来。
+
+<p style="margin-left: 4em">👇</p>
+
+👉 [去插件市场下载](https://plugins.jetbrains.com/plugin/19432-simple-deployment) 👈
+
+<p style="margin-left: 4em">👆</p>
+
+
 
 # 功能
 

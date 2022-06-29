@@ -2,7 +2,7 @@
     <id>tech.lin2j.simple-deployment</id>
     <name>Simple Deployment</name>
     <vendor email="linjinjia047@163.com" url="https://www.lin2j.tech">Lin2j</vendor>
-    <idea-version since-build="213" />
+    <idea-version since-build="193.5662" />
 
     <description><![CDATA[
     Simple Deployment is a plugin for IntelliJ platform that
@@ -17,6 +17,9 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.2.4</h2>
+    <ul>extend the compatibility range</ul>
+
     <h2>release 1.2.3</h2>
     <ul>fix compatibility issues with 222.* version of IDEs</ul>
 

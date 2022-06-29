@@ -8,7 +8,7 @@
     <a href="#"><img src="https://img.shields.io/badge/version-1.2.3-red"></a>
     <a href="#"><img src = "https://img.shields.io/github/license/lin2j/simple-deploy" ></a>
     <a href="https://www.lin2j.tech"><img src="https://img.shields.io/badge/author-lin2j-brightgreen"></a>
-    <a href="#"><img src="https://img.shields.io/badge/idea-213.5744%2B-yellow"></a>
+    <a href="#"><img src="https://img.shields.io/badge/idea-193.5662%2B-yellow"></a>
 </div>
 
 [**中文版**](README_zh_CN.md) 🐼
@@ -25,7 +25,13 @@ This is also the first IntelliJ platform plug-in I developed. Many problems were
 
 Now that the plug-in has been released to the plug-in market, search and install it by the name Simple Deployment, or download the installation package for manual installation.
 
-👉 [Simple Deployment](https://plugins.jetbrains.com/plugin/19432-simple-deployment)
+<p style="margin-left: 6em">👇</p>
+
+👉 [Find in plugin marketplace](https://plugins.jetbrains.com/plugin/19432-simple-deployment) 👈
+
+<p style="margin-left: 6em">👆</p>
+
+        
 
 # Features
 

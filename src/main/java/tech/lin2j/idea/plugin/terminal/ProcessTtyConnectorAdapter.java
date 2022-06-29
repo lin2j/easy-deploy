@@ -2,6 +2,7 @@ package tech.lin2j.idea.plugin.terminal;
 
 import com.jediterm.terminal.ProcessTtyConnector;
 import com.jediterm.terminal.Questioner;
+import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.ssh.CustomTtyConnector;
 import tech.lin2j.idea.plugin.ssh.SshProcess;
 
@@ -37,6 +38,11 @@ public class ProcessTtyConnectorAdapter extends ProcessTtyConnector {
     @Override
     public void resize(Dimension termSize, Dimension pixelSize) {
         this.customTtyConnector.resize(termSize, pixelSize);
+    }
+
+    @Override
+    protected void resizeImmediately() {
+        this.customTtyConnector.resizeImmediately();
     }
 
     @Override

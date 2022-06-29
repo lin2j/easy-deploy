@@ -1,10 +1,10 @@
 plugins {
-    id 'org.jetbrains.intellij' version '1.6.0'
+    id 'org.jetbrains.intellij' version '0.6.3'
     id 'java'
 }
 
 group 'tech.lin2j'
-version '1.2.3'
+version '1.2.4'
 
 
 repositories {
@@ -20,10 +20,11 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2021.3'
+    version = '2019.3.1'
     plugins = [
             "org.jetbrains.plugins.terminal",
     ]
+    updateSinceUntilBuild = false
 }
 
 test {
