@@ -5,7 +5,7 @@
 <p align="center">Intellij platform plugin to facilitate the deployment of upgrade services during development</p>
 
 <div align="center">
-    <a href="https://plugins.jetbrains.com/plugin/19432-simple-deployment"><img src="https://badge.fury.io/gh/lin2j%2Fsimple-deployment.svg"></a>
+    <a href="#"><img src="https://badge.fury.io/gh/lin2j%2Fsimple-deployment.svg"></a>
     <a href="#"><img src = "https://img.shields.io/github/license/lin2j/simple-deploy" ></a>
     <a href="https://www.lin2j.tech"><img src="https://img.shields.io/badge/author-lin2j-brightgreen"></a>
     <a href="#"><img src="https://img.shields.io/badge/idea-193.5662%2B-yellow"></a>
