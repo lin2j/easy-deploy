@@ -89,7 +89,7 @@ The deployment plan is actually to select the command to be executed after uploa
 
 # contact me 🐾
 
-I'm a newbie when it comes to developing plugins and there are a lot of issues that may not be handled very well.
+I have no experience with plugin development yet so there are a lot of issues that may not be handled very well.
 
 If you have any suggestions or encounter any bugs, you can raise issues or contact me by email, and I will reply you as soon as possible.
 
