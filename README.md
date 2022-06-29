@@ -63,7 +63,7 @@ If you use a command like `tail -f` that does not return all the information at 
 
 ## File upload
 
-You can upload local files using the upload button on the panel. At present, files cannot be downloaded from the server, and this function will not be added in the future.
+You can upload local file using the upload button on the panel. At present, files cannot be downloaded from the server, and this function will not be added in the future.
 
 I combine the local file and remote directory selected during upload and manage it as an upload configuration, so that the next time I use it, I don't need to repeat the selection of the local file and remote directory.
 
