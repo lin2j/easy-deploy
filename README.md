@@ -25,11 +25,11 @@ This is also the first IntelliJ platform plug-in I developed. Many problems were
 
 Now that the plug-in has been released to the plug-in market, search and install it by the name Simple Deployment, or download the installation package for manual installation.
 
-<p style="margin-left: 6em">👇</p>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;👇
 
 👉 [Find in plugin marketplace](https://plugins.jetbrains.com/plugin/19432-simple-deployment) 👈
 
-<p style="margin-left: 6em">👆</p>
+&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;👆
 
         
 
