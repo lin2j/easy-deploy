@@ -7,8 +7,8 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.ui.table.JBTable;
 import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.terminal.AbstractTerminalRunner;
 import org.jetbrains.plugins.terminal.TerminalView;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.ssh.SshServer;
@@ -19,9 +19,12 @@ import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
 import tech.lin2j.idea.plugin.terminal.CustomSshTerminalRunner;
 import tech.lin2j.idea.plugin.uitl.PasswordUtil;
 
+import javax.swing.AbstractAction;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.event.CellEditorListener;
 import javax.swing.table.TableCellEditor;
@@ -30,11 +33,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.nio.charset.Charset;
 import java.util.EventObject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author linjinjia
@@ -45,7 +50,7 @@ public class TableActionUi extends JLabel implements TableCellRenderer, TableCel
     private JButton uploadBtn;
     private JButton commandBtn;
     private JButton terminalBtn;
-    private JButton removeBtn;
+    private JButton moreBtn;
 
     private int selectedRow;
     private int selectedCol;
@@ -66,7 +71,7 @@ public class TableActionUi extends JLabel implements TableCellRenderer, TableCel
         uploadBtn.addActionListener(new UploadActionListener());
         commandBtn.addActionListener(new ExecuteActionListener());
         terminalBtn.addActionListener(new TerminalActionListener());
-        removeBtn.addActionListener(new RemoveActionListener());
+        moreBtn.addActionListener(new MoreActionListener());
     }
 
     @Override
@@ -170,11 +175,26 @@ public class TableActionUi extends JLabel implements TableCellRenderer, TableCel
         }
     }
 
-    class RemoveActionListener implements ActionListener {
+    class MoreActionListener implements ActionListener {
+
         @Override
         public void actionPerformed(ActionEvent e) {
-            ConfigHelper.removeSshServer(sshId);
-            ApplicationContext.getApplicationContext().publishEvent(new TableRefreshEvent());
+            JPopupMenu menu = new JPopupMenu();
+            menu.add(new JMenuItem(new AbstractAction("Properties") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    SshServer server = ConfigHelper.getSshServerById(sshId);
+                    new HostUi(project, server).showAndGet();
+                }
+            }));
+            menu.add(new JMenuItem(new AbstractAction("Remove") {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    ConfigHelper.removeSshServer(sshId);
+                    ApplicationContext.getApplicationContext().publishEvent(new TableRefreshEvent());
+                }
+            }));
+            menu.show(moreBtn, 0, moreBtn.getHeight());
         }
     }
 

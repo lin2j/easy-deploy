@@ -7,7 +7,6 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
-import org.jdesktop.swingx.prompt.PromptSupport;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
@@ -26,11 +25,13 @@ import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
+import javax.swing.text.JTextComponent;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.function.Consumer;
 
 /**
  * @author linjinjia
@@ -48,13 +49,16 @@ public class HostUi extends DialogWrapper {
     private JTabbedPane tabbedPane1;
     private JPanel hostTab;
     private JPanel mainPanel;
+    private JTextField descInput;
 
     private final Project project;
+    private final SshServer server;
     private final SshService sshClient = SshService.getInstance();
 
-    public HostUi(Project project) {
+    public HostUi(Project project, SshServer server) {
         super(true);
         this.project = project;
+        this.server = server;
         uiInit();
         setTitle("Add Host");
         init();
@@ -63,7 +67,14 @@ public class HostUi extends DialogWrapper {
     private void uiInit() {
         Toolkit tk = Toolkit.getDefaultToolkit();
         mainPanel.setMinimumSize(new Dimension(tk.getScreenSize().width / 3, 0));
-        PromptSupport.setPrompt("22", portInput);
+
+        if (server != null) {
+            ipInput.setText(server.getIp());
+            portInput.setText(server.getPort().toString());
+            userInput.setText(server.getUsername());
+            passInput.setText(server.getPassword());
+            descInput.setText(server.getDescription());
+        }
 
         passInput.setEchoChar('·');
         showPass.addActionListener((e) -> {
@@ -75,7 +86,6 @@ public class HostUi extends DialogWrapper {
         });
 
         cancelBtn.addActionListener((e) -> close(CANCEL_EXIT_CODE));
-
         confirmBtn.addActionListener(new ConfirmActionListener());
         testBtn.addActionListener(new TestActionListener());
     }
@@ -96,11 +106,8 @@ public class HostUi extends DialogWrapper {
     class TestActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            SshServer sshServer = getSshServer();
-            if (StringUtil.isEmpty(sshServer.getPassword())) {
-                SwingUtilities.invokeLater(() -> {
-                    passInput.requestFocus();
-                });
+            SshServer sshServer = new SshServer();
+            if (setServerInfo(sshServer, false, true)) {
                 return;
             }
             String title = String.format("Testing %s:%s", sshServer.getIp(), sshServer.getPort());
@@ -130,20 +137,57 @@ public class HostUi extends DialogWrapper {
     class ConfirmActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            SshServer sshServer = getSshServer();
-            ConfigHelper.addSshServer(sshServer);
+            if (server != null) {
+                if (setServerInfo(server, false, false)) {
+                    return;
+                }
+            } else {
+                SshServer sshServer = new SshServer();
+                if (setServerInfo(sshServer, true, false)) {
+                    return;
+                }
+                ConfigHelper.addSshServer(sshServer);
+            }
             ApplicationContext.getApplicationContext().publishEvent(new TableRefreshEvent());
             close(OK_EXIT_CODE);
         }
     }
 
-    private SshServer getSshServer() {
-        SshServer sshServer = new SshServer();
-        sshServer.setId(ConfigHelper.maxSshServerId() + 1);
-        sshServer.setIp(ipInput.getText());
-        sshServer.setPort(Integer.parseInt(portInput.getText()));
-        sshServer.setUsername(userInput.getText());
-        sshServer.setPassword(new String(passInput.getPassword()));
-        return sshServer;
+    /**
+     * return true if parameter required is missing
+     */
+    private boolean setServerInfo(SshServer server, boolean needId, boolean test) {
+        boolean miss = false;
+        if (needId) {
+            server.setId(ConfigHelper.maxSshServerId() + 1);
+        }
+        if (setText(ipInput, true, server::setIp)) {
+            return true;
+        }
+        if (setText(portInput, true, port -> server.setPort(Integer.parseInt(port)))) {
+            return true;
+        }
+        if (setText(userInput, true, server::setUsername)) {
+            return true;
+        }
+        if (setText(passInput, test, server::setPassword)) {
+            return true;
+        }
+        setText(descInput, false, server::setDescription);
+        return miss;
     }
+
+    /**
+     * return true if the text obtained from the input is empty
+     */
+    private boolean setText(JTextComponent input, boolean required, Consumer<String> action) {
+        String text = input.getText();
+        if (required && StringUtil.isEmpty(text)) {
+            SwingUtilities.invokeLater(input::requestFocus);
+            return true;
+        }
+        action.accept(text);
+        return false;
+    }
+
 }

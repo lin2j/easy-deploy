@@ -1,6 +1,7 @@
 package tech.lin2j.idea.plugin.ui;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.ui.table.JBTable;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
@@ -19,7 +20,7 @@ import java.util.List;
  */
 public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
     private JPanel mainPanel;
-    private JTable hostTable;
+    private JBTable hostTable;
     private JPanel optPanel;
     private JButton addHostBtn;
     private JButton refreshBtn;
@@ -36,7 +37,7 @@ public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
     private void initUi() {
         addHostBtn.addActionListener(e -> {
             // 显示 HostUi
-            new HostUi(project).showAndGet();
+            new HostUi(project, null).showAndGet();
         });
 
         refreshBtn.addActionListener(e -> {
@@ -62,16 +63,20 @@ public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
         }
         DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
         hostTable.setModel(tableModel);
+        hostTable.setFocusable(false);
+        hostTable.setRowSelectionAllowed(false);
+        hostTable.setFillsViewportHeight(true);
+        hostTable.setRowHeight(30);
+        hostTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
+        // hide ID column
+        hostTable.removeColumn(hostTable.getColumn("ID"));
 
         TableActionUi tableActionUi = new TableActionUi(project);
         TableColumn actionColumn = hostTable.getColumn("Actions");
         actionColumn.setCellRenderer(tableActionUi);
         actionColumn.setCellEditor(tableActionUi);
-
-        hostTable.setRowHeight(30);
-        hostTable.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-        // hide ID column
-        hostTable.removeColumn(hostTable.getColumn("ID"));
+        actionColumn.setMinWidth(450);
+        actionColumn.setMaxWidth(550);
     }
 
     @Override
