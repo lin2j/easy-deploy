@@ -6,15 +6,16 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.text.StringUtil;
 import org.jdesktop.swingx.prompt.PromptSupport;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
-import tech.lin2j.idea.plugin.ssh.SshServer;
-import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.service.SshService;
+import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.ssh.SshStatus;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -24,6 +25,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -95,6 +97,12 @@ public class HostUi extends DialogWrapper {
         @Override
         public void actionPerformed(ActionEvent e) {
             SshServer sshServer = getSshServer();
+            if (StringUtil.isEmpty(sshServer.getPassword())) {
+                SwingUtilities.invokeLater(() -> {
+                    passInput.requestFocus();
+                });
+                return;
+            }
             String title = String.format("Testing %s:%s", sshServer.getIp(), sshServer.getPort());
             ProgressManager.getInstance().run(new Task.Backgroundable(project, title) {
                 SshStatus status = null;

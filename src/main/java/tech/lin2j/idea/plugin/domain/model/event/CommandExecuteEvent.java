@@ -11,6 +11,8 @@ public class CommandExecuteEvent extends ApplicationEvent {
 
     private Command command;
 
+    private Boolean success;
+
     private String execResult;
 
     public CommandExecuteEvent(Object source) {
@@ -38,5 +40,13 @@ public class CommandExecuteEvent extends ApplicationEvent {
 
     public void setCommand(Command command) {
         this.command = command;
+    }
+
+    public Boolean isSuccess() {
+        return success;
+    }
+
+    public void setSuccess(Boolean success) {
+        this.success = success;
     }
 }

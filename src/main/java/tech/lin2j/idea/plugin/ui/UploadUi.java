@@ -3,19 +3,21 @@ package tech.lin2j.idea.plugin.ui;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tech.lin2j.idea.plugin.uitl.CommandUtil;
 import tech.lin2j.idea.plugin.domain.model.Command;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
-import tech.lin2j.idea.plugin.ssh.SshServer;
-import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.domain.model.UploadProfile;
 import tech.lin2j.idea.plugin.domain.model.event.UploadProfileAddEvent;
 import tech.lin2j.idea.plugin.domain.model.event.UploadProfileSelectedEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.service.SshService;
+import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.ssh.SshStatus;
+import tech.lin2j.idea.plugin.uitl.CommandUtil;
+import tech.lin2j.idea.plugin.uitl.PasswordUtil;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -82,7 +84,12 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
             String filePath = profile.getFile();
             String location = profile.getLocation();
 
-            SshStatus status = sshService.scpPut(sshServer, filePath, location);
+            SshServer server = PasswordUtil.requestPasswordIfNecessary(sshServer);
+            if (StringUtil.isEmpty(server.getPassword())) {
+                return;
+            }
+
+            SshStatus status = sshService.scpPut(server, filePath, location);
             if (!status.isSuccess()) {
                 Messages.showErrorDialog(status.getMessage(), "Upload");
                 return;
@@ -93,7 +100,7 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
                 return;
             }
             Command cmd = ConfigHelper.getCommandById(profile.getCommandId());
-            CommandUtil.executeAndShowMessages(project, cmd, sshServer, this);
+            CommandUtil.executeAndShowMessages(project, cmd, server, this);
             ApplicationContext.getApplicationContext().publishEvent(new UploadProfileSelectedEvent(profile));
         });
 

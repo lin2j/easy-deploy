@@ -4,7 +4,7 @@ package tech.lin2j.idea.plugin.ssh;
  * @author linjinjia
  * @date 2022/4/25 15:06
  */
-public class SshServer {
+public class SshServer implements Cloneable{
 
     private Integer id;
 
@@ -69,5 +69,16 @@ public class SshServer {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    @Override
+    public SshServer clone() {
+        try {
+            SshServer clone = (SshServer) super.clone();
+            // TODO: copy mutable state here, so the clone can't change the internals of the original
+            return clone;
+        } catch (CloneNotSupportedException e) {
+            throw new AssertionError();
+        }
     }
 }

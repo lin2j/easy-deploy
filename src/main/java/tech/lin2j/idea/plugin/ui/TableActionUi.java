@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.terminal.AbstractTerminalRunner;
 import org.jetbrains.plugins.terminal.TerminalView;
@@ -16,6 +17,7 @@ import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
 import tech.lin2j.idea.plugin.terminal.CustomSshTerminalRunner;
+import tech.lin2j.idea.plugin.uitl.PasswordUtil;
 
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -133,7 +135,11 @@ public class TableActionUi extends JLabel implements TableCellRenderer, TableCel
     class TerminalActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            SshServer server = ConfigHelper.getSshServerById(sshId);
+            SshServer tmp = ConfigHelper.getSshServerById(sshId);
+            SshServer server = PasswordUtil.requestPasswordIfNecessary(tmp);
+            if (StringUtil.isEmpty(server.getPassword())) {
+                return;
+            }
             SshStatus status = new SshStatus(false, null);
             String title = String.format("opening terminal %s:%s", server.getIp(), server.getPort());
             ProgressManager.getInstance().run(new Task.Backgroundable(project, title) {

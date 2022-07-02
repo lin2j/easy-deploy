@@ -35,7 +35,7 @@ public class SshService {
         if (isAuthenticated) {
             return connection;
         }
-        return null;
+        throw new RuntimeException("Authentication failed, please check the user name and password");
     }
 
     /**
@@ -55,7 +55,7 @@ public class SshService {
             scpClient.get(remoteFile, localFile);
             return new SshStatus(true, "success");
         } catch (Exception e) {
-            log.error(e);
+            log.warn(e);
             msg = e.getMessage();
         } finally {
             close(conn);
@@ -80,7 +80,7 @@ public class SshService {
             scpClient.put(localFile, remoteFile);
             return new SshStatus(true, "success");
         } catch (Exception e) {
-            log.error(e);
+            log.warn(e);
             msg = e.getCause().getMessage();
         } finally {
             close(conn);
@@ -108,7 +108,7 @@ public class SshService {
             }
             return new SshStatus(true, msg);
         } catch (Exception e) {
-            log.error(e);
+            log.warn(e);
             msg = e.getMessage();
         } finally {
             close(conn);

@@ -3,16 +3,18 @@ package tech.lin2j.idea.plugin.ui;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tech.lin2j.idea.plugin.uitl.CommandUtil;
 import tech.lin2j.idea.plugin.domain.model.Command;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
-import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.domain.model.event.CommandAddEvent;
 import tech.lin2j.idea.plugin.domain.model.event.CommandExecuteEvent;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.service.SshService;
+import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.uitl.CommandUtil;
+import tech.lin2j.idea.plugin.uitl.PasswordUtil;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -93,6 +95,10 @@ public class SelectCommandUi extends DialogWrapper implements ApplicationListene
         runBtn.addActionListener(e -> {
             Command cmd = cmdList.getSelectedValue();
             SshServer server = ConfigHelper.getSshServerById(cmd.getSshId());
+            server = PasswordUtil.requestPasswordIfNecessary(server);
+            if (StringUtil.isEmpty(server.getPassword())) {
+                return;
+            }
             CommandUtil.executeAndShowMessages(project, cmd, server, this);
         });
 
