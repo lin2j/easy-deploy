@@ -7,6 +7,8 @@ import com.jcraft.jsch.UserInfo;
 import com.jediterm.terminal.Questioner;
 import tech.lin2j.idea.plugin.ssh.jsch.JSchConnection;
 
+import javax.swing.JOptionPane;
+import java.nio.file.Paths;
 import java.util.Properties;
 
 /**
@@ -17,13 +19,16 @@ public class SshConnectionManager {
 
     public static JSchConnection makeJSchConnection(SshServer server) throws JSchException{
         JSch jSch = new JSch();
+        String home = String.valueOf(System.getProperty("user.home"));
+        String knownHostsFileName = Paths.get(home, ".ssh", "known_hosts").toString();
+        jSch.setKnownHosts(knownHostsFileName);
         Session session = jSch.getSession(server.getUsername(), server.getIp(), server.getPort());
         session.setPassword(server.getPassword());
 
         Properties config = new Properties();
         config.put("compression.s2c", "zlib,none");
         config.put("compression.c2s", "zlib,none");
-        config.put("StrictHostKeyChecking", "no");
+        config.put("StrictHostKeyChecking", "ask");
         config.put("PreferredAuthentications", "publickey,keyboard-interactive,password");
         session.setConfig(config);
         session.setUserInfo(new MyUserInfo());
@@ -60,11 +65,19 @@ public class SshConnectionManager {
 
         @Override
         public boolean promptYesNo(String message) {
-            return false;
+            Object[] options = {"yes", "no"};
+            int foo = JOptionPane.showOptionDialog(null,
+                    message,
+                    "Warning",
+                    JOptionPane.DEFAULT_OPTION,
+                    JOptionPane.WARNING_MESSAGE,
+                    null, options, options[0]);
+            return foo == 0;
         }
 
         @Override
         public void showMessage(String message) {
+            JOptionPane.showMessageDialog(null, message);
         }
     }
 }
