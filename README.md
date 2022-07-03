@@ -39,6 +39,8 @@ Now that the plug-in has been released to the plug-in market, search and install
 
 You can use this plugin to add multiple servers, and then use this as a base for command execution, file uploading, and application deployment.
 
+The login password of the server can be stored or not. If it is not stored, a password input box will pop up when needed.
+
 After adding the server, you can establish an SSH connection directly from the Terminal button.
 
 This function is to implement a subclass of AbstractTerminalRunner, so that the community version of Idea can also use this function.
@@ -77,7 +79,7 @@ The deployment plan is actually to select the command to be executed after uploa
 
 # TODO
 
-- [x] add and remove servers
+- [x] add, edit and remove servers
 - [x] add, edit and delete command
 - [x] upload file
 - [x] service deployment

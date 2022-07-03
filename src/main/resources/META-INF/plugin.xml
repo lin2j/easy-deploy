@@ -17,6 +17,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.2.5</h2>
+    <ul>passwords no longer have to be stored, but instead require user input when needed</ul>
+    <ul>server information can be modified</ul>
+    <ul>optimize UI and interaction</ul>
+
     <h2>release 1.2.4</h2>
     <ul>extend the compatibility range</ul>
 
