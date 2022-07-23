@@ -75,7 +75,7 @@ public class AddUploadProfile extends DialogWrapper {
 
         browserButton.addActionListener(e -> {
             Project project = ProjectManager.getInstance().getDefaultProject();
-            FileChooserDescriptor chooserDescriptor = new FileChooserDescriptor(true, true, true, true, true, true);
+            FileChooserDescriptor chooserDescriptor = new FileChooserDescriptor(true, false, true, true, true, false);
             VirtualFile virtualFile = FileChooser.chooseFile(chooserDescriptor, project, null);
             if (virtualFile != null) {
                 fileInput.setText(virtualFile.getPath());

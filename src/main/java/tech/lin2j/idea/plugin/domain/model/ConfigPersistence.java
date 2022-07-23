@@ -26,8 +26,6 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
 
     private List<Command> commands;
 
-    private List<SshUpload> sshUploads;
-
     private List<UploadProfile> uploadProfiles;
 
     @Override
@@ -60,17 +58,6 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
 
     public void setCommands(List<Command> commands) {
         this.commands = commands;
-    }
-
-    public List<SshUpload> getSshUploads() {
-        if (sshUploads == null) {
-            sshUploads = new CopyOnWriteArrayList<>();
-        }
-        return sshUploads;
-    }
-
-    public void setSshUploads(List<SshUpload> sshUploads) {
-        this.sshUploads = sshUploads;
     }
 
     public List<UploadProfile> getUploadProfiles() {

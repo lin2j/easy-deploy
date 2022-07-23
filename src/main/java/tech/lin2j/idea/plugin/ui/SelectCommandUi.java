@@ -45,7 +45,7 @@ public class SelectCommandUi extends DialogWrapper implements ApplicationListene
     private JList<Command> cmdList;
     private JScrollPane cmdScrollPanel;
 
-    private SshService sshService = SshService.getInstance();
+    private final SshService sshService = SshService.getInstance();
 
     private static final Logger LOG = Logger.getInstance(SelectCommandUi.class);
     private static final BlockingQueue<CommandExecuteEvent> EVENT_QUEUE = new LinkedBlockingQueue<>(100);
@@ -134,6 +134,8 @@ public class SelectCommandUi extends DialogWrapper implements ApplicationListene
     public void loadCommandList() {
         List<Command> commands = ConfigHelper.getCommandsBySshId(sshId);
         if (commands.size() == 0) {
+            cmdShow.setText("");
+            cmdList.setListData(new Command[0]);
             return;
         }
         cmdList.setListData(commands.toArray(new Command[0]));

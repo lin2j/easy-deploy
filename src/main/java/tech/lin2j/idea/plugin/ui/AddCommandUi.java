@@ -1,6 +1,7 @@
 package tech.lin2j.idea.plugin.ui;
 
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.Messages;
 import org.jdesktop.swingx.prompt.PromptSupport;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -52,6 +53,7 @@ public class AddCommandUi extends DialogWrapper {
             String dir = dirInput.getText();
             String cmdStr = cmdContent.getText();
             if (dir.isEmpty() || cmdStr.isEmpty()) {
+                Messages.showErrorDialog("Add Command", "Content of Directory and Command Must not Be Null");
                 return;
             }
             // update config if command is exist

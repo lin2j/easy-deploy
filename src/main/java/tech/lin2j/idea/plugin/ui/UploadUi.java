@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.domain.model.Command;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
+import tech.lin2j.idea.plugin.domain.model.NoneCommand;
 import tech.lin2j.idea.plugin.domain.model.UploadProfile;
 import tech.lin2j.idea.plugin.domain.model.event.UploadProfileAddEvent;
 import tech.lin2j.idea.plugin.domain.model.event.UploadProfileSelectedEvent;
@@ -152,6 +153,10 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
         locationLabel.setText(profile.getLocation());
         if (profile.getCommandId() != null) {
             Command cmd = ConfigHelper.getCommandById(profile.getCommandId());
+            if (cmd == null) {
+                cmd = NoneCommand.INSTANCE;
+                profile.setCommandId(null);
+            }
             commandLabel.setText(cmd.toString());
         } else {
             commandLabel.setText("");

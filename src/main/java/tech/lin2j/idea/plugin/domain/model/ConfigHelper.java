@@ -21,8 +21,6 @@ public class ConfigHelper {
 
     private static Map<Integer, List<Command>> COMMAND_MAP;
 
-    private static Map<Integer, List<SshUpload>> UPLOAD_MAP;
-
     private static Map<Integer, List<UploadProfile>> UPLOAD_PROFILE_MAP;
 
     static {
@@ -31,9 +29,6 @@ public class ConfigHelper {
 
         COMMAND_MAP = CONFIG_PERSISTENCE.getCommands().stream()
                 .collect(Collectors.groupingBy(Command::getSshId));
-
-        UPLOAD_MAP = CONFIG_PERSISTENCE.getSshUploads().stream()
-                .collect(Collectors.groupingBy(SshUpload::getSshId));
 
         UPLOAD_PROFILE_MAP = CONFIG_PERSISTENCE.getUploadProfiles().stream()
                 .collect(Collectors.groupingBy(UploadProfile::getSshId));
@@ -69,6 +64,14 @@ public class ConfigHelper {
             return;
         }
         removeSshServer(sshServer);
+        // delete command
+        List<Command> commands = getCommandsBySshId(id);
+        COMMAND_MAP.remove(id);
+        commands.forEach(cmd -> CONFIG_PERSISTENCE.getCommands().remove(cmd));
+        // delete upload profile
+        List<UploadProfile> profiles = getUploadProfileBySshId(id);
+        UPLOAD_PROFILE_MAP.remove(id);
+        profiles.forEach(profile -> CONFIG_PERSISTENCE.getUploadProfiles().remove(profile));
     }
 
     public static List<Command> getCommandsBySshId(int sshId) {
@@ -97,24 +100,6 @@ public class ConfigHelper {
         return CONFIG_PERSISTENCE.getCommands().stream()
                 .filter(command -> command.getId() == id)
                 .findFirst().orElse(null);
-    }
-
-    public static boolean addSshUpload(SshUpload sshUpload) {
-        for (SshUpload upload : CONFIG_PERSISTENCE.getSshUploads()) {
-            if (upload.equals(sshUpload)) {
-                upload.setSelected(true);
-                return false;
-            }
-        }
-        CONFIG_PERSISTENCE.getSshUploads().add(sshUpload);
-        UPLOAD_MAP = CONFIG_PERSISTENCE.getSshUploads().stream()
-                .collect(Collectors.groupingBy(SshUpload::getSshId));
-        sshUpload.setSelected(true);
-        return true;
-    }
-
-    public static List<SshUpload> getSshUploadsBySshId(int sshId) {
-        return UPLOAD_MAP.getOrDefault(sshId, new ArrayList<>());
     }
 
     public static List<UploadProfile> getUploadProfileBySshId(int sshId) {
