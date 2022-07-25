@@ -6,15 +6,18 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.wm.ToolWindow;
-import com.intellij.openapi.wm.ToolWindowManager;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.domain.model.Command;
+import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
+import tech.lin2j.idea.plugin.domain.model.UploadProfile;
 import tech.lin2j.idea.plugin.domain.model.event.CommandExecuteEvent;
+import tech.lin2j.idea.plugin.domain.model.event.UploadProfileExecuteEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.service.SshService;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
+
+import javax.swing.SwingUtilities;
 
 import static com.intellij.openapi.ui.DialogWrapper.OK_EXIT_CODE;
 
@@ -25,38 +28,78 @@ import static com.intellij.openapi.ui.DialogWrapper.OK_EXIT_CODE;
 public class CommandUtil {
     private static final SshService sshService = SshService.getInstance();
 
-    public static void executeAndShowMessages(Project project, Command cmd, SshServer server, DialogWrapper dialogWrapper) {
-        String title = String.format("executing command on %s:%s", server.getIp(), server.getPort());
-        ToolWindow messages = ToolWindowManager.getInstance(project).getToolWindow("Messages");
-        messages.setTitle(title);
-        messages.activate(null);
+    public static void executeAndShowMessages(Project project, Command command, UploadProfile profile,
+                                              SshServer server, DialogWrapper dialogWrapper) {
+        dialogWrapper.close(OK_EXIT_CODE);
+        Command cmd;
+        if (profile != null && profile.getCommandId() != null) {
+            cmd = ConfigHelper.getCommandById(profile.getCommandId());
+        } else {
+            cmd = command;
+        }
 
+        String title = String.format("Uploading file to %s:%s", server.getIp(), server.getPort());
         ProgressManager.getInstance().run(new Task.Backgroundable(project, title) {
-            final CommandExecuteEvent event = new CommandExecuteEvent(cmd, null);
+            final UploadProfileExecuteEvent uploadEvent = new UploadProfileExecuteEvent();
+            final CommandExecuteEvent commandEvent = new CommandExecuteEvent(cmd, server, project, null);
 
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 indicator.setIndeterminate(false);
-                try {
-                    // it is not recommended to executing command like "tail -f", because it will block the thread
-                    SshStatus status = sshService.execute(server, cmd.generateCmdLine());
-                    event.setSuccess(status.isSuccess());
-                    event.setExecResult(status.getMessage());
-                } catch (Exception e1) {
-                    event.setSuccess(false);
-                    event.setExecResult(e1.getMessage());
+                uploadEvent.setSuccess(true);
+                uploadEvent.setNeedExecCommand(true);
+                commandEvent.setSuccess(true);
+                // upload
+                if (profile != null) {
+                    uploadEvent.setNeedExecCommand(profile.getCommandId() != null);
+
+                    SshStatus status = sshService.scpPut(server, profile.getFile(), profile.getLocation());
+                    if (!status.isSuccess()) {
+                        uploadEvent.setSuccess(false);
+                        uploadEvent.setUploadResult(status.getMessage());
+                        indicator.setFraction(1f);
+                        return;
+                    }
+                    if (profile.getCommandId() == null) {
+                        SwingUtilities.invokeLater(() -> {
+                            Messages.showInfoMessage("Upload success", "Upload");
+                        });
+                        indicator.setFraction(1f);
+                        return;
+                    }
+                    indicator.setFraction(0.5f);
                 }
-                indicator.setFraction(1);
+
+                setTitle(String.format("executing command on %s:%s", server.getIp(), server.getPort()));
+
+                try {
+                    // it is not recommended to executing command like "tail -f",
+                    // because it will block the thread
+                    SshStatus status = sshService.execute(server, cmd.generateCmdLine());
+                    commandEvent.setSuccess(status.isSuccess());
+                    commandEvent.setExecResult(status.getMessage());
+                } catch (Exception e1) {
+                    commandEvent.setSuccess(false);
+                    commandEvent.setExecResult(e1.getMessage());
+                }
+                indicator.setFraction(1f);
             }
 
             @Override
             public void onFinished() {
-                dialogWrapper.close(OK_EXIT_CODE);
-                if (!event.isSuccess()) {
-                    Messages.showErrorDialog("Fail to execute command: " + event.getExecResult(), "Error");
+                if (!uploadEvent.isSuccess()) {
+                    Messages.showErrorDialog(uploadEvent.getUploadResult(), "Upload");
                     return;
                 }
-                ApplicationContext.getApplicationContext().publishEvent(event);
+                if (!uploadEvent.getNeedExecCommand()) {
+                    return;
+                }
+                if (!commandEvent.isSuccess()) {
+                    String err = "Fail to execute command: " + commandEvent.getExecResult();
+                    Messages.showErrorDialog(err, "Command");
+                    return;
+                }
+                ApplicationContext.getApplicationContext().publishEvent(commandEvent);
             }
         });
     }

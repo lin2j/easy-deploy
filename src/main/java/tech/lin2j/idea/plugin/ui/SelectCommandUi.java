@@ -14,7 +14,7 @@ import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.service.SshService;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.uitl.CommandUtil;
-import tech.lin2j.idea.plugin.uitl.PasswordUtil;
+import tech.lin2j.idea.plugin.uitl.UiUtil;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -45,11 +45,6 @@ public class SelectCommandUi extends DialogWrapper implements ApplicationListene
     private JList<Command> cmdList;
     private JScrollPane cmdScrollPanel;
 
-    private final SshService sshService = SshService.getInstance();
-
-    private static final Logger LOG = Logger.getInstance(SelectCommandUi.class);
-    private static final BlockingQueue<CommandExecuteEvent> EVENT_QUEUE = new LinkedBlockingQueue<>(100);
-
     private final Project project;
     private final Integer sshId;
 
@@ -75,31 +70,34 @@ public class SelectCommandUi extends DialogWrapper implements ApplicationListene
             new AddCommandUi(sshId, null, null, null).showAndGet();
         });
 
-        deleteBtn.addActionListener(e -> {
-            Command command = cmdList.getSelectedValue();
-            ConfigHelper.removeCommand(command);
-            loadCommandList();
-        });
-
         editBtn.addActionListener(e -> {
             Command cmd = cmdList.getSelectedValue();
+            if (cmd == null) {
+                return;
+            }
             new AddCommandUi(sshId, cmd.getId(), cmd.getDir(), cmd.getContent()).showAndGet();
         });
 
         deleteBtn.addActionListener(e -> {
-            Command command = cmdList.getSelectedValue();
-            ConfigHelper.removeCommand(command);
-            loadCommandList();
+            Command cmd = cmdList.getSelectedValue();
+            if (cmd == null) {
+                return;
+            }
+            boolean confirm = UiUtil.deleteConfirm(cmd.toString());
+            if (confirm) {
+                ConfigHelper.removeCommand(cmd);
+                loadCommandList();
+            }
         });
 
         runBtn.addActionListener(e -> {
             Command cmd = cmdList.getSelectedValue();
             SshServer server = ConfigHelper.getSshServerById(cmd.getSshId());
-            server = PasswordUtil.requestPasswordIfNecessary(server);
+            server = UiUtil.requestPasswordIfNecessary(server);
             if (StringUtil.isEmpty(server.getPassword())) {
                 return;
             }
-            CommandUtil.executeAndShowMessages(project, cmd, server, this);
+            CommandUtil.executeAndShowMessages(project, cmd, null, server, this);
         });
 
         closeBtn.addActionListener(e -> close(CANCEL_EXIT_CODE));

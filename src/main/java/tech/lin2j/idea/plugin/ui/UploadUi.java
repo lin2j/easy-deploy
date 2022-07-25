@@ -18,7 +18,7 @@ import tech.lin2j.idea.plugin.service.SshService;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.uitl.CommandUtil;
-import tech.lin2j.idea.plugin.uitl.PasswordUtil;
+import tech.lin2j.idea.plugin.uitl.UiUtil;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -82,26 +82,13 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
         uploadBtn.addActionListener(e -> {
             UploadProfile profile = (UploadProfile) profileBox.getSelectedItem();
             profile.setSelected(true);
-            String filePath = profile.getFile();
-            String location = profile.getLocation();
 
-            SshServer server = PasswordUtil.requestPasswordIfNecessary(sshServer);
+            SshServer server = UiUtil.requestPasswordIfNecessary(sshServer);
             if (StringUtil.isEmpty(server.getPassword())) {
                 return;
             }
 
-            SshStatus status = sshService.scpPut(server, filePath, location);
-            if (!status.isSuccess()) {
-                Messages.showErrorDialog(status.getMessage(), "Upload");
-                return;
-            }
-            if (profile.getCommandId() == null) {
-                Messages.showInfoMessage("Upload success", "Upload");
-                close(OK_EXIT_CODE);
-                return;
-            }
-            Command cmd = ConfigHelper.getCommandById(profile.getCommandId());
-            CommandUtil.executeAndShowMessages(project, cmd, server, this);
+            CommandUtil.executeAndShowMessages(project, null, profile, server, this);
             ApplicationContext.getApplicationContext().publishEvent(new UploadProfileSelectedEvent(profile));
         });
 
@@ -127,8 +114,13 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         UploadProfile profile = (UploadProfile) profileBox.getSelectedItem();
-                        ConfigHelper.removeUploadProfile(profile);
-                        reloadProfileBox();
+                        if (profile == null) {
+                            return;
+                        }
+                        if (UiUtil.deleteConfirm(profile.toString())) {
+                            ConfigHelper.removeUploadProfile(profile);
+                            reloadProfileBox();
+                        }
                     }
                 }));
                 menu.show(actionBtn, 0, actionBtn.getHeight());

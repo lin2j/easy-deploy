@@ -7,7 +7,6 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.ui.table.JBTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.terminal.TerminalView;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
@@ -17,7 +16,7 @@ import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
 import tech.lin2j.idea.plugin.terminal.CustomSshTerminalRunner;
-import tech.lin2j.idea.plugin.uitl.PasswordUtil;
+import tech.lin2j.idea.plugin.uitl.UiUtil;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
@@ -33,9 +32,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.nio.charset.Charset;
 import java.util.EventObject;
 import java.util.Map;
@@ -141,7 +137,7 @@ public class TableActionUi extends JLabel implements TableCellRenderer, TableCel
         @Override
         public void actionPerformed(ActionEvent e) {
             SshServer tmp = ConfigHelper.getSshServerById(sshId);
-            SshServer server = PasswordUtil.requestPasswordIfNecessary(tmp);
+            SshServer server = UiUtil.requestPasswordIfNecessary(tmp);
             if (StringUtil.isEmpty(server.getPassword())) {
                 return;
             }
@@ -187,11 +183,16 @@ public class TableActionUi extends JLabel implements TableCellRenderer, TableCel
                     new HostUi(project, server).showAndGet();
                 }
             }));
+
             menu.add(new JMenuItem(new AbstractAction("Remove") {
                 @Override
                 public void actionPerformed(ActionEvent e) {
-                    ConfigHelper.removeSshServer(sshId);
-                    ApplicationContext.getApplicationContext().publishEvent(new TableRefreshEvent());
+                    SshServer server = ConfigHelper.getSshServerById(sshId);
+                    String specific = "Host: " + server.getIp() + ":" + server.getPort();
+                    if (UiUtil.deleteConfirm(specific)) {
+                        ConfigHelper.removeSshServer(sshId);
+                        ApplicationContext.getApplicationContext().publishEvent(new TableRefreshEvent());
+                    }
                 }
             }));
             menu.show(moreBtn, 0, moreBtn.getHeight());
