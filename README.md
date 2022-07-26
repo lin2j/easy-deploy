@@ -11,11 +11,11 @@
     <a href="#"><img src="https://img.shields.io/badge/idea-193.5662%2B-yellow"></a>
 </div>
 
-[**中文版**](README_zh_CN.md) 🐼
+[**简体中文**](README_zh_CN.md) 🐼
 
 Simple Deployment is a plug-in developed by me using the Alibaba Cloud Toolkit plug-in to facilitate the deployment of services during the development process.
 
-Compared with the Aliababa Cloud Toolkit, the plug-in functions I develop will be much less, because I can't use many functions of ACT, and it is a bit bloated for me.
+Compared with the Alibaba Cloud Toolkit, the plug-in functions I develop will be much less, because I can't use many functions of ACT, and it is a bit bloated for me.
 
 Therefore, I only take the part of the functions that I care about for development, which is the process of server management and deployment.
 
@@ -25,13 +25,14 @@ This is also the first IntelliJ platform plug-in I developed. Many problems were
 
 Now that the plug-in has been released to the plug-in market, search and install it by the name Simple Deployment, or download the installation package for manual installation.
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;👇
 
-👉 [Find in plugin marketplace](https://plugins.jetbrains.com/plugin/19432-simple-deployment) 👈
+👉👉 [Find in plugin marketplace](https://plugins.jetbrains.com/plugin/19432-simple-deployment)
 
-&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;&ensp;👆
+🪐🪐 [My Blog](https://www.lin2j.tech)
 
-        
+# Support
+
+Simple Deployment need your support, please give a star on this repo if it helped you. ⭐️⭐ 
 
 # Features
 
@@ -95,7 +96,7 @@ I have no experience with plugin development yet so there are a lot of issues th
 
 If you have any suggestions or encounter any bugs, you can raise issues or contact me by email, and I will reply you as soon as possible.
 
-📮 linjinjia047@163.com
+📮📮 linjinjia047@163.com
 
 # License
 

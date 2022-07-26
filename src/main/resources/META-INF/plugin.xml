@@ -6,7 +6,12 @@
 
     <description><![CDATA[
     Simple Deployment is a plugin for IntelliJ platform that
-    helps developers deploy applications by clicking the button.<br>
+    helps developers deploy applications by clicking the button.
+    <br>
+    <br>
+    <a href="https://github.com/lin2j/simple-deployment">Github Page</a><br>
+    please give a star on this repo if it helped you.
+    <br>
     <br>
     Features:<br>
     <ul>
@@ -17,6 +22,10 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.2.6</h2>
+    <ul>fix bugs</ul>
+    <ul>optimize the logic of upload large file and delete action</ul>
+
     <h2>release 1.2.5</h2>
     <ul>passwords no longer have to be stored, but instead require user input when needed</ul>
     <ul>server information can be modified</ul>
