@@ -2,6 +2,7 @@ package tech.lin2j.idea.plugin.ui;
 
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
+import com.intellij.ui.content.Content;
 import tech.lin2j.idea.plugin.domain.model.Command;
 import tech.lin2j.idea.plugin.domain.model.event.CommandExecuteEvent;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
@@ -30,15 +31,17 @@ public class MessageUi implements ApplicationListener<CommandExecuteEvent> {
 
     @Override
     public void onApplicationEvent(CommandExecuteEvent event) {
-        SshServer server = event.getServer();
-        String title = String.format("executing command on %s:%s", server.getIp(), server.getPort());
-        ToolWindow messages = ToolWindowManager.getInstance(event.getProject()).getToolWindow("Messages");
-        messages.setTitle(title);
-        messages.activate(null);
+        ToolWindow deployToolWindow = ToolWindowManager.getInstance(event.getProject()).getToolWindow("Deploy");
+        deployToolWindow.activate(null);
+        Content messages = deployToolWindow.getContentManager().findContent("Messages");
+        deployToolWindow.getContentManager().setSelectedContent(messages);
 
-        String time = String.format("%tF %<tT", System.currentTimeMillis());
+        SshServer server = event.getServer();
         Command cmd = event.getCommand();
-        retContent.setText(String.format("[INFO] %s user custom command: {%s}\n", time, cmd.generateCmdLine()));
+        String time = String.format("%tF %<tT", System.currentTimeMillis());
+        String title = String.format("executing command on %s:%s\n", server.getIp(), server.getPort());
+        retContent.setText(title);
+        retContent.append(String.format("[INFO] %s user custom command: {%s}\n\n", time, cmd.generateCmdLine()));
         retContent.append(event.getExecResult());
     }
 

@@ -71,14 +71,6 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow
-                factoryClass="tech.lin2j.idea.plugin.factory.MessageToolWindowFactory"
-                id="Messages"
-                anchor="bottom"
-                canCloseContents="false"
-                icon="MyIcons.MESSAGE_BLUE"
-        />
-
-        <toolWindow
                 factoryClass="tech.lin2j.idea.plugin.factory.DeployConsoleToolWindowFactory"
                 id="Deploy"
                 anchor="bottom"

@@ -8,6 +8,7 @@ import com.intellij.ui.content.ContentFactory;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.event.listener.UploadProfileSelectedListener;
+import tech.lin2j.idea.plugin.module.CommandExecuteView;
 import tech.lin2j.idea.plugin.module.DeployConsoleView;
 
 /**
@@ -18,12 +19,18 @@ public class DeployConsoleToolWindowFactory implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
-        DeployConsoleView deployConsoleView = new DeployConsoleView(project);
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
-        Content content = contentFactory.createContent(deployConsoleView, "Deploy", false);
-        toolWindow.getContentManager().addContent(content);
+        // deploy tab
+        DeployConsoleView deployConsoleView = new DeployConsoleView(project);
+        Content deploy = contentFactory.createContent(deployConsoleView, "Deploy", false);
+        toolWindow.getContentManager().addContent(deploy);
+        // messages tab
+        CommandExecuteView commandExecuteView = new CommandExecuteView(project);
+        Content messages = contentFactory.createContent(commandExecuteView, "Messages", false);
+        toolWindow.getContentManager().addContent(messages);
 
         ApplicationContext.getApplicationContext().addApplicationListener(deployConsoleView.getConsoleUi());
         ApplicationContext.getApplicationContext().addApplicationListener(new UploadProfileSelectedListener());
+        ApplicationContext.getApplicationContext().addApplicationListener(commandExecuteView.getMessageUi());
     }
 }
