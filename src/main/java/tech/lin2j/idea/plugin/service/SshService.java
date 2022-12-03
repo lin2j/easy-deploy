@@ -11,6 +11,7 @@ import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.uitl.FileUtil;
 
 import java.io.File;
+import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -35,29 +36,12 @@ public class SshService {
         Connection connection = new Connection(sshServer.getIp(), sshServer.getPort());
         connection.connect();
 
-        boolean isAuthenticated;
-        String userName = sshServer.getUsername();
-        String password = sshServer.getPassword();
-        String pemPrivateKey = sshServer.getPemPrivateKey();
-        String authErr;
         if (AuthType.needPassword(sshServer.getAuthType())) {
-            isAuthenticated = connection.authenticateWithPassword(userName, password);
-            authErr = "Authentication failed, please check the user name and password";
+            authWithPassword(connection, sshServer);
         } else {
-            pemPrivateKey = FileUtil.replaceHomeSymbol(pemPrivateKey);
-            File file = new File(pemPrivateKey);
-            if (!file.exists()) {
-                String err = "Authentication failed, pem private key file not exist: " + pemPrivateKey;
-                throw new RuntimeException(err);
-            }
-            // https://blog.csdn.net/chezong/article/details/122403709
-            isAuthenticated = connection.authenticateWithPublicKey(userName, file, null);
-            authErr = "Authentication failed, please check your ssh private key file";
+            authWithPemPrivateKey(connection, sshServer);
         }
-        if (isAuthenticated) {
-            return connection;
-        }
-        throw new RuntimeException(authErr);
+        return connection;
     }
 
     /**
@@ -185,5 +169,44 @@ public class SshService {
             log.error(e);
         }
         return sb.toString();
+    }
+
+    private void authWithPassword(Connection connection, SshServer sshServer) throws IOException {
+        boolean isAuthenticated = false;
+        String userName = sshServer.getUsername();
+        String password = sshServer.getPassword();
+
+        isAuthenticated = connection.authenticateWithPassword(userName, password);
+        if (!isAuthenticated) {
+            String authErr = "Authentication failed, please check the user name and password";
+            throw new RuntimeException(authErr);
+        }
+    }
+
+    private void authWithPemPrivateKey(Connection connection, SshServer sshServer) {
+        boolean isAuthenticated = false;
+        String userName = sshServer.getUsername();
+        String pemPrivateKey = sshServer.getPemPrivateKey();
+        pemPrivateKey = FileUtil.replaceHomeSymbol(pemPrivateKey);
+        File file = new File(pemPrivateKey);
+        if (!file.exists()) {
+            String err = "Authentication failed, pem private key file not exist: " + pemPrivateKey;
+            throw new RuntimeException(err);
+        }
+
+        String authErr = "";
+        try {
+            isAuthenticated = connection.authenticateWithPublicKey(userName, file, null);
+            // https://blog.csdn.net/chezong/article/details/122403709
+            authErr = "Authentication failed, please check your ssh private key file";
+        } catch (IOException e) {
+            authErr = e.getMessage();
+            if (e.getCause().getMessage().startsWith("Invalid PEM structure")) {
+                authErr = "please check your pem file structure";
+            }
+        }
+        if (!isAuthenticated) {
+            throw new RuntimeException(authErr);
+        }
     }
 }
