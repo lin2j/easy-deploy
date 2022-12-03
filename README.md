@@ -85,10 +85,25 @@ The deployment plan is actually to select the command to be executed after uploa
 - [x] upload file
 - [x] service deployment
 - [x] open terminal
+- [x] ssh password-free login (via ssh private key)
 - [ ] import and export configuration
 - [ ] execute complex shell scripts
 - [ ] server search
 - [ ] multiple servers can be selected when executing command deployment
+ 
+# Q&A
+
+# 1. When logging in via ssh private key, it prompts "please check your pem file structure"
+
+Judging from the code comments of ganymed-ssh2, it can only recognize private key certificates in rsa or dsa format, and other formats will report IO exceptions.
+
+So to solve this problem, you can use the following command to generate a pair of public and private keys for the plugin in a fixed folder.
+
+```bash
+ssh-keygen -m PEM -t rsa -b 4096
+```
+
+The generated location can be in the default location, or choose another location, as you like.
 
 # contact me 🐾
 
