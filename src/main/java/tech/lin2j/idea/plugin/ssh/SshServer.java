@@ -1,5 +1,7 @@
 package tech.lin2j.idea.plugin.ssh;
 
+import tech.lin2j.idea.plugin.enums.AuthType;
+
 /**
  * @author linjinjia
  * @date 2022/4/25 15:06
@@ -17,6 +19,19 @@ public class SshServer implements Cloneable{
     private String password;
 
     private String description;
+
+    /**
+     * authenticate with password or other ways
+     *
+     * @see AuthType
+     */
+    private Integer authType;
+
+    /**
+     * file path of ssh private key，
+     * the default value is "~/.ssh/id_rsa"
+     */
+    private String pemPrivateKey;
 
     public Integer getId() {
         return id;
@@ -69,6 +84,22 @@ public class SshServer implements Cloneable{
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public Integer getAuthType() {
+        return authType;
+    }
+
+    public void setAuthType(Integer authType) {
+        this.authType = authType;
+    }
+
+    public String getPemPrivateKey() {
+        return pemPrivateKey;
+    }
+
+    public void setPemPrivateKey(String pemPrivateKey) {
+        this.pemPrivateKey = pemPrivateKey;
     }
 
     @Override

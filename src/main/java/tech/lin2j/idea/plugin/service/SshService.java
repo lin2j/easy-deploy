@@ -5,9 +5,12 @@ import ch.ethz.ssh2.SCPClient;
 import ch.ethz.ssh2.Session;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
+import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
+import tech.lin2j.idea.plugin.uitl.FileUtil;
 
+import java.io.File;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
@@ -31,11 +34,30 @@ public class SshService {
     public Connection getConnection(SshServer sshServer) throws Exception {
         Connection connection = new Connection(sshServer.getIp(), sshServer.getPort());
         connection.connect();
-        boolean isAuthenticated = connection.authenticateWithPassword(sshServer.getUsername(), sshServer.getPassword());
+
+        boolean isAuthenticated;
+        String userName = sshServer.getUsername();
+        String password = sshServer.getPassword();
+        String pemPrivateKey = sshServer.getPemPrivateKey();
+        String authErr;
+        if (AuthType.needPassword(sshServer.getAuthType())) {
+            isAuthenticated = connection.authenticateWithPassword(userName, password);
+            authErr = "Authentication failed, please check the user name and password";
+        } else {
+            pemPrivateKey = FileUtil.replaceHomeSymbol(pemPrivateKey);
+            File file = new File(pemPrivateKey);
+            if (!file.exists()) {
+                String err = "Authentication failed, pem private key file not exist: " + pemPrivateKey;
+                throw new RuntimeException(err);
+            }
+            // https://blog.csdn.net/chezong/article/details/122403709
+            isAuthenticated = connection.authenticateWithPublicKey(userName, file, null);
+            authErr = "Authentication failed, please check your ssh private key file";
+        }
         if (isAuthenticated) {
             return connection;
         }
-        throw new RuntimeException("Authentication failed, please check the user name and password");
+        throw new RuntimeException(authErr);
     }
 
     /**

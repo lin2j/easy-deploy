@@ -4,8 +4,9 @@ import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
-import com.jediterm.terminal.Questioner;
+import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.ssh.jsch.JSchConnection;
+import tech.lin2j.idea.plugin.uitl.FileUtil;
 
 import javax.swing.JOptionPane;
 import java.nio.file.Paths;
@@ -22,6 +23,13 @@ public class SshConnectionManager {
         String home = String.valueOf(System.getProperty("user.home"));
         String knownHostsFileName = Paths.get(home, ".ssh", "known_hosts").toString();
         jSch.setKnownHosts(knownHostsFileName);
+
+        boolean needPemPrivateKey = AuthType.needPemPrivateKey(server.getAuthType());
+        if (needPemPrivateKey) {
+            String pemPrvKey = FileUtil.replaceHomeSymbol(server.getPemPrivateKey());
+            jSch.addIdentity(pemPrvKey);
+        }
+
         Session session = jSch.getSession(server.getUsername(), server.getIp(), server.getPort());
         session.setPassword(server.getPassword());
 

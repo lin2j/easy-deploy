@@ -10,6 +10,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.terminal.TerminalView;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
+import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
@@ -137,8 +138,10 @@ public class TableActionUi extends JLabel implements TableCellRenderer, TableCel
         @Override
         public void actionPerformed(ActionEvent e) {
             SshServer tmp = ConfigHelper.getSshServerById(sshId);
+
+            boolean needPassword = AuthType.needPassword(tmp.getAuthType());
             SshServer server = UiUtil.requestPasswordIfNecessary(tmp);
-            if (StringUtil.isEmpty(server.getPassword())) {
+            if (needPassword && StringUtil.isEmpty(server.getPassword())) {
                 return;
             }
             SshStatus status = new SshStatus(false, null);

@@ -12,6 +12,7 @@ import tech.lin2j.idea.plugin.domain.model.NoneCommand;
 import tech.lin2j.idea.plugin.domain.model.UploadProfile;
 import tech.lin2j.idea.plugin.domain.model.event.UploadProfileAddEvent;
 import tech.lin2j.idea.plugin.domain.model.event.UploadProfileSelectedEvent;
+import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.service.SshService;
@@ -83,8 +84,9 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
             UploadProfile profile = (UploadProfile) profileBox.getSelectedItem();
             profile.setSelected(true);
 
+            boolean needPassword = AuthType.needPassword(sshServer.getAuthType());
             SshServer server = UiUtil.requestPasswordIfNecessary(sshServer);
-            if (StringUtil.isEmpty(server.getPassword())) {
+            if (needPassword && StringUtil.isEmpty(server.getPassword())) {
                 return;
             }
 

@@ -7,21 +7,26 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
+import org.jdesktop.swingx.prompt.PromptSupport;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
+import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.service.SshService;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 
 import javax.swing.Action;
+import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
+import javax.swing.JRadioButton;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 import javax.swing.SwingUtilities;
@@ -50,6 +55,12 @@ public class HostUi extends DialogWrapper {
     private JPanel hostTab;
     private JPanel mainPanel;
     private JTextField descInput;
+    private JRadioButton passRadio;
+    private JRadioButton pemPrivateRadio;
+    private JTextField pemPrivateKeyInput;
+    private JLabel pemPrivateKeyLabel;
+    private JLabel passwordLabel;
+    private ButtonGroup authTypeGroup;
 
     private final Project project;
     private final SshServer server;
@@ -68,12 +79,26 @@ public class HostUi extends DialogWrapper {
         Toolkit tk = Toolkit.getDefaultToolkit();
         mainPanel.setMinimumSize(new Dimension(tk.getScreenSize().width / 3, 0));
 
+        // default
+        passRadio.setSelected(true);
+        this.changePemPrivateKeyAuthTypeEnable(false);
+
         if (server != null) {
             ipInput.setText(server.getIp());
             portInput.setText(server.getPort().toString());
             userInput.setText(server.getUsername());
             passInput.setText(server.getPassword());
             descInput.setText(server.getDescription());
+            pemPrivateKeyInput.setText(server.getPemPrivateKey());
+            if (AuthType.needPassword(server.getAuthType())) {
+                passRadio.setSelected(true);
+                this.changePasswordAuthTypeEnable(true);
+                this.changePemPrivateKeyAuthTypeEnable(false);
+            } else {
+                pemPrivateRadio.setSelected(true);
+                this.changePasswordAuthTypeEnable(false);
+                this.changePemPrivateKeyAuthTypeEnable(true);
+            }
         }
 
         passInput.setEchoChar('·');
@@ -83,6 +108,19 @@ public class HostUi extends DialogWrapper {
             } else {
                 passInput.setEchoChar('·');
             }
+        });
+
+        passRadio.setActionCommand(AuthType.PASSWORD.toString());
+        passRadio.addActionListener(e -> {
+            this.changePasswordAuthTypeEnable(true);
+            this.changePemPrivateKeyAuthTypeEnable(false);
+        });
+
+        PromptSupport.setPrompt("pem private key file path", pemPrivateKeyInput);
+        pemPrivateRadio.setActionCommand(AuthType.PEM_PRIVATE_KEY.toString());
+        pemPrivateRadio.addActionListener(e -> {
+            this.changePasswordAuthTypeEnable(false);
+            this.changePemPrivateKeyAuthTypeEnable(true);
         });
 
         cancelBtn.addActionListener((e) -> close(CANCEL_EXIT_CODE));
@@ -170,8 +208,19 @@ public class HostUi extends DialogWrapper {
         if (setText(userInput, true, server::setUsername)) {
             return true;
         }
-        if (setText(passInput, test, server::setPassword)) {
-            return true;
+        if (passRadio.isSelected()) {
+            if (setText(passInput, test, server::setPassword)) {
+                return true;
+            }
+            server.setAuthType(AuthType.PASSWORD.getCode());
+            server.setPemPrivateKey(null);
+        }
+        if (pemPrivateRadio.isSelected()) {
+            if (setText(pemPrivateKeyInput, test, server::setPemPrivateKey)) {
+                return true;
+            }
+            server.setPassword(null);
+            server.setAuthType(AuthType.PEM_PRIVATE_KEY.getCode());
         }
         setText(descInput, false, server::setDescription);
         return miss;
@@ -189,5 +238,19 @@ public class HostUi extends DialogWrapper {
         action.accept(text);
         return false;
     }
+
+    private void changePasswordAuthTypeEnable(boolean enabled) {
+        this.passwordLabel.setEnabled(enabled);
+        this.passInput.setEnabled(enabled);
+        this.showPass.setEnabled(enabled);
+        this.pack();
+    }
+
+    private void changePemPrivateKeyAuthTypeEnable(boolean enabled) {
+        this.pemPrivateKeyInput.setEnabled(enabled);
+        this.pemPrivateKeyLabel.setEnabled(enabled);
+        this.pack();
+    }
+
 
 }

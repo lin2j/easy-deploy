@@ -10,6 +10,7 @@ import tech.lin2j.idea.plugin.domain.model.Command;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.CommandAddEvent;
 import tech.lin2j.idea.plugin.domain.model.event.CommandExecuteEvent;
+import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.service.SshService;
 import tech.lin2j.idea.plugin.ssh.SshServer;
@@ -93,8 +94,10 @@ public class SelectCommandUi extends DialogWrapper implements ApplicationListene
         runBtn.addActionListener(e -> {
             Command cmd = cmdList.getSelectedValue();
             SshServer server = ConfigHelper.getSshServerById(cmd.getSshId());
+
+            boolean needPassword = AuthType.needPassword(server.getAuthType());
             server = UiUtil.requestPasswordIfNecessary(server);
-            if (StringUtil.isEmpty(server.getPassword())) {
+            if (needPassword && StringUtil.isEmpty(server.getPassword())) {
                 return;
             }
             CommandUtil.executeAndShowMessages(project, cmd, null, server, this);

@@ -2,6 +2,7 @@ package tech.lin2j.idea.plugin.uitl;
 
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
+import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ui.PasswordInputUi;
 
@@ -36,8 +37,10 @@ public class UiUtil {
      * @return the clone of server
      */
     public static SshServer requestPasswordIfNecessary(SshServer server) {
+        Integer authType = server.getAuthType();
         SshServer ret = server.clone();
-        if (StringUtil.isEmpty(ret.getPassword())) {
+        if (AuthType.needPassword(authType)
+                && StringUtil.isEmpty(ret.getPassword())) {
             ret.setPassword(requestPassword());
         }
         return ret;
