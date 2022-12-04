@@ -94,7 +94,7 @@
                 id="Deploy"
                 anchor="bottom"
                 canCloseContents="false"
-                icon="MyIcons.DEPLOY_BLUE"
+                icon="MyIcons.DEPLOY"
         />
         <applicationService serviceImplementation="tech.lin2j.idea.plugin.domain.model.ConfigPersistence"/>
     </extensions>
