@@ -22,14 +22,23 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.2.7</h2>
+    <ul>
+        <li>support ssh password-free login (via ssh private key)</li>
+    </ul>
+
     <h2>release 1.2.6</h2>
-    <ul>fix bugs</ul>
-    <ul>optimize the logic of upload large file and delete action</ul>
+    <ul>
+        <li>fix bugs</li>
+        <li>optimize the logic of upload large file and delete action</li>
+    </ul>
 
     <h2>release 1.2.5</h2>
-    <ul>passwords no longer have to be stored, but instead require user input when needed</ul>
-    <ul>server information can be modified</ul>
-    <ul>optimize UI and interaction</ul>
+    <ul>
+        <li>passwords no longer have to be stored, but instead require user input when needed</li>
+        <li>server information can be modified</li>
+        <li>optimize UI and interaction</li>
+    </ul>
 
     <h2>release 1.2.4</h2>
     <ul>extend the compatibility range</ul>
