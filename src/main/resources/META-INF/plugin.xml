@@ -25,6 +25,7 @@
     <h2>release 1.2.7</h2>
     <ul>
         <li>support ssh password-free login (via ssh private key)</li>
+        <li>optimize component display logic</li>
     </ul>
 
     <h2>release 1.2.6</h2>

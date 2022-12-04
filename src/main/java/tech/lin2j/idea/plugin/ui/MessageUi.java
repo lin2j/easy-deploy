@@ -43,6 +43,8 @@ public class MessageUi implements ApplicationListener<CommandExecuteEvent> {
         retContent.setText(title);
         retContent.append(String.format("[INFO] %s user custom command: {%s}\n\n", time, cmd.generateCmdLine()));
         retContent.append(event.getExecResult());
+        String finishedTime = String.format("%tF %<tT", System.currentTimeMillis());
+        retContent.append(String.format("\n\n[INFO] %s finished", finishedTime));
     }
 
 }
