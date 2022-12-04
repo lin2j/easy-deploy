@@ -26,6 +26,7 @@
     <ul>
         <li>support ssh password-free login (via ssh private key)</li>
         <li>optimize component display logic</li>
+        <li>icon in tool window changes with theme</li>
     </ul>
 
     <h2>release 1.2.6</h2>
@@ -94,7 +95,7 @@
                 id="Deploy"
                 anchor="bottom"
                 canCloseContents="false"
-                icon="MyIcons.DEPLOY_BLUE"
+                icon="MyIcons.DEPLOY"
         />
         <applicationService serviceImplementation="tech.lin2j.idea.plugin.domain.model.ConfigPersistence"/>
     </extensions>
