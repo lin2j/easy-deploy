@@ -60,7 +60,10 @@ public class JSchTtyConnector implements CustomTtyConnector {
     @Override
     public void resizeImmediately() {
         if (this.pendingTermSize != null && this.pendingPixelSize != null) {
-            this.setPtySize(this.channelShell, this.pendingTermSize.width, this.pendingTermSize.height, this.pendingPixelSize.width, this.pendingPixelSize.height);
+            this.setPtySize(
+                    this.channelShell,
+                    this.pendingTermSize.width, this.pendingTermSize.height,
+                    this.pendingPixelSize.width, this.pendingPixelSize.height);
             this.pendingTermSize = null;
             this.pendingPixelSize = null;
         }

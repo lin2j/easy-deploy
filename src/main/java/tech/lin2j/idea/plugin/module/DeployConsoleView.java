@@ -11,8 +11,8 @@ import tech.lin2j.idea.plugin.ui.ConsoleUi;
  */
 public class DeployConsoleView extends SimpleToolWindowPanel {
 
-    private Project project;
-    private ConsoleUi consoleUi;
+    private final Project project;
+    private final ConsoleUi consoleUi;
 
     public DeployConsoleView(Project project) {
         super(false, true);

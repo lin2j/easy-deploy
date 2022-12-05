@@ -11,9 +11,9 @@ import tech.lin2j.idea.plugin.ui.MessageUi;
  */
 public class CommandExecuteView extends SimpleToolWindowPanel {
 
-    private MessageUi messageUi;
+    private final MessageUi messageUi;
 
-    private Project project;
+    private final Project project;
 
     public CommandExecuteView(Project project) {
         super(false, true);
@@ -30,5 +30,9 @@ public class CommandExecuteView extends SimpleToolWindowPanel {
 
     public MessageUi getMessageUi() {
         return messageUi;
+    }
+
+    public Project getProject() {
+        return project;
     }
 }

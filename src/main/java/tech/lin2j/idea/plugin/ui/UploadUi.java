@@ -55,7 +55,6 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
 
     private final Project project;
     private final SshServer sshServer;
-    private final SshService sshService = SshService.getInstance();
 
     public UploadUi(Project project, SshServer sshServer) {
         super(true);

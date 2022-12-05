@@ -1,8 +1,6 @@
 package tech.lin2j.idea.plugin.ssh;
 
-import com.intellij.openapi.ui.Messages;
 import com.jcraft.jsch.JSchException;
-import com.jediterm.terminal.Questioner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;

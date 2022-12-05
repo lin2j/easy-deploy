@@ -24,6 +24,7 @@
     <change-notes><![CDATA[
     <h2>release 1.2.7</h2>
     <ul>
+        <li>fix bugs</li>
         <li>support ssh password-free login (via ssh private key)</li>
         <li>optimize component display logic</li>
         <li>icon in tool window changes with theme</li>
@@ -43,10 +44,10 @@
     </ul>
 
     <h2>release 1.2.4</h2>
-    <ul>extend the compatibility range</ul>
+    <ul><li>extend the compatibility range</li></ul>
 
     <h2>release 1.2.3</h2>
-    <ul>fix compatibility issues with 222.* version of IDEs</ul>
+    <ul><li>fix compatibility issues with 222.* version of IDEs</li></ul>
 
     <h2>release 1.2.2</h2>
     <ul>

@@ -5,14 +5,13 @@ import com.jcraft.jsch.Session;
 import tech.lin2j.idea.plugin.ssh.SshConnection;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 
-import java.util.Properties;
 
 /**
  * @author linjinjia
  * @date 2022/6/25 11:33
  */
 public class JSchConnection implements SshConnection {
-    private Session session;
+    private final Session session;
 
     public JSchConnection(Session session) {
         this.session = session;
