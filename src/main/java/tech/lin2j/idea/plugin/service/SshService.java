@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.service;
 
+import ch.ethz.ssh2.ChannelCondition;
 import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.SCPClient;
 import ch.ethz.ssh2.Session;
@@ -14,6 +15,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.Arrays;
 
 /**
  * @author linjinjia
@@ -72,24 +74,39 @@ public class SshService {
     /**
      * upload file to remote server
      *
-     * @param sshServer  server information
-     * @param localFile  local file absolute path
-     * @param remoteFile remote file absolute path
+     * @param sshServer server information
+     * @param localFile local file absolute path,
+     *                  if it is a directory, then
+     *                  upload all files in this directory
+     * @param remoteDir remote file absolute path
      * @return upload result
      */
-    public SshStatus scpPut(SshServer sshServer, String localFile, String remoteFile) {
+    public SshStatus scpPut(SshServer sshServer, String localFile, String remoteDir) {
         Connection conn = null;
+        Session session = null;
         String msg = "";
         try {
             conn = getConnection(sshServer);
+            // create remote directory if not exist
+            if (!isDirExist(conn, remoteDir)) {
+                session = conn.openSession();
+                session.execCommand("mkdir -p " + remoteDir);
+                session.waitForCondition(ChannelCondition.EOF, 0);
+            }
+
             SCPClient scpClient = new SCPClient(conn);
-            scpClient.put(localFile, remoteFile);
+            if (new File(localFile).isDirectory()) {
+                putDir(conn, scpClient, localFile, remoteDir);
+            } else {
+                putFile(scpClient, localFile, remoteDir);
+            }
             return new SshStatus(true, "success");
         } catch (Exception e) {
             log.warn(e);
             msg = e.getCause().getMessage();
         } finally {
             close(conn);
+            close(session);
         }
 
         return new SshStatus(false, msg);
@@ -143,6 +160,59 @@ public class SshService {
             close(conn);
         }
         return new SshStatus(false, msg);
+    }
+
+    /**
+     * test whether the remote target directory is exist.
+     *
+     * @param server          ssh server information
+     * @param remoteTargetDir remote target directory
+     * @return return true if the remote target directory is exist, or return false
+     */
+    public SshStatus isDirExist(SshServer server, String remoteTargetDir) {
+        boolean exist;
+        String msg = "";
+        Connection conn = null;
+        try {
+            conn = getConnection(server);
+            exist = isDirExist(conn, remoteTargetDir);
+            return new SshStatus(true, "success", exist);
+        } catch (Exception e) {
+            log.error(e);
+            msg = e.getMessage();
+        } finally {
+            close(conn);
+        }
+        return new SshStatus(false, msg, false);
+    }
+
+    /**
+     * test whether the remote target directory is exist.
+     *
+     * @param conn            ssh connection
+     * @param remoteTargetDir remote target directory
+     * @return return true if the remote target directory is exist, or return false
+     * @throws Exception Exception
+     */
+    public boolean isDirExist(Connection conn, String remoteTargetDir) throws Exception {
+        boolean exist = true;
+        String command = "cd " + remoteTargetDir;
+        Session session = null;
+        try {
+            session = conn.openSession();
+            session.execCommand(command);
+            session.waitForCondition(ChannelCondition.EOF, 0);
+            String msg = resolveInputStream(session.getStdout());
+            if (StringUtil.isEmpty(msg)) {
+                msg = resolveInputStream(session.getStderr());
+                if (StringUtil.isNotEmpty(msg)) {
+                    exist = false;
+                }
+            }
+        } finally {
+            close(session);
+        }
+        return exist;
     }
 
     private void close(Connection conn) {
@@ -207,6 +277,40 @@ public class SshService {
         }
         if (!isAuthenticated) {
             throw new RuntimeException(authErr);
+        }
+    }
+
+    private void putFile(SCPClient client,
+                         String localFile, String remoteTargetDir) throws IOException {
+        client.put(localFile, remoteTargetDir);
+    }
+
+    private void putDir(Connection conn, SCPClient client,
+                        String localFile, String remoteTargetDir) throws IOException {
+        File dir = new File(localFile);
+        if (dir.isDirectory()) {
+            String[] fileList = dir.list();
+            System.out.println(Arrays.toString(fileList));
+            if (fileList == null) {
+                return;
+            }
+            for (String f : fileList) {
+                String fullFileName = localFile + "/" + f;
+                System.out.println(fullFileName);
+                if (new File(fullFileName).isDirectory()) {
+                    String subDir = remoteTargetDir + "/" + f;
+                    System.out.println(subDir);
+                    Session session = conn.openSession();
+                    session.execCommand("mkdir " + subDir);
+                    session.waitForCondition(ChannelCondition.EOF, 0);
+                    session.close();
+                    putDir(conn, client, fullFileName, subDir);
+                } else {
+                    putFile(client, fullFileName, remoteTargetDir);
+                }
+            }
+        } else {
+            putFile(client, localFile, remoteTargetDir);
         }
     }
 }

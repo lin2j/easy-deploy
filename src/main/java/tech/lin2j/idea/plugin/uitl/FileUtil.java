@@ -1,5 +1,7 @@
 package tech.lin2j.idea.plugin.uitl;
 
+import java.io.File;
+import java.io.IOException;
 import java.nio.file.Paths;
 
 /**
@@ -28,7 +30,27 @@ public class FileUtil {
         return newPath;
     }
 
+    /**
+     * get current home directory
+     *
+     * @return directory
+     */
     public static String getHomeDir() {
         return String.valueOf(System.getProperty("user.home"));
+    }
+
+    /**
+     * Returns an array of strings naming the files and directories in the
+     * directory denoted by filepath, if filepath is represent a directory,
+     * this array of strings will be empty if the directory is empty.
+     * if filepath is a file, the return itself
+     *
+     * @param filepath absolute file path,
+     *                 represent file or directory
+     * @return array of strings naming the file and directories in the directory
+     * @throws IOException IOException
+     */
+    public static String[] findAllFiles(String filepath) throws IOException {
+        return null;
     }
 }
