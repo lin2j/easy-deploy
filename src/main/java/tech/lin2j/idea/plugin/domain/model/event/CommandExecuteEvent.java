@@ -11,6 +11,18 @@ import tech.lin2j.idea.plugin.ssh.SshServer;
  */
 public class CommandExecuteEvent extends ApplicationEvent {
 
+    /**
+     * the listener should clear the history command result
+     * when receives this signal
+     */
+    public static final int SIGNAL_CLEAR = 1;
+
+    /**
+     * the listener should append the coming command result
+     * when receives this signal
+     */
+    public static final int SIGNAL_APPEND = 2;
+
     private Project project;
 
     private SshServer server;
@@ -20,6 +32,21 @@ public class CommandExecuteEvent extends ApplicationEvent {
     private Boolean success;
 
     private String execResult;
+
+    /**
+     * the default value is {@link CommandExecuteEvent#SIGNAL_CLEAR}
+     *
+     * @see CommandExecuteEvent#SIGNAL_CLEAR
+     * @see CommandExecuteEvent#SIGNAL_APPEND
+     */
+    private Integer signal;
+
+    /**
+     * it only works when the signal is {@link CommandExecuteEvent#SIGNAL_APPEND},
+     * it is used to indicate which message is currently.
+     * start from 0
+     */
+    private Integer index;
 
     public CommandExecuteEvent(Object source) {
         super(source);
@@ -32,6 +59,7 @@ public class CommandExecuteEvent extends ApplicationEvent {
         this.command = cmd;
         this.server = server;
         this.execResult = execResult;
+        this.signal = SIGNAL_CLEAR;
     }
 
     public String getExecResult() {
@@ -72,5 +100,21 @@ public class CommandExecuteEvent extends ApplicationEvent {
 
     public Project getProject() {
         return project;
+    }
+
+    public Integer getSignal() {
+        return signal;
+    }
+
+    public void setSignal(Integer signal) {
+        this.signal = signal;
+    }
+
+    public Integer getIndex() {
+        return index;
+    }
+
+    public void setIndex(Integer index) {
+        this.index = index;
     }
 }

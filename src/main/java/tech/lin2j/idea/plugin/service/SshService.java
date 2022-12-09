@@ -290,16 +290,13 @@ public class SshService {
         File dir = new File(localFile);
         if (dir.isDirectory()) {
             String[] fileList = dir.list();
-            System.out.println(Arrays.toString(fileList));
             if (fileList == null) {
                 return;
             }
             for (String f : fileList) {
                 String fullFileName = localFile + "/" + f;
-                System.out.println(fullFileName);
                 if (new File(fullFileName).isDirectory()) {
                     String subDir = remoteTargetDir + "/" + f;
-                    System.out.println(subDir);
                     Session session = conn.openSession();
                     session.execCommand("mkdir " + subDir);
                     session.waitForCondition(ChannelCondition.EOF, 0);
