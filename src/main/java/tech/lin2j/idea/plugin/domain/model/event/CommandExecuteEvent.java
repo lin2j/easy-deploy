@@ -23,8 +23,6 @@ public class CommandExecuteEvent extends ApplicationEvent {
      */
     public static final int SIGNAL_APPEND = 2;
 
-    private Project project;
-
     private SshServer server;
 
     private Command command;
@@ -52,14 +50,20 @@ public class CommandExecuteEvent extends ApplicationEvent {
         super(source);
     }
 
-    public CommandExecuteEvent(Command cmd, SshServer server,
-                               Project project, String execResult) {
+    public CommandExecuteEvent(Command cmd, SshServer server, String execResult) {
         super(new Object());
-        this.project = project;
         this.command = cmd;
         this.server = server;
         this.execResult = execResult;
         this.signal = SIGNAL_CLEAR;
+    }
+
+    public CommandExecuteEvent(SshServer server, String execResult, int index) {
+        super(new Object());
+        this.server = server;
+        this.execResult = execResult;
+        this.index = index;
+        this.signal = SIGNAL_APPEND;
     }
 
     public String getExecResult() {
@@ -92,14 +96,6 @@ public class CommandExecuteEvent extends ApplicationEvent {
 
     public void setSuccess(Boolean success) {
         this.success = success;
-    }
-
-    public void setProject(Project project) {
-        this.project = project;
-    }
-
-    public Project getProject() {
-        return project;
     }
 
     public Integer getSignal() {

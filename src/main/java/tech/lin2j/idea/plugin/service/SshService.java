@@ -7,6 +7,9 @@ import ch.ethz.ssh2.Session;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
 import tech.lin2j.idea.plugin.enums.AuthType;
+import tech.lin2j.idea.plugin.io.ExtensionFilter;
+import tech.lin2j.idea.plugin.io.FileFilter;
+import tech.lin2j.idea.plugin.io.FileFilterAdapter;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.uitl.FileUtil;
@@ -79,9 +82,12 @@ public class SshService {
      *                  if it is a directory, then
      *                  upload all files in this directory
      * @param remoteDir remote file absolute path
+     * @param exclude the suffix name that needs to be excluded
+     *                during the uploading process. Only when
+     *                uploading the folder will it be used
      * @return upload result
      */
-    public SshStatus scpPut(SshServer sshServer, String localFile, String remoteDir) {
+    public SshStatus scpPut(SshServer sshServer, String localFile, String remoteDir, String exclude) {
         Connection conn = null;
         Session session = null;
         String msg = "";
@@ -94,11 +100,14 @@ public class SshService {
                 session.waitForCondition(ChannelCondition.EOF, 0);
             }
 
+            String cmd = "scp -r " +  localFile + " " + remoteDir;
             SCPClient scpClient = new SCPClient(conn);
             if (new File(localFile).isDirectory()) {
-                putDir(conn, scpClient, localFile, remoteDir);
+                FileFilter filter = new FileFilterAdapter(new ExtensionFilter(exclude), sshServer, cmd);
+                putDir(conn, scpClient, localFile, remoteDir, filter);
             } else {
-                putFile(scpClient, localFile, remoteDir);
+                FileFilter filter = new FileFilterAdapter(new ExtensionFilter(""), sshServer, cmd);
+                putFile(scpClient, filter, localFile, remoteDir);
             }
             return new SshStatus(true, "success");
         } catch (Exception e) {
@@ -280,13 +289,17 @@ public class SshService {
         }
     }
 
-    private void putFile(SCPClient client,
+    private void putFile(SCPClient client, FileFilter filter,
                          String localFile, String remoteTargetDir) throws IOException {
-        client.put(localFile, remoteTargetDir);
+        filter.accept(localFile, (accept) -> {
+            if (accept) {
+                client.put(localFile, remoteTargetDir);
+            }
+        });
     }
 
     private void putDir(Connection conn, SCPClient client,
-                        String localFile, String remoteTargetDir) throws IOException {
+                        String localFile, String remoteTargetDir, FileFilter filter) throws IOException {
         File dir = new File(localFile);
         if (dir.isDirectory()) {
             String[] fileList = dir.list();
@@ -301,13 +314,13 @@ public class SshService {
                     session.execCommand("mkdir " + subDir);
                     session.waitForCondition(ChannelCondition.EOF, 0);
                     session.close();
-                    putDir(conn, client, fullFileName, subDir);
+                    putDir(conn, client, fullFileName, subDir, filter);
                 } else {
-                    putFile(client, fullFileName, remoteTargetDir);
+                    putFile(client, filter, fullFileName, remoteTargetDir);
                 }
             }
         } else {
-            putFile(client, localFile, remoteTargetDir);
+            putFile(client, filter, localFile, remoteTargetDir);
         }
     }
 }

@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.ui;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
@@ -21,8 +22,11 @@ public class MessageUi implements ApplicationListener<CommandExecuteEvent> {
     private JTextArea retContent;
     private JScrollPane retScroll;
 
-    public MessageUi() {
+    private final Project project;
+
+    public MessageUi(Project project) {
         retContent.setEditable(false);
+        this.project = project;
     }
 
     public JPanel getMainPanel() {
@@ -37,7 +41,7 @@ public class MessageUi implements ApplicationListener<CommandExecuteEvent> {
 
         boolean showMessageUi = clear || (append && firstMsg);
         if (showMessageUi) {
-            ToolWindow deployToolWindow = ToolWindowManager.getInstance(event.getProject()).getToolWindow("Deploy");
+            ToolWindow deployToolWindow = ToolWindowManager.getInstance(project).getToolWindow("Deploy");
             deployToolWindow.activate(null);
             Content messages = deployToolWindow.getContentManager().findContent("Messages");
             deployToolWindow.getContentManager().setSelectedContent(messages);

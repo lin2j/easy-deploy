@@ -13,6 +13,12 @@ public class UploadProfile {
 
     private String file;
 
+    /**
+     * the suffix name that needs to be excluded
+     * during the uploading process
+     */
+    private String exclude;
+
     private String location;
 
     private Integer commandId;
@@ -67,6 +73,13 @@ public class UploadProfile {
         isSelected = selected;
     }
 
+    public String getExclude() {
+        return exclude;
+    }
+
+    public void setExclude(String exclude) {
+        this.exclude = exclude;
+    }
 
     @Override
     public String toString() {

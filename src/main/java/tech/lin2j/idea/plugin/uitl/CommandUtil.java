@@ -41,7 +41,7 @@ public class CommandUtil {
         String title = String.format("Uploading file to %s:%s", server.getIp(), server.getPort());
         ProgressManager.getInstance().run(new Task.Backgroundable(project, title) {
             final UploadProfileExecuteEvent uploadEvent = new UploadProfileExecuteEvent();
-            final CommandExecuteEvent commandEvent = new CommandExecuteEvent(cmd, server, project, null);
+            final CommandExecuteEvent commandEvent = new CommandExecuteEvent(cmd, server, null);
 
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
@@ -53,7 +53,10 @@ public class CommandUtil {
                 if (profile != null) {
                     uploadEvent.setNeedExecCommand(profile.getCommandId() != null);
 
-                    SshStatus status = sshService.scpPut(server, profile.getFile(), profile.getLocation());
+                    String localFile = profile.getFile();
+                    String remoteTargetDir = profile.getLocation();
+                    String exclude = profile.getExclude();
+                    SshStatus status = sshService.scpPut(server, localFile, remoteTargetDir, exclude);
                     if (!status.isSuccess()) {
                         uploadEvent.setSuccess(false);
                         uploadEvent.setUploadResult(status.getMessage());

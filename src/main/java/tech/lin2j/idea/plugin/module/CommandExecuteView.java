@@ -19,7 +19,7 @@ public class CommandExecuteView extends SimpleToolWindowPanel {
         super(false, true);
 
         this.project = project;
-        this.messageUi = new MessageUi();
+        this.messageUi = new MessageUi(project);
 
         JBSplitter splitter = new JBSplitter(false);
         splitter.setSplitterProportionKey("main.splitter.key");

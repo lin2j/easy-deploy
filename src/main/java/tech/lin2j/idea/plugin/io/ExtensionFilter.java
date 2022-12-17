@@ -39,11 +39,6 @@ public class ExtensionFilter implements FileFilter{
         return !extensionSet.contains(suffix);
     }
 
-    @Override
-    public boolean accept(File f) {
-        return accept(f.getName());
-    }
-
     public String getExtensions() {
         return extensions;
     }
