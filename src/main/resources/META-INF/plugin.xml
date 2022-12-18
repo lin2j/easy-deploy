@@ -22,6 +22,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.2.8</h2>
+    <ul>
+        <li>fix bugs</li>
+        <li>support upload directory and excluded by file extension</li>
+    </ul>
+
     <h2>release 1.2.7</h2>
     <ul>
         <li>fix bugs</li>

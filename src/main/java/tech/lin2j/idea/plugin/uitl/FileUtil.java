@@ -15,6 +15,25 @@ public class FileUtil {
     }
 
     /**
+     * Tests whether the file denoted by this abstract pathname is a
+     * directory.
+     *
+     * @param file file name
+     * @return <code>true</code> if and only if the file denoted by this
+     * abstract pathname exists <em>and</em> is a directory;
+     * <code>false</code> otherwise
+     */
+    public static boolean isDirectory(String file) {
+        boolean isDir = false;
+        try {
+            isDir = new File(file).isDirectory();
+        } catch (Exception ignore) {
+
+        }
+        return isDir;
+    }
+
+    /**
      * replace ~ file path symbol with the real user directory.
      * if filepath starts with "~", then replace "~" it
      *

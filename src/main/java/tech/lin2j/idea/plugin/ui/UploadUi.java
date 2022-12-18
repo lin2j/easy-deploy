@@ -52,6 +52,7 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
     private JLabel locationLabel;
     private JLabel commandLabel;
     private JButton actionBtn;
+    private JLabel excludeLabel;
 
     private final Project project;
     private final SshServer sshServer;
@@ -143,6 +144,7 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
 
     private void updateProfileInfo(UploadProfile profile) {
         fileLabel.setText(profile.getFile());
+        excludeLabel.setText(profile.getExclude());
         locationLabel.setText(profile.getLocation());
         if (profile.getCommandId() != null) {
             Command cmd = ConfigHelper.getCommandById(profile.getCommandId());

@@ -37,7 +37,7 @@ public class MessageUi implements ApplicationListener<CommandExecuteEvent> {
     public void onApplicationEvent(CommandExecuteEvent event) {
         boolean append = event.getSignal() == CommandExecuteEvent.SIGNAL_APPEND;
         boolean clear = event.getSignal() == CommandExecuteEvent.SIGNAL_CLEAR;
-        boolean firstMsg = event.getIndex() == 0;
+        boolean firstMsg = event.getIndex() != null && event.getIndex() == 0;
 
         boolean showMessageUi = clear || (append && firstMsg);
         if (showMessageUi) {

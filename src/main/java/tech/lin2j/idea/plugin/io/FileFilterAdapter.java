@@ -42,10 +42,13 @@ public class FileFilterAdapter implements FileFilter {
 
     @Override
     public void accept(String filename, FileAction<Boolean> action) throws IOException {
-        boolean result = filter.accept(filename);
-        publishEvent(filename, result, true);
-        action.execute(result);
-        publishEvent(filename, result, false);
+        boolean accept = filter.accept(filename);
+        if (!accept) {
+            invokeUi(filename + " exclude\n");
+        }
+        publishEvent(filename, accept, true);
+        action.execute(accept);
+        publishEvent(filename, accept, false);
     }
 
     /**
@@ -54,20 +57,19 @@ public class FileFilterAdapter implements FileFilter {
      *
      * @param filename file name
      * @param accept   whether the file if accepted by filter
-     * @param before   whether before filter testing
+     * @param beforeExec   whether before filter testing
      */
-    private void publishEvent(String filename, boolean accept,
-                              boolean before) {
+    private void publishEvent(String filename, boolean accept, boolean beforeExec) {
+        if (!accept) {
+            return;
+        }
         String msg;
-        if (accept && before) {
+        if (beforeExec) {
             // accept and before uploading file
             msg = filename;
-        } else if (accept) {
-            // accept and after uploading file
-            msg = String.format("%15s\n", "[OK]");
         } else {
-            // not accept
-            msg = filename + " exclude";
+            // accept and after uploading file
+            msg = String.format("\t\t\t\t\t%s\n", "[OK]");
         }
         invokeUi(msg);
     }

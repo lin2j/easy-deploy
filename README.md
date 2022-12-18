@@ -82,14 +82,12 @@ The deployment plan is actually to select the command to be executed after uploa
 
 - [x] add, edit and remove servers
 - [x] add, edit and delete command
-- [x] upload file
+- [x] upload file or directory (support filtering)
 - [x] service deployment
 - [x] open terminal
 - [x] ssh password-free login (via ssh private key)
 - [ ] import and export configuration
-- [ ] execute complex shell scripts
 - [ ] server search
-- [ ] multiple servers can be selected when executing command deployment
  
 # Q&A
 
