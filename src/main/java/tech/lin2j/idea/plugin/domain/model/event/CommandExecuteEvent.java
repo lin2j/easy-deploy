@@ -31,6 +31,8 @@ public class CommandExecuteEvent extends ApplicationEvent {
 
     private String execResult;
 
+    private Project project;
+
     /**
      * the default value is {@link CommandExecuteEvent#SIGNAL_CLEAR}
      *
@@ -50,20 +52,22 @@ public class CommandExecuteEvent extends ApplicationEvent {
         super(source);
     }
 
-    public CommandExecuteEvent(Command cmd, SshServer server, String execResult) {
+    public CommandExecuteEvent(Project project, Command cmd, SshServer server, String execResult) {
         super(new Object());
         this.command = cmd;
         this.server = server;
         this.execResult = execResult;
         this.signal = SIGNAL_CLEAR;
+        this.project = project;
     }
 
-    public CommandExecuteEvent(SshServer server, String execResult, int index) {
+    public CommandExecuteEvent(Project project, SshServer server, String execResult, int index) {
         super(new Object());
         this.server = server;
         this.execResult = execResult;
         this.index = index;
         this.signal = SIGNAL_APPEND;
+        this.project = project;
     }
 
     public String getExecResult() {
@@ -112,5 +116,13 @@ public class CommandExecuteEvent extends ApplicationEvent {
 
     public void setIndex(Integer index) {
         this.index = index;
+    }
+
+    public Project getProject() {
+        return project;
+    }
+
+    public void setProject(Project project) {
+        this.project = project;
     }
 }

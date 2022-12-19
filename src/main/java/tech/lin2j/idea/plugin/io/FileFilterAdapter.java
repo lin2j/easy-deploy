@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.io;
 
+import com.intellij.openapi.project.Project;
 import tech.lin2j.idea.plugin.domain.model.event.CommandExecuteEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.ssh.SshServer;
@@ -23,7 +24,9 @@ public class FileFilterAdapter implements FileFilter {
 
     private final FileFilter filter;
 
-    public FileFilterAdapter(FileFilter fileFilter, SshServer server, String initMsg) {
+    private final Project project;
+
+    public FileFilterAdapter(Project project, FileFilter fileFilter, SshServer server, String initMsg) {
         if (server == null) {
             throw new IllegalArgumentException("ssh server information should not be null");
         }
@@ -32,6 +35,7 @@ public class FileFilterAdapter implements FileFilter {
         }
         this.filter = fileFilter;
         this.server = server;
+        this.project = project;
         invokeUi(initMsg);
     }
 
@@ -76,7 +80,7 @@ public class FileFilterAdapter implements FileFilter {
 
     private void invokeUi(String executeResult) {
         SwingUtilities.invokeLater(() -> {
-            CommandExecuteEvent event = new CommandExecuteEvent(server, executeResult, index.get());
+            CommandExecuteEvent event = new CommandExecuteEvent(project, server, executeResult, index.get());
             ApplicationContext.getApplicationContext().publishEvent(event);
             index.incrementAndGet();
         });

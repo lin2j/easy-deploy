@@ -22,11 +22,8 @@ public class MessageUi implements ApplicationListener<CommandExecuteEvent> {
     private JTextArea retContent;
     private JScrollPane retScroll;
 
-    private final Project project;
-
-    public MessageUi(Project project) {
+    public MessageUi() {
         retContent.setEditable(false);
-        this.project = project;
     }
 
     public JPanel getMainPanel() {
@@ -41,7 +38,7 @@ public class MessageUi implements ApplicationListener<CommandExecuteEvent> {
 
         boolean showMessageUi = clear || (append && firstMsg);
         if (showMessageUi) {
-            ToolWindow deployToolWindow = ToolWindowManager.getInstance(project).getToolWindow("Deploy");
+            ToolWindow deployToolWindow = ToolWindowManager.getInstance(event.getProject()).getToolWindow("Deploy");
             deployToolWindow.activate(null);
             Content messages = deployToolWindow.getContentManager().findContent("Messages");
             deployToolWindow.getContentManager().setSelectedContent(messages);

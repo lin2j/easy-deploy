@@ -5,6 +5,7 @@ import ch.ethz.ssh2.Connection;
 import ch.ethz.ssh2.SCPClient;
 import ch.ethz.ssh2.Session;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.io.ExtensionFilter;
@@ -87,7 +88,8 @@ public class SshService {
      *                uploading the folder will it be used
      * @return upload result
      */
-    public SshStatus scpPut(SshServer sshServer, String localFile, String remoteDir, String exclude) {
+    public SshStatus scpPut(Project project, SshServer sshServer,
+                            String localFile, String remoteDir, String exclude) {
         Connection conn = null;
         Session session = null;
         String msg = "";
@@ -103,10 +105,10 @@ public class SshService {
             String cmd = "scp -r " +  localFile + " " + remoteDir;
             SCPClient scpClient = new SCPClient(conn);
             if (new File(localFile).isDirectory()) {
-                FileFilter filter = new FileFilterAdapter(new ExtensionFilter(exclude), sshServer, cmd);
+                FileFilter filter = new FileFilterAdapter(project, new ExtensionFilter(exclude), sshServer, cmd);
                 putDir(conn, scpClient, localFile, remoteDir, filter);
             } else {
-                FileFilter filter = new FileFilterAdapter(new ExtensionFilter(""), sshServer, cmd);
+                FileFilter filter = new FileFilterAdapter(project, new ExtensionFilter(""), sshServer, cmd);
                 putFile(scpClient, filter, localFile, remoteDir);
             }
             return new SshStatus(true, "success");
