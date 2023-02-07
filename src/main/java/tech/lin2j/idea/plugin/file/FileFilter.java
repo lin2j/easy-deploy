@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.io;
+package tech.lin2j.idea.plugin.file;
 
 import java.io.IOException;
 

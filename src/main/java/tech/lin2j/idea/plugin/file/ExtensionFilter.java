@@ -1,8 +1,7 @@
-package tech.lin2j.idea.plugin.io;
+package tech.lin2j.idea.plugin.file;
 
 import com.intellij.openapi.util.text.StringUtil;
 
-import java.io.File;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;

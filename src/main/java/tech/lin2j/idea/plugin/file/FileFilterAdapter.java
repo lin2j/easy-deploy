@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.io;
+package tech.lin2j.idea.plugin.file;
 
 import tech.lin2j.idea.plugin.domain.model.event.CommandExecuteEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
@@ -55,9 +55,9 @@ public class FileFilterAdapter implements FileFilter {
      * publish an event, comprehensive file name and
      * other conditions to determine the information content
      *
-     * @param filename file name
-     * @param accept   whether the file if accepted by filter
-     * @param beforeExec   whether before filter testing
+     * @param filename   file name
+     * @param accept     whether the file if accepted by filter
+     * @param beforeExec whether before filter testing
      */
     private void publishEvent(String filename, boolean accept, boolean beforeExec) {
         if (!accept) {

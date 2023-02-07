@@ -7,9 +7,9 @@ import ch.ethz.ssh2.Session;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
 import tech.lin2j.idea.plugin.enums.AuthType;
-import tech.lin2j.idea.plugin.io.ExtensionFilter;
-import tech.lin2j.idea.plugin.io.FileFilter;
-import tech.lin2j.idea.plugin.io.FileFilterAdapter;
+import tech.lin2j.idea.plugin.file.ExtensionFilter;
+import tech.lin2j.idea.plugin.file.FileFilter;
+import tech.lin2j.idea.plugin.file.FileFilterAdapter;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.uitl.FileUtil;
@@ -18,7 +18,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
 
 /**
  * @author linjinjia
