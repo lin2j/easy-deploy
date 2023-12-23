@@ -13,7 +13,8 @@ import tech.lin2j.idea.plugin.domain.model.UploadProfile;
 import tech.lin2j.idea.plugin.domain.model.event.CommandExecuteEvent;
 import tech.lin2j.idea.plugin.domain.model.event.UploadProfileExecuteEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
-import tech.lin2j.idea.plugin.service.SshService;
+import tech.lin2j.idea.plugin.service.ISshService;
+import tech.lin2j.idea.plugin.service.SshServiceFactory;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 
@@ -26,7 +27,8 @@ import static com.intellij.openapi.ui.DialogWrapper.OK_EXIT_CODE;
  * @date 2022/5/7 08:58
  */
 public class CommandUtil {
-    private static final SshService sshService = SshService.getInstance();
+
+    private static final ISshService sshService = SshServiceFactory.getSshService();
 
     public static void executeAndShowMessages(Project project, Command command, UploadProfile profile,
                                               SshServer server, DialogWrapper dialogWrapper) {

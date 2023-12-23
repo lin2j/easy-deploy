@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.service;
+package tech.lin2j.idea.plugin.service.impl;
 
 import ch.ethz.ssh2.ChannelCondition;
 import ch.ethz.ssh2.Connection;
@@ -10,6 +10,7 @@ import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.file.ExtensionFilter;
 import tech.lin2j.idea.plugin.file.FileFilter;
 import tech.lin2j.idea.plugin.file.FileFilterAdapter;
+import tech.lin2j.idea.plugin.service.ISshService;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.uitl.FileUtil;
@@ -23,7 +24,7 @@ import java.nio.charset.StandardCharsets;
  * @author linjinjia
  * @date 2022/4/25 20:50
  */
-public class SshService {
+public class SshService implements ISshService {
 
     /**
      * service instance
@@ -48,14 +49,7 @@ public class SshService {
         return connection;
     }
 
-    /**
-     * get file from remote server
-     *
-     * @param sshServer  server information
-     * @param remoteFile remote file absolute path
-     * @param localFile  local file absolute path
-     * @return download result
-     */
+    @Override
     public SshStatus scpGet(SshServer sshServer, String remoteFile, String localFile) {
         Connection conn = null;
         String msg = "";
@@ -73,19 +67,7 @@ public class SshService {
         return new SshStatus(false, msg);
     }
 
-    /**
-     * upload file to remote server
-     *
-     * @param sshServer server information
-     * @param localFile local file absolute path,
-     *                  if it is a directory, then
-     *                  upload all files in this directory
-     * @param remoteDir remote file absolute path
-     * @param exclude the suffix name that needs to be excluded
-     *                during the uploading process. Only when
-     *                uploading the folder will it be used
-     * @return upload result
-     */
+    @Override
     public SshStatus scpPut(SshServer sshServer, String localFile, String remoteDir, String exclude) {
         Connection conn = null;
         Session session = null;
@@ -120,11 +102,7 @@ public class SshService {
         return new SshStatus(false, msg);
     }
 
-    /**
-     * block if the command is not finished <br>
-     * so do not execute command like "tail -f" <br>
-     * because it will block the thread
-     */
+    @Override
     public SshStatus execute(SshServer sshServer, String command) {
         Connection conn = null;
         String msg = "";
@@ -148,9 +126,7 @@ public class SshService {
         return new SshStatus(false, msg);
     }
 
-    /**
-     * test the server information is correct
-     */
+    @Override
     public SshStatus isValid(SshServer sshServer) {
         Connection conn = null;
         String msg = "";
@@ -170,13 +146,7 @@ public class SshService {
         return new SshStatus(false, msg);
     }
 
-    /**
-     * test whether the remote target directory is exist.
-     *
-     * @param server          ssh server information
-     * @param remoteTargetDir remote target directory
-     * @return return true if the remote target directory is exist, or return false
-     */
+    @Override
     public SshStatus isDirExist(SshServer server, String remoteTargetDir) {
         boolean exist;
         String msg = "";
@@ -194,14 +164,7 @@ public class SshService {
         return new SshStatus(false, msg, false);
     }
 
-    /**
-     * test whether the remote target directory is exist.
-     *
-     * @param conn            ssh connection
-     * @param remoteTargetDir remote target directory
-     * @return return true if the remote target directory is exist, or return false
-     * @throws Exception Exception
-     */
+    @Override
     public boolean isDirExist(Connection conn, String remoteTargetDir) throws Exception {
         boolean exist = true;
         String command = "cd " + remoteTargetDir;
