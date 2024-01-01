@@ -1,6 +1,5 @@
 package tech.lin2j.idea.plugin.service;
 
-import ch.ethz.ssh2.Connection;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 
@@ -9,6 +8,25 @@ import tech.lin2j.idea.plugin.ssh.SshStatus;
  * @date 2023/12/21 22:20
  */
 public interface ISshService {
+
+    /**
+     * test whether the server information is available
+     *
+     * @param sshServer server information
+     * @return execution result
+     */
+    SshStatus isValid(SshServer sshServer);
+
+    /**
+     * block if the command is not finished,
+     * so do not execute command like "tail -f"
+     * because it will block the thread
+     *
+     * @param sshServer server information
+     * @param command   command
+     * @return execution result
+     */
+    SshStatus execute(SshServer sshServer, String command);
 
     /**
      * get file from remote server
@@ -35,24 +53,6 @@ public interface ISshService {
      */
     SshStatus scpPut(SshServer sshServer, String localFile, String remoteDir, String exclude);
 
-    /**
-     * block if the command is not finished,
-     * so do not execute command like "tail -f"
-     * because it will block the thread
-     *
-     * @param sshServer server information
-     * @param command   command
-     * @return execution result
-     */
-    SshStatus execute(SshServer sshServer, String command);
-
-    /**
-     * test whether the server information is available
-     *
-     * @param sshServer server information
-     * @return execution result
-     */
-    SshStatus isValid(SshServer sshServer);
 
     /**
      * test whether the remote target directory is exist.
@@ -63,13 +63,4 @@ public interface ISshService {
      */
     SshStatus isDirExist(SshServer server, String remoteTargetDir);
 
-    /**
-     * test whether the remote target directory is exist.
-     *
-     * @param conn            ssh connection
-     * @param remoteTargetDir remote target directory
-     * @return return true if the remote target directory is exist, or return false
-     * @throws Exception Exception
-     */
-    boolean isDirExist(Connection conn, String remoteTargetDir) throws Exception;
 }

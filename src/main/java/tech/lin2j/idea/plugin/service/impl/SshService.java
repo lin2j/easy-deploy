@@ -26,16 +26,7 @@ import java.nio.charset.StandardCharsets;
  */
 public class SshService implements ISshService {
 
-    /**
-     * service instance
-     */
-    private static final SshService INSTANCE = new SshService();
-
     private static final Logger log = Logger.getInstance(SshService.class);
-
-    public static SshService getInstance() {
-        return INSTANCE;
-    }
 
     public Connection getConnection(SshServer sshServer) throws Exception {
         Connection connection = new Connection(sshServer.getIp(), sshServer.getPort());
@@ -47,6 +38,50 @@ public class SshService implements ISshService {
             authWithPemPrivateKey(connection, sshServer);
         }
         return connection;
+    }
+
+    @Override
+    public SshStatus isValid(SshServer sshServer) {
+        Connection conn = null;
+        String msg = "";
+        try {
+            conn = getConnection(sshServer);
+            if (conn != null) {
+                return new SshStatus(true, "success");
+            } else {
+                return new SshStatus(false, "failed");
+            }
+        } catch (Exception e) {
+            log.error(e);
+            msg = e.getMessage();
+        } finally {
+            close(conn);
+        }
+        return new SshStatus(false, msg);
+    }
+
+    @Override
+    public SshStatus execute(SshServer sshServer, String command) {
+        Connection conn = null;
+        String msg = "";
+        Session session = null;
+        try {
+            conn = getConnection(sshServer);
+            session = conn.openSession();
+            session.execCommand(command);
+            msg = resolveInputStream(session.getStdout());
+            if (StringUtil.isEmpty(msg)) {
+                msg = resolveInputStream(session.getStderr());
+            }
+            return new SshStatus(true, msg);
+        } catch (Exception e) {
+            log.warn(e);
+            msg = e.getMessage();
+        } finally {
+            close(conn);
+            close(session);
+        }
+        return new SshStatus(false, msg);
     }
 
     @Override
@@ -103,50 +138,6 @@ public class SshService implements ISshService {
     }
 
     @Override
-    public SshStatus execute(SshServer sshServer, String command) {
-        Connection conn = null;
-        String msg = "";
-        Session session = null;
-        try {
-            conn = getConnection(sshServer);
-            session = conn.openSession();
-            session.execCommand(command);
-            msg = resolveInputStream(session.getStdout());
-            if (StringUtil.isEmpty(msg)) {
-                msg = resolveInputStream(session.getStderr());
-            }
-            return new SshStatus(true, msg);
-        } catch (Exception e) {
-            log.warn(e);
-            msg = e.getMessage();
-        } finally {
-            close(conn);
-            close(session);
-        }
-        return new SshStatus(false, msg);
-    }
-
-    @Override
-    public SshStatus isValid(SshServer sshServer) {
-        Connection conn = null;
-        String msg = "";
-        try {
-            conn = getConnection(sshServer);
-            if (conn != null) {
-                return new SshStatus(true, "success");
-            } else {
-                return new SshStatus(false, "failed");
-            }
-        } catch (Exception e) {
-            log.error(e);
-            msg = e.getMessage();
-        } finally {
-            close(conn);
-        }
-        return new SshStatus(false, msg);
-    }
-
-    @Override
     public SshStatus isDirExist(SshServer server, String remoteTargetDir) {
         boolean exist;
         String msg = "";
@@ -164,8 +155,7 @@ public class SshService implements ISshService {
         return new SshStatus(false, msg, false);
     }
 
-    @Override
-    public boolean isDirExist(Connection conn, String remoteTargetDir) throws Exception {
+    private boolean isDirExist(Connection conn, String remoteTargetDir) throws Exception {
         boolean exist = true;
         String command = "cd " + remoteTargetDir;
         Session session = null;
@@ -252,7 +242,7 @@ public class SshService implements ISshService {
     }
 
     private void putFile(SCPClient client, FileFilter filter,
-                         String localFile, String remoteTargetDir) throws IOException {
+                         String localFile, String remoteTargetDir) throws Exception {
         filter.accept(localFile, (accept) -> {
             if (accept) {
                 client.put(localFile, remoteTargetDir);
@@ -261,7 +251,7 @@ public class SshService implements ISshService {
     }
 
     private void putDir(Connection conn, SCPClient client,
-                        String localFile, String remoteTargetDir, FileFilter filter) throws IOException {
+                        String localFile, String remoteTargetDir, FileFilter filter) throws Exception {
         File dir = new File(localFile);
         if (dir.isDirectory()) {
             String[] fileList = dir.list();

@@ -14,7 +14,7 @@ import tech.lin2j.idea.plugin.domain.model.event.CommandExecuteEvent;
 import tech.lin2j.idea.plugin.domain.model.event.UploadProfileExecuteEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.service.ISshService;
-import tech.lin2j.idea.plugin.service.SshServiceFactory;
+import tech.lin2j.idea.plugin.factory.SshServiceFactory;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 
@@ -33,14 +33,17 @@ public class CommandUtil {
     public static void executeAndShowMessages(Project project, Command command, UploadProfile profile,
                                               SshServer server, DialogWrapper dialogWrapper) {
         dialogWrapper.close(OK_EXIT_CODE);
+
+        String title;
         Command cmd;
         if (profile != null && profile.getCommandId() != null) {
             cmd = ConfigHelper.getCommandById(profile.getCommandId());
+            title = String.format("Uploading file to %s:%s", server.getIp(), server.getPort());
         } else {
             cmd = command;
+            title = String.format("Executing command on %s:%s", server.getIp(), server.getPort());
         }
 
-        String title = String.format("Uploading file to %s:%s", server.getIp(), server.getPort());
         ProgressManager.getInstance().run(new Task.Backgroundable(project, title) {
             final UploadProfileExecuteEvent uploadEvent = new UploadProfileExecuteEvent();
             final CommandExecuteEvent commandEvent = new CommandExecuteEvent(cmd, server, null);
@@ -100,8 +103,7 @@ public class CommandUtil {
                     return;
                 }
                 if (!commandEvent.isSuccess()) {
-                    String err = "Fail to execute command: " + commandEvent.getExecResult();
-                    Messages.showErrorDialog(err, "Command");
+                    Messages.showErrorDialog(commandEvent.getExecResult(), "Command");
                     return;
                 }
                 ApplicationContext.getApplicationContext().publishEvent(commandEvent);

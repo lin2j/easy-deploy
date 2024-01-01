@@ -6,7 +6,6 @@ import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.SwingUtilities;
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -41,7 +40,7 @@ public class FileFilterAdapter implements FileFilter {
     }
 
     @Override
-    public void accept(String filename, FileAction<Boolean> action) throws IOException {
+    public void accept(String filename, FileAction<Boolean> action) throws Exception {
         boolean accept = filter.accept(filename);
         if (!accept) {
             invokeUi(filename + " exclude\n");
@@ -69,7 +68,7 @@ public class FileFilterAdapter implements FileFilter {
             msg = filename;
         } else {
             // accept and after uploading file
-            msg = String.format("\t\t\t\t\t%s\n", "[OK]");
+            msg = String.format("\t Result: %s\n", "[OK]");
         }
         invokeUi(msg);
     }

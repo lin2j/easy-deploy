@@ -7,12 +7,12 @@ package tech.lin2j.idea.plugin.enums;
 public enum AuthType {
 
     /**
-     * authenticate with password
+     * Using a password for authentication
      */
     PASSWORD(1, "password"),
 
     /**
-     * authenticate with ssh private key
+     * Using a private key for authentication
      */
     PEM_PRIVATE_KEY(2, "private key");
 

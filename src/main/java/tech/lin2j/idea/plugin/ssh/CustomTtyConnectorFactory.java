@@ -24,7 +24,7 @@ public class CustomTtyConnectorFactory {
         switch (type) {
             case CustomTtyConnector.JSCH:
                 try {
-                    SshConnection sshConnection = SshConnectionManager.makeJSchConnection(server);
+                    SshConnection sshConnection = SshConnectionManager.makeJschConnection(server);
                     return new JSchTtyConnector(sshConnection);
                 } catch (JSchException e) {
                     LOG.error("Error connecting server: " + e.getMessage());
