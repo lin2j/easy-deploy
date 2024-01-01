@@ -16,8 +16,6 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
-    implementation 'ch.ethz.ganymed:ganymed-ssh2:build210'
-    implementation 'com.jcraft:jsch:0.1.54'
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/

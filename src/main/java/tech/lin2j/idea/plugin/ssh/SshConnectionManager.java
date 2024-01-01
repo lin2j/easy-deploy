@@ -35,7 +35,9 @@ public class SshConnectionManager {
         }
 
         Session session = jsch.getSession(server.getUsername(), server.getIp(), server.getPort());
-        session.setPassword(server.getPassword());
+        if (!needPemPrivateKey) {
+            session.setPassword(server.getPassword());
+        }
 
         Properties config = new Properties();
         config.put("compression.s2c", "zlib,none");
