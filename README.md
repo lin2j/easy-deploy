@@ -87,7 +87,7 @@ The deployment plan is actually to select the command to be executed after uploa
 - [x] open terminal
 - [x] ssh password-free login (via ssh private key)
 - [ ] import and export configuration
-- [ ] server search
+- [x] server search
  
 # Q&A
 
