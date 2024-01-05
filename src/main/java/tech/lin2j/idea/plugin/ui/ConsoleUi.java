@@ -1,18 +1,25 @@
 package tech.lin2j.idea.plugin.ui;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.table.JBTable;
+import org.apache.commons.collections.CollectionUtils;
+import org.jdesktop.swingx.prompt.PromptSupport;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
-import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
+import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
+import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * @author linjinjia
@@ -24,14 +31,16 @@ public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
     private JPanel optPanel;
     private JButton addHostBtn;
     private JButton refreshBtn;
-    String[] columnNames = {"ID", "Address", "UserName", "Description", "Actions"};
+    private JTextField searchInput;
+    private JButton searchButton;
+    String[] columnNames = {"ID", "Address", "Username", "Description", "Actions"};
 
     private final Project project;
 
     public ConsoleUi(Project project) {
         this.project = project;
         initUi();
-        loadTableData();
+        loadTableData(null);
     }
 
     private void initUi() {
@@ -41,7 +50,39 @@ public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
         });
 
         refreshBtn.addActionListener(e -> {
-            loadTableData();
+            loadTableData(null);
+        });
+
+
+        PromptSupport.setPrompt("IP | Port | Username", searchInput);
+        searchInput.requestFocus(false);
+        searchButton.addActionListener(e -> {
+            String keyword = searchInput.getText();
+            if (StringUtil.isEmpty(keyword)) {
+                return;
+            }
+
+            List<SshServer> searchResult = new ArrayList<>();
+            List<SshServer> serverInConfig = ConfigHelper.sshServers();
+            if (CollectionUtils.isEmpty(serverInConfig)) {
+                return;
+            }
+
+            for (SshServer server : serverInConfig) {
+                if (server.getIp().contains(keyword)) {
+                    searchResult.add(server);
+                    continue;
+                }
+                if (server.getUsername().contains(keyword)) {
+                    searchResult.add(server);
+                    continue;
+                }
+                if (Objects.equals(server.getPort().toString(), keyword)) {
+                    searchResult.add(server);
+                }
+            }
+
+            ApplicationContext.getApplicationContext().publishEvent(new TableRefreshEvent(searchResult));
         });
 
     }
@@ -51,8 +92,12 @@ public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
     }
 
 
-    public void loadTableData() {
+    public void loadTableData(TableRefreshEvent e) {
+        searchInput.setText("");
         List<SshServer> sshServers = ConfigHelper.sshServers();
+        if (e != null && e.getSshServers() != null) {
+            sshServers = e.getSshServers();
+        }
         Object[][] data = new Object[sshServers.size()][4];
         for (int i = 0; i < sshServers.size(); i++) {
             SshServer sshServer = sshServers.get(i);
@@ -81,6 +126,6 @@ public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
 
     @Override
     public void onApplicationEvent(TableRefreshEvent event) {
-        loadTableData();
+        loadTableData(event);
     }
 }

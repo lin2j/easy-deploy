@@ -28,7 +28,7 @@ public class JSchTtyConnector implements CustomTtyConnector {
     public static final Logger LOG = LoggerFactory.getLogger(JSchTtyConnector.class);
 
     private String title;
-    private final JSchConnection sshConnection;
+    private final JschConnection sshConnection;
     private Session session;
     private ChannelShell channelShell;
     private InputStream inputStream;
@@ -39,7 +39,7 @@ public class JSchTtyConnector implements CustomTtyConnector {
     private final AtomicBoolean isInitiated = new AtomicBoolean(false);
 
     public JSchTtyConnector(SshConnection sshConnection) {
-        this.sshConnection = (JSchConnection) sshConnection;
+        this.sshConnection = (JschConnection) sshConnection;
         init(null);
     }
 

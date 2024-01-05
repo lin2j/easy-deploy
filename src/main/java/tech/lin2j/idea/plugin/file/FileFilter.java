@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.io;
+package tech.lin2j.idea.plugin.file;
 
 import java.io.IOException;
 
@@ -27,7 +27,7 @@ public interface FileFilter {
      * @param action   execute a {@link FileAction}
      * @throws IOException IOException
      */
-    default void accept(String filename, FileAction<Boolean> action) throws IOException {
+    default void accept(String filename, FileAction<Boolean> action) throws Exception {
         boolean result = accept(filename);
         action.execute(result);
     }

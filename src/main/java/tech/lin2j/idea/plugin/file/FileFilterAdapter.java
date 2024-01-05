@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.io;
+package tech.lin2j.idea.plugin.file;
 
 import com.intellij.openapi.project.Project;
 import tech.lin2j.idea.plugin.domain.model.event.CommandExecuteEvent;
@@ -7,7 +7,6 @@ import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import javax.annotation.concurrent.NotThreadSafe;
 import javax.swing.SwingUtilities;
-import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -45,7 +44,7 @@ public class FileFilterAdapter implements FileFilter {
     }
 
     @Override
-    public void accept(String filename, FileAction<Boolean> action) throws IOException {
+    public void accept(String filename, FileAction<Boolean> action) throws Exception {
         boolean accept = filter.accept(filename);
         if (!accept) {
             invokeUi(filename + " exclude\n");
@@ -59,9 +58,9 @@ public class FileFilterAdapter implements FileFilter {
      * publish an event, comprehensive file name and
      * other conditions to determine the information content
      *
-     * @param filename file name
-     * @param accept   whether the file if accepted by filter
-     * @param beforeExec   whether before filter testing
+     * @param filename   file name
+     * @param accept     whether the file if accepted by filter
+     * @param beforeExec whether before filter testing
      */
     private void publishEvent(String filename, boolean accept, boolean beforeExec) {
         if (!accept) {
@@ -73,7 +72,7 @@ public class FileFilterAdapter implements FileFilter {
             msg = filename;
         } else {
             // accept and after uploading file
-            msg = String.format("\t\t\t\t\t%s\n", "[OK]");
+            msg = String.format("\t Result: %s\n", "[OK]");
         }
         invokeUi(msg);
     }

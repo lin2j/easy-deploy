@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.io;
+package tech.lin2j.idea.plugin.file;
 
 import java.io.IOException;
 
@@ -15,5 +15,5 @@ public interface FileAction<T> {
      * @param t the input argument
      * @throws IOException IOException
      */
-    void execute(T t) throws IOException;
+    void execute(T t) throws Exception;
 }

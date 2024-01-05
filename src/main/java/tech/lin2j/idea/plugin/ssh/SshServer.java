@@ -1,5 +1,10 @@
 package tech.lin2j.idea.plugin.ssh;
 
+import com.intellij.credentialStore.CredentialAttributes;
+import com.intellij.credentialStore.CredentialAttributesKt;
+import com.intellij.credentialStore.Credentials;
+import com.intellij.ide.passwordSafe.PasswordSafe;
+import com.intellij.util.xmlb.annotations.Transient;
 import tech.lin2j.idea.plugin.enums.AuthType;
 
 /**
@@ -16,6 +21,7 @@ public class SshServer implements Cloneable{
 
     private String username;
 
+    @Deprecated
     private String password;
 
     private String description;
@@ -32,6 +38,36 @@ public class SshServer implements Cloneable{
      * the default value is "~/.ssh/id_rsa"
      */
     private String pemPrivateKey;
+
+    private CredentialAttributes createCredentialAttributes(String key) {
+        return new CredentialAttributes(
+                CredentialAttributesKt.generateServiceName("Simple Deployment", key)
+        );
+    }
+
+    private String getKey() {
+        return "SD$" + username + "@" + ip + ":" + port;
+    }
+
+    @Transient
+    public String getPassword() {
+        CredentialAttributes attributes = createCredentialAttributes(getKey());
+        PasswordSafe passwordSafe = PasswordSafe.getInstance();
+
+        Credentials credentials = passwordSafe.get(attributes);
+        if (credentials != null) {
+            return credentials.getPasswordAsString();
+        }
+        return passwordSafe.getPassword(attributes);
+    }
+
+    @Transient
+    public void setPassword(String password) {
+        String key = getKey();
+        CredentialAttributes attributes = createCredentialAttributes(key);
+        Credentials credentials = new Credentials(key, password);
+        PasswordSafe.getInstance().set(attributes, credentials);
+    }
 
     public Integer getId() {
         return id;
@@ -63,15 +99,10 @@ public class SshServer implements Cloneable{
 
     public void setUsername(String username) {
         this.username = username;
+        // forget history password in plugin configuration file
+        this.password = "";
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
 
     @Override
     public String toString() {

@@ -1,6 +1,9 @@
 package tech.lin2j.idea.plugin.domain.model.event;
 
 import tech.lin2j.idea.plugin.event.ApplicationEvent;
+import tech.lin2j.idea.plugin.ssh.SshServer;
+
+import java.util.List;
 
 /**
  * @author linjinjia
@@ -8,12 +11,18 @@ import tech.lin2j.idea.plugin.event.ApplicationEvent;
  */
 public class TableRefreshEvent extends ApplicationEvent {
 
-    public TableRefreshEvent(Object source) {
-        super(source);
+    List<SshServer> sshServers;
+
+    public TableRefreshEvent(List<SshServer> sshServers) {
+        super(new Object());
+        this.sshServers = sshServers;
     }
 
     public TableRefreshEvent() {
         super(new Object());
     }
 
+    public List<SshServer> getSshServers() {
+        return sshServers;
+    }
 }

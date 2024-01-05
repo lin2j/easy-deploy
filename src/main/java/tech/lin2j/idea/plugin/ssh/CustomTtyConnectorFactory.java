@@ -6,8 +6,6 @@ import org.slf4j.LoggerFactory;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
 import tech.lin2j.idea.plugin.ssh.jsch.JSchTtyConnector;
 
-import javax.annotation.Nullable;
-
 /**
  * @author linjinjia
  * @date 2022/6/25 11:29
@@ -22,11 +20,11 @@ public class CustomTtyConnectorFactory {
      * @param server server information
      * @return tty connector
      */
-    public static @Nullable CustomTtyConnector getCustomTtyConnector(String type, SshServer server) throws RemoteSdkException {
+    public static CustomTtyConnector getCustomTtyConnector(String type, SshServer server) throws RemoteSdkException {
         switch (type) {
             case CustomTtyConnector.JSCH:
                 try {
-                    SshConnection sshConnection = SshConnectionManager.makeJSchConnection(server);
+                    SshConnection sshConnection = SshConnectionManager.makeJschConnection(server);
                     return new JSchTtyConnector(sshConnection);
                 } catch (JSchException e) {
                     LOG.error("Error connecting server: " + e.getMessage());

@@ -5,7 +5,7 @@ import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
 import tech.lin2j.idea.plugin.enums.AuthType;
-import tech.lin2j.idea.plugin.ssh.jsch.JSchConnection;
+import tech.lin2j.idea.plugin.ssh.jsch.JschConnection;
 import tech.lin2j.idea.plugin.uitl.FileUtil;
 
 import javax.swing.JOptionPane;
@@ -18,20 +18,26 @@ import java.util.Properties;
  */
 public class SshConnectionManager {
 
-    public static JSchConnection makeJSchConnection(SshServer server) throws JSchException{
-        JSch jSch = new JSch();
+    public static JschConnection makeJschConnection(SshServer server) throws JSchException{
+        return new JschConnection(makeJschSession(server));
+    }
+
+    public static Session makeJschSession(SshServer server) throws JSchException {
+        JSch jsch = new JSch();
         String home = String.valueOf(System.getProperty("user.home"));
         String knownHostsFileName = Paths.get(home, ".ssh", "known_hosts").toString();
-        jSch.setKnownHosts(knownHostsFileName);
+        jsch.setKnownHosts(knownHostsFileName);
 
         boolean needPemPrivateKey = AuthType.needPemPrivateKey(server.getAuthType());
         if (needPemPrivateKey) {
             String pemPrvKey = FileUtil.replaceHomeSymbol(server.getPemPrivateKey());
-            jSch.addIdentity(pemPrvKey);
+            jsch.addIdentity(pemPrvKey);
         }
 
-        Session session = jSch.getSession(server.getUsername(), server.getIp(), server.getPort());
-        session.setPassword(server.getPassword());
+        Session session = jsch.getSession(server.getUsername(), server.getIp(), server.getPort());
+        if (!needPemPrivateKey) {
+            session.setPassword(server.getPassword());
+        }
 
         Properties config = new Properties();
         config.put("compression.s2c", "zlib,none");
@@ -44,7 +50,7 @@ public class SshConnectionManager {
         session.connect();
         session.setTimeout(0);
 
-        return new JSchConnection(session);
+        return session;
     }
 
     private static class MyUserInfo implements UserInfo {

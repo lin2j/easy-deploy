@@ -15,8 +15,7 @@ public class FileUtil {
     }
 
     /**
-     * Tests whether the file denoted by this abstract pathname is a
-     * directory.
+     * Check if the given path is a directory
      *
      * @param file file name
      * @return <code>true</code> if and only if the file denoted by this
@@ -34,7 +33,7 @@ public class FileUtil {
     }
 
     /**
-     * replace ~ file path symbol with the real user directory.
+     * Replace ~ file path symbol with the real user directory.
      * if filepath starts with "~", then replace "~" it
      *
      * @param filepath file path
@@ -50,7 +49,7 @@ public class FileUtil {
     }
 
     /**
-     * get current home directory
+     * Retrieve the home directory of the current user
      *
      * @return directory
      */

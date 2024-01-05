@@ -88,7 +88,7 @@ Simple Deployment 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便
 - [x] 打开终端
 - [x] ssh 免密登录（私钥登录）
 - [ ] 配置导入/导出
-- [ ] 服务器搜索
+- [x] 服务器搜索
 
 # 可能碰到的问题
 
