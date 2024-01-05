@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.service;
 
+import com.intellij.openapi.project.Project;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 
@@ -51,7 +52,7 @@ public interface ISshService {
      *                  uploading the folder will it be used
      * @return upload result
      */
-    SshStatus scpPut(SshServer sshServer, String localFile, String remoteDir, String exclude);
+    SshStatus scpPut(Project project, SshServer sshServer, String localFile, String remoteDir, String exclude);
 
 
     /**
