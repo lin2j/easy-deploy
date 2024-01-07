@@ -16,6 +16,11 @@ public interface CustomTtyConnector extends TtyConnector {
      */
     String JSCH = "JSch";
 
+    /**
+     * SSHJ, implementation of SSH2
+     */
+    String SSHJ = "SSHJ";
+
     InputStream getInputStream();
 
     OutputStream getOutputStream();

@@ -6,7 +6,7 @@ plugins {
 }
 
 group 'tech.lin2j'
-version '1.2.10'
+version '1.2.11'
 
 
 repositories {
@@ -16,7 +16,6 @@ repositories {
 dependencies {
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
-    implementation 'ch.ethz.ganymed:ganymed-ssh2:build210'
     implementation 'com.jcraft:jsch:0.1.54'
     implementation 'com.hierynomus:sshj:0.38.0'
 }

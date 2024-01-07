@@ -34,7 +34,7 @@ public class CustomSshTerminalRunner extends AbstractTerminalRunner<SshProcess> 
                                    Charset charset) {
         super(project);
         this.title = server.getIp() + ":" + server.getPort();
-        this.ttyConnector = CustomTtyConnectorFactory.getCustomTtyConnector(CustomTtyConnector.JSCH, server);
+        this.ttyConnector = CustomTtyConnectorFactory.getCustomTtyConnector(CustomTtyConnector.SSHJ, server);
         this.ttyConnector.setName(title);
         this.sshProcess = new SshProcess(ttyConnector);
         this.processTtyConnectorAdapter = new ProcessTtyConnectorAdapter(sshProcess, ttyConnector, charset);

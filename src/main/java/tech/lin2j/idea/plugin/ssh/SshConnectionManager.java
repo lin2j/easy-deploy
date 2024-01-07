@@ -1,6 +1,5 @@
 package tech.lin2j.idea.plugin.ssh;
 
-import com.intellij.openapi.diagnostic.Logger;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
@@ -26,8 +25,7 @@ import java.util.Properties;
  */
 public class SshConnectionManager {
 
-
-    private static final Logger log = Logger.getInstance(SshConnectionManager.class);
+//    private static final Logger logger = LogManager.getLogger(SshConnectionManager.class);
 
 
     public static JschConnection makeJschConnection(SshServer server) throws JSchException{
@@ -66,6 +64,8 @@ public class SshConnectionManager {
     }
 
     public static SSHClient makeSshClient(SshServer server) throws IOException {
+        DefaultConfig defaultConfig = new DefaultConfig();
+        defaultConfig.setLoggerFactory(LoggerFactory.DEFAULT);
         SSHClient sshClient = new SSHClient();
         sshClient.addHostKeyVerifier(new PromiscuousVerifier());
         sshClient.setConnectTimeout(5000);
