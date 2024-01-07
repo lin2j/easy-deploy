@@ -19,8 +19,12 @@ public class JschConnection implements SshConnection {
     }
 
     @Override
-    public SshStatus upload(String local, String dest) {
-        return null;
+    public boolean isConnected() {
+        return session.isConnected();
+    }
+
+    @Override
+    public void upload(String local, String dest) {
     }
 
     @Override
@@ -29,7 +33,7 @@ public class JschConnection implements SshConnection {
     }
 
     @Override
-    public SshStatus execute(String cmd) {
+    public String execute(String cmd) {
         return null;
     }
 

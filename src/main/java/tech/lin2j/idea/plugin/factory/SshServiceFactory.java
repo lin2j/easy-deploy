@@ -1,7 +1,7 @@
 package tech.lin2j.idea.plugin.factory;
 
 import tech.lin2j.idea.plugin.service.ISshService;
-import tech.lin2j.idea.plugin.service.impl.JschSshService;
+import tech.lin2j.idea.plugin.service.impl.SshjSshService;
 
 /**
  * @author linjinjia
@@ -9,9 +9,9 @@ import tech.lin2j.idea.plugin.service.impl.JschSshService;
  */
 public class SshServiceFactory {
 
-    private static final ISshService JSCH_INSTANCE = new JschSshService();
+    private static final ISshService INSTANCE = new SshjSshService();
 
     public static ISshService getSshService() {
-        return JSCH_INSTANCE;
+        return INSTANCE;
     }
 }

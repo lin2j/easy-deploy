@@ -22,13 +22,15 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.PipedInputStream;
 import java.util.concurrent.TimeUnit;
 
 /**
  * @author linjinjia
  * @date 2023/12/24 14:42
+ * @see tech.lin2j.idea.plugin.service.impl.SshjSshService
+ * @deprecated JSch cannot adapt to higher versions of OpenSSH
  */
+@Deprecated
 public class JschSshService implements ISshService {
 
     private static final Logger log = Logger.getInstance(JschSshService.class);

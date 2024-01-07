@@ -1,14 +1,22 @@
 package tech.lin2j.idea.plugin.ssh;
 
+import com.intellij.openapi.diagnostic.Logger;
 import com.jcraft.jsch.JSch;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jcraft.jsch.UserInfo;
+import net.schmizz.sshj.DefaultConfig;
+import net.schmizz.sshj.SSHClient;
+import net.schmizz.sshj.common.LoggerFactory;
+import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
+import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.ssh.jsch.JschConnection;
+import tech.lin2j.idea.plugin.ssh.sshj.SshjConnection;
 import tech.lin2j.idea.plugin.uitl.FileUtil;
 
 import javax.swing.JOptionPane;
+import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Properties;
 
@@ -17,6 +25,10 @@ import java.util.Properties;
  * @date 2022/6/25 15:34
  */
 public class SshConnectionManager {
+
+
+    private static final Logger log = Logger.getInstance(SshConnectionManager.class);
+
 
     public static JschConnection makeJschConnection(SshServer server) throws JSchException{
         return new JschConnection(makeJschSession(server));
@@ -51,6 +63,25 @@ public class SshConnectionManager {
         session.setTimeout(0);
 
         return session;
+    }
+
+    public static SSHClient makeSshClient(SshServer server) throws IOException {
+        SSHClient sshClient = new SSHClient();
+        sshClient.addHostKeyVerifier(new PromiscuousVerifier());
+        sshClient.setConnectTimeout(5000);
+        sshClient.connect(server.getIp(), server.getPort());
+        boolean needPemPrivateKey = AuthType.needPemPrivateKey(server.getAuthType());
+        if (needPemPrivateKey) {
+            KeyProvider keyProvider = sshClient.loadKeys(server.getPemPrivateKey());
+            sshClient.authPublickey(server.getUsername(), keyProvider);
+        } else {
+            sshClient.authPassword(server.getUsername(), server.getPassword());
+        }
+        return sshClient;
+    }
+
+    public static SshjConnection makeSshjConnection(SshServer server) throws IOException {
+        return new SshjConnection(makeSshClient(server));
     }
 
     private static class MyUserInfo implements UserInfo {
