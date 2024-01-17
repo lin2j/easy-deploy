@@ -10,6 +10,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.components.JBLabel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.terminal.TerminalView;
+import org.jetbrains.plugins.terminal.cloud.CloudTerminalRunner;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.ssh.SshServer;
@@ -17,12 +18,11 @@ import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
-import tech.lin2j.idea.plugin.terminal.CustomSshTerminalRunner;
+import tech.lin2j.idea.plugin.terminal.CloudTerminalRunnerWrapper;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
 
 import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JLabel;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -34,7 +34,6 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.nio.charset.Charset;
 import java.util.EventObject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -148,12 +147,12 @@ public class TableActionUi extends JBLabel implements TableCellRenderer, TableCe
             SshStatus status = new SshStatus(false, null);
             String title = String.format("opening terminal %s:%s", server.getIp(), server.getPort());
             ProgressManager.getInstance().run(new Task.Backgroundable(project, title) {
-                CustomSshTerminalRunner runner = null;
+                CloudTerminalRunner runner = null;
                 @Override
                 public void run(@NotNull ProgressIndicator indicator) {
                     indicator.setIndeterminate(false);
                     try {
-                        runner = new CustomSshTerminalRunner(project, server, Charset.defaultCharset());
+                        runner = new CloudTerminalRunnerWrapper(project, server).getCloudTerminalRunner();
                         status.setSuccess(true);
                     } catch (RemoteSdkException ex) {
                         status.setMessage("Error connecting server: " + ex.getMessage());
