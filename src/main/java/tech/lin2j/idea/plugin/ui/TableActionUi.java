@@ -7,6 +7,7 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.ui.components.JBLabel;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.terminal.TerminalView;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
@@ -42,7 +43,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author linjinjia
  * @date 2022/4/26 10:40
  */
-public class TableActionUi extends JLabel implements TableCellRenderer, TableCellEditor {
+public class TableActionUi extends JBLabel implements TableCellRenderer, TableCellEditor {
     private JPanel actionPanel;
     private JButton uploadBtn;
     private JButton commandBtn;

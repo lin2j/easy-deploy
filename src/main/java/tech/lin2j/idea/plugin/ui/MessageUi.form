@@ -17,7 +17,10 @@
         <children>
           <component id="e7ea5" class="javax.swing.JTextArea" binding="retContent">
             <constraints/>
-            <properties/>
+            <properties>
+              <font swing-font="TextArea.font"/>
+              <margin top="10" left="10" bottom="10" right="10"/>
+            </properties>
           </component>
         </children>
       </scrollpane>

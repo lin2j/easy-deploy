@@ -1,5 +1,10 @@
 package tech.lin2j.idea.plugin.ssh;
 
+import com.google.common.net.HostAndPort;
+import com.intellij.remote.RemoteSdkException;
+import com.intellij.remote.RemoteSshProcess;
+import org.jetbrains.annotations.Nullable;
+
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -7,7 +12,7 @@ import java.io.OutputStream;
  * @author linjinjia
  * @date 2022/6/25 00:36
  */
-public class SshProcess extends Process {
+public class SshProcess extends RemoteSshProcess {
 
     private final CustomTtyConnector ttyConnector;
 
@@ -53,5 +58,39 @@ public class SshProcess extends Process {
         } catch (Exception e) {
             //
         }
+    }
+
+
+
+    @Override
+    public boolean hasPty() {
+        return false;
+    }
+
+    @Override
+    protected boolean sendCtrlC() {
+        return false;
+    }
+
+    @Override
+    public boolean isDisconnected() {
+        return false;
+    }
+
+    @Nullable
+    @Override
+    public HostAndPort getLocalTunnel(int remotePort) {
+
+        return null;
+    }
+
+    @Override
+    public void addRemoteTunnel(int remotePort, String host, int localPort) throws RemoteSdkException {
+
+    }
+
+    @Override
+    public void addLocalTunnel(int localPort, int remotePort) throws RemoteSdkException {
+
     }
 }

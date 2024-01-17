@@ -1,7 +1,9 @@
 package tech.lin2j.idea.plugin.ssh;
 
 import com.jediterm.terminal.TtyConnector;
+import org.jetbrains.annotations.NotNull;
 
+import java.awt.Dimension;
 import java.io.InputStream;
 import java.io.OutputStream;
 
@@ -26,6 +28,8 @@ public interface CustomTtyConnector extends TtyConnector {
     OutputStream getOutputStream();
 
     void setName(String title);
+
+    void resize(@NotNull Dimension termSize);
 
     void resizeImmediately();
 }

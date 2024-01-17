@@ -4,6 +4,7 @@ import com.jcraft.jsch.ChannelShell;
 import com.jcraft.jsch.JSchException;
 import com.jcraft.jsch.Session;
 import com.jediterm.terminal.Questioner;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.lin2j.idea.plugin.ssh.CustomTtyConnector;
@@ -41,6 +42,11 @@ public class JSchTtyConnector implements CustomTtyConnector {
     public JSchTtyConnector(SshConnection sshConnection) {
         this.sshConnection = (JschConnection) sshConnection;
         init(null);
+    }
+
+    @Override
+    public void resize(@NotNull Dimension dimension) {
+        resize(dimension, new Dimension(0, 0));
     }
 
     @Override

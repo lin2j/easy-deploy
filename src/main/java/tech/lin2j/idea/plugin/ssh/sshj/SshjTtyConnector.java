@@ -3,7 +3,9 @@ package tech.lin2j.idea.plugin.ssh.sshj;
 import com.jediterm.terminal.Questioner;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.connection.channel.direct.SessionChannel;
 import net.schmizz.sshj.transport.TransportException;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.lin2j.idea.plugin.ssh.CustomTtyConnector;
@@ -47,7 +49,7 @@ public class SshjTtyConnector implements CustomTtyConnector {
         }
         try {
             Session session = sshClient.startSession();
-            session.allocatePTY("xterm", 80, 24, 640, 480, Collections.emptyMap());
+            session.allocatePTY("xterm", 240, 24, 0, 0, Collections.emptyMap());
             shell = session.startShell();
             inputStream = shell.getInputStream();
             outputStream = shell.getOutputStream();
@@ -87,6 +89,10 @@ public class SshjTtyConnector implements CustomTtyConnector {
             pendingPixelSize = null;
         }
 
+    }
+
+    public void resize(@NotNull Dimension termSize) {
+        resize(termSize, new Dimension(0, 0));
     }
 
     @Override
@@ -149,7 +155,7 @@ public class SshjTtyConnector implements CustomTtyConnector {
 
     @Override
     public int waitFor() throws InterruptedException {
-        while(!isInitiated.get() || isRunning(shell)) {
+        while (!isInitiated.get() || isRunning(shell)) {
             Thread.sleep(100L);
         }
 

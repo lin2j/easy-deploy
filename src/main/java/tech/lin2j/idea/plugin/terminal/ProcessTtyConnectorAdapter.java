@@ -15,7 +15,6 @@ import java.nio.charset.Charset;
  * @date 2022/6/25 17:28
  */
 public class ProcessTtyConnectorAdapter extends ProcessTtyConnector {
-
     private final CustomTtyConnector customTtyConnector;
 
     public ProcessTtyConnectorAdapter(SshProcess sshProcess,
@@ -33,6 +32,10 @@ public class ProcessTtyConnectorAdapter extends ProcessTtyConnector {
     @Override
     public void close() {
         this.customTtyConnector.close();
+    }
+
+    public void resize(@NotNull Dimension termWinSize) {
+        this.customTtyConnector.resize(termWinSize);
     }
 
     @Override
