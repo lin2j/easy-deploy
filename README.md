@@ -2,7 +2,7 @@
 
 <h1 align="center">Easy Deploy</h1>
 
-<p align="center">Intellij platform plugin to facilitate the deployment of upgrade services during development</p>
+<p align="center">Convenient Intellij Platform Plugin for Deploying and Upgrading Services during Development</p>
 
 <div align="center">
     <a href="#"><img src="https://badge.fury.io/gh/lin2j%2Feasy-deploy.svg"></a>
@@ -13,18 +13,19 @@
 
 [**简体中文**](README_zh_CN.md) 🐼
 
-Easy Deploy is a plug-in developed by me using the Alibaba Cloud Toolkit plug-in to facilitate the deployment of services during the development process.
+Easy Deploy is a plugin I developed, drawing inspiration from the Alibaba Cloud Toolkit. Its purpose is to streamline 
+the process of deploying services during my development workflow.
 
-Compared with the Alibaba Cloud Toolkit, the plug-in functions I develop will be much less, because I can't use many functions of ACT, and it is a bit bloated for me.
+Compared to the Alibaba Cloud Toolkit, my plugin has significantly fewer features. The functionalities of ACT seemed a 
+bit excessive for my needs, so I chose to focus only on the aspects that matter most to me, primarily centered around 
+server management and deployment processes.
 
-Therefore, I only take the part of the functions that I care about for development, which is the process of server management and deployment.
+I named this plugin Easy Deploy because its functionalities are indeed straightforward. While it may have limited 
+capabilities, I plan to continuously optimize it and add new features to enhance its completeness.
 
-I gave this plugin this name because its functionality is really seldom simple, but I will continue to optimize it and improve its functionality.
-
-This is also the first IntelliJ platform plug-in I developed. Many problems were solved little by little after a long search. I also plan to write the process of developing plug-ins in the future.
-
-Now that the plug-in has been released to the plug-in market, search and install it by the name Easy Deploy, or download the installation package for manual installation.
-
+This marks my first venture into developing an IntelliJ IDEA plugin. Throughout the development process, I encountered 
+numerous challenges, which I addressed through extensive research and learning. In the future, I intend to document my 
+experiences in developing this plugin to share insights with fellow developers.
 
 👉👉 [Find in plugin marketplace](https://plugins.jetbrains.com/plugin/19432-easy-deploy)
 
@@ -32,82 +33,85 @@ Now that the plug-in has been released to the plug-in market, search and install
 
 # Support
 
-Easy Deploy need your support, please give a star on this repo if it helped you. ⭐️⭐ 
+If this plugin proves helpful to you, please consider showing your support by giving the repository a star ⭐️⭐️.
 
 # Features
 
 ## Server management
 
-You can use this plugin to add multiple servers, and then use this as a base for command execution, file uploading, and application deployment.
+You can use this plugin to add multiple servers and then execute commands, upload files, and deploy applications based 
+on these servers.
 
-The login password of the server can be stored or not. If it is not stored, a password input box will pop up when needed.
+The login passwords for servers can be stored or left unstored. If not stored, a password input box will pop up when 
+needed.
 
-After adding the server, you can establish an SSH connection directly from the Terminal button.
+The password storage for servers is implemented through IDEA's own password storage mechanism, so you don't need to 
+worry about leakage due to plaintext storage.
 
-This function is to implement a subclass of AbstractTerminalRunner, so that the community version of Idea can also use this function.
+After adding a server, you can directly establish an SSH connection through the terminal button. This feature is 
+implemented by CloudTerminalRunner, allowing even the Community Edition of IntelliJ IDEA to use this functionality.
 
-In fact, there is a remote-run plugin under the `com.intellij.modules.ultimate` module that already has an implemented AbstractTerminalRunner, but the community version cannot use this plugin.
+In fact, there is already a well-implemented AbstractTerminalRunner in the com.intellij.modules.ultimate module under 
+the remote-run plugin. However, the Community Edition cannot use this plugin.
 
-After thinking about it, I decided to implement AbstractTerminalRunner myself to take care of users of the community edition.
+After consideration, I decided to try to use the APIs of the Community Edition as much as possible to accommodate users 
+of the Community Edition.
 
 <img src="docs/media/Add-Server.gif" alt="add server">
 
 ## Command management
 
-You can add some alternate commands to a server and execute them directly. Commands for each server are isolated, which facilitates command management.
+You can add some backup commands for a specific server and execute them directly. The commands for each server are 
+isolated, which helps with command management.
 
-When adding a command, you need to use an absolute path to specify the directory where the command is executed on the remote server.
+When adding commands, you need to use an absolute path to specify the directory where the command will be executed on 
+the remote server.
 
-At present, only simple commands can be executed. It is recommended to write scripts that are too complex and put them on the server before executing the scripts. I usually deploy services in this way.
+Currently, only simple commands can be executed. For overly complex commands, it is recommended to write them as scripts
+and then execute the script on the server. This is the approach I usually take when deploying services.
 
-If you use a command like `tail -f` that does not return all the information at once, it will cause the current thread to block, because the read stream has never been given a terminator.
+If you use commands like `tail -f` that do not return all information at once, it will cause the current thread to block
+because the stream being read has not received a termination signal.
 
 <img src="docs/media/Command.gif" alt="command">
 
 ## File upload
 
-You can upload local file using the upload button on the panel. At present, files cannot be downloaded from the server, and this function will not be added in the future.
+You can use the upload button on the panel to upload local files. Currently, downloading files from the server is not 
+supported. In the future, I hope to make it similar to Xftp software, allowing free file transfer between the server 
+and the local machine.
 
-I combine the local file and remote directory selected during upload and manage it as an upload configuration, so that the next time I use it, I don't need to repeat the selection of the local file and remote directory.
+I combine the locally selected files and remote directories as an upload configuration to manage. This way, you don't 
+need to repeat the selection of local files and remote directories the next time you use it.
 
 ## Deployment
 
-Only some simple deployment methods can be used here. First, upload the program files to the specified remote directory, and then execute the startup command in the directory. Because my daily deployment services are probably in this order.
+For deployment, we can only use some simple methods. First, upload the program files to the specified remote directory, 
+and then execute the startup command in that directory. This is generally the sequence I follow for deploying services.
 
-The deployment plan is actually to select the command to be executed after uploading on the basis of uploading the configuration.
+The deployment plan is essentially based on the upload configuration, where you select the commands to be executed after
+uploading.
 
 <img src="docs/media/Upload.gif" alt="upload">
 
 # TODO
 
-- [x] add, edit and remove servers
-- [x] add, edit and delete command
-- [x] upload file or directory (support filtering)
-- [x] service deployment
-- [x] open terminal
-- [x] ssh password-free login (via ssh private key)
-- [ ] import and export configuration
-- [x] server search
+- [x] Add/Edit/Remove Server Information
+- [x] Add/Edit/Remove Commands
+- [x] Upload Files or Directories with Filtering Support
+- [x] Deploy Services
+- [x] Open Terminal
+- [x] SSH Passwordless Login (Private Key Login)
+- [ ] Configuration Import/Export
+- [x] Server Search
+- [ ] File Transfer Panel
  
-# Q&A
-
-# 1. When logging in via ssh private key, it prompts "please check your pem file structure"
-
-Judging from the code comments of ganymed-ssh2, it can only recognize private key certificates in rsa or dsa format, and other formats will report IO exceptions.
-
-So to solve this problem, you can use the following command to generate a pair of public and private keys for the plugin in a fixed folder.
-
-```bash
-ssh-keygen -m PEM -t rsa -b 4096
-```
-
-The generated location can be in the default location, or choose another location, as you like.
-
 # contact me 🐾
 
-I have no experience with plugin development yet so there are a lot of issues that may not be handled very well.
+I'm relatively new to developing Idea plugins, so there might be some shortcomings in addressing certain issues.
 
-If you have any suggestions or encounter any bugs, you can raise issues or contact me by email, and I will reply you as soon as possible.
+If you have any suggestions or encounter bugs, feel free to raise issues or contact me via email. I'll respond as 
+promptly as possible.
 
 📮📮 linjinjia047@163.com
 

@@ -15,7 +15,7 @@
 
 Easy Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己在开发过程中部署服务的插件。
 
-相比较 Alibaba Cloud Toolkit，我开发的插件功能会少很多很多，因为 ACT 很多的功能我都用不上，它对于我来说有点臃肿。
+相比较 Alibaba Cloud Toolkit，我开发的插件功能会少很多很多，因为 ACT 很多的功能我都用不上，对我来说它有点臃肿。
 
 因此，我只取自己关注的那部分功能进行开发，这部分就是对服务器的管理以及发布的过程。
 
@@ -41,13 +41,13 @@ Easy Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己
 
 服务器的登录密码可以存储也可以不存储，如果没有存储的话，会在需要的时候弹出密码输入框。
 
-添加服务器之后，可以直接通过终端按钮建立一个SSH连接。
+服务器的密码保存是通过 IDEA 本身的密码保存机制来实现的，因此可不用担心会因为明文保存而泄漏。
 
-这个功能是自己实现了一个 AbstractTerminalRunner 的子类，这样社区版的 Idea 也可以使用这个功能。
+添加服务器之后，可以直接通过终端按钮建立一个SSH连接。 这个功能是 CloudTerminalRunner 实现的，这样社区版的 Idea 也可以使用这个功能。
 
 其实 `com.intellij.modules.ultimate` 模块下有一个 remote-run 插件已经有一个实现好的 AbstractTerminalRunner，只不过社区版用不了这个插件。
 
-考虑之后，我还是决定自己实现 AbstractTerminalRunner，照顾一下社区版的用户。
+考虑之后，我还是决定尽量使用社区版的 API 来实现，照顾一下社区版的用户。
 
 <img src="docs/media/Add-Server.gif" alt="add server">
 
@@ -67,7 +67,7 @@ Easy Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己
 
 ## 文件上传
 
-你可以使用面板上的上传按钮进行本地文件的上传。目前并不能从服务器下载文件，以后大概率也不会加上这个功能。
+你可以使用面板上的上传按钮进行本地文件的上传。目前并不能从服务器下载文件，以后希望做成类似 Xftp 软件那样可以在服务器和本地之间自由传输文件。
 
 我将上传时选择的本地文件和远程目录组合起来，作为一个上传配置来管理，这样可以下次使用时无需重复地进行本地文件和远程目录的选择。
 
@@ -89,20 +89,7 @@ Easy Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己
 - [x] ssh 免密登录（私钥登录）
 - [ ] 配置导入/导出
 - [x] 服务器搜索
-
-# 可能碰到的问题
-
-## 1. 通过 ssh 私钥登录时，提示 "please check your pem file structure"
-
-从 ganymed-ssh2 的代码注释来看，它只能识别 rsa 或者 dsa 格式的私钥证书，其他格式的会报 IO 异常。
-
-所以针对这个问题，可以使用以下命令在某个固定的文件夹生成一对用于该插件的的公私钥。
-
-```bash
-ssh-keygen -m PEM -t rsa -b 4096
-```
-
-生成的位置可以在默认位置，或者选择其他位置，随你喜欢。
+- [ ] 文件传输面板
 
 # 联系我🐾
 
@@ -110,7 +97,7 @@ ssh-keygen -m PEM -t rsa -b 4096
 
 如果你有什么建议或者遇到什么bug，可以提 issues 也可以邮箱联系我，我会尽快回复你。
 
-📮 linjinjia047@163.com
+📮📮 linjinjia047@163.com
 
 # License
 

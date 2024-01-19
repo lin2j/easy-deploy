@@ -23,6 +23,7 @@ dependencies {
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     version = '2019.3.1'
+//    version = '2023.3.2'
 //    version = '2021.3'
 //    type = 'IU'
     plugins = [
