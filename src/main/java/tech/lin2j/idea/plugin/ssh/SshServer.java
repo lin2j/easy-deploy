@@ -41,7 +41,7 @@ public class SshServer implements Cloneable{
 
     private CredentialAttributes createCredentialAttributes(String key) {
         return new CredentialAttributes(
-                CredentialAttributesKt.generateServiceName("Simple Deployment", key)
+                CredentialAttributesKt.generateServiceName("Easy Deploy", key)
         );
     }
 

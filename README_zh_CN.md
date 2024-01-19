@@ -1,19 +1,19 @@
-<p align="center"><img src="docs/media/small-logo.svg" alt="Simple Deployment" width="100" height="100"></p>
+<p align="center"><img src="docs/media/small-logo.svg" alt="Easy Deploy" width="100" height="100"></p>
 
-<h1 align="center">Simple Deployment</h1>
+<h1 align="center">Easy Deploy</h1>
 
 <p align="center">方便开发过程中部署升级服务的 Intellij 平台插件</p>
 
 <div align="center">
-    <a href="https://plugins.jetbrains.com/plugin/19432-simple-deployment"><img src="https://badge.fury.io/gh/lin2j%2Fsimple-deployment.svg"></a>
-    <a href="#"><img src = "https://img.shields.io/github/license/lin2j/simple-deploy" ></a>
+    <a href="https://plugins.jetbrains.com/plugin/19432-easy-deploy"><img src="https://badge.fury.io/gh/lin2j%2Feasy-deploy.svg"></a>
+    <a href="#"><img src = "https://img.shields.io/github/license/lin2j/easy-deploy" ></a>
     <a href="https://www.lin2j.tech"><img src="https://img.shields.io/badge/author-lin2j-brightgreen"></a>
     <a href="#"><img src="https://img.shields.io/badge/idea-193.5662%2B-yellow"></a>
 </div>
 
 [**English**](README.md) 📎
 
-Simple Deployment 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己在开发过程中部署服务的插件。
+Easy Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己在开发过程中部署服务的插件。
 
 相比较 Alibaba Cloud Toolkit，我开发的插件功能会少很多很多，因为 ACT 很多的功能我都用不上，它对于我来说有点臃肿。
 
@@ -24,7 +24,7 @@ Simple Deployment 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便
 这也是我开发的第一款 Idea 插件，很多问题都是通过长时间的搜索才一点一点的解决的，后续我也打算将开发插件的过程写出来。
 
 
-👉👉 [去插件市场下载](https://plugins.jetbrains.com/plugin/19432-simple-deployment)
+👉👉 [去插件市场下载](https://plugins.jetbrains.com/plugin/19432-easy-deploy)
 
 🪐🪐 [我的博客](https://www.lin2j.tech)
 

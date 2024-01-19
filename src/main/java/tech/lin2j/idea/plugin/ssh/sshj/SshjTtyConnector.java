@@ -49,7 +49,7 @@ public class SshjTtyConnector implements CustomTtyConnector {
         }
         try {
             Session session = sshClient.startSession();
-            session.allocatePTY("xterm", 240, 24, 0, 0, Collections.emptyMap());
+            session.allocatePTY("xterm", 80, 24, 0, 0, Collections.emptyMap());
             shell = session.startShell();
             inputStream = shell.getInputStream();
             outputStream = shell.getOutputStream();

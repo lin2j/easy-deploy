@@ -1,19 +1,19 @@
-<p align="center"><img src="docs/media/small-logo.svg" alt="Simple Deployment" width="100" height="100"></p>
+<p align="center"><img src="docs/media/small-logo.svg" alt="Easy Deploy" width="100" height="100"></p>
 
-<h1 align="center">Simple Deployment</h1>
+<h1 align="center">Easy Deploy</h1>
 
 <p align="center">Intellij platform plugin to facilitate the deployment of upgrade services during development</p>
 
 <div align="center">
-    <a href="#"><img src="https://badge.fury.io/gh/lin2j%2Fsimple-deployment.svg"></a>
-    <a href="#"><img src = "https://img.shields.io/github/license/lin2j/simple-deploy" ></a>
+    <a href="#"><img src="https://badge.fury.io/gh/lin2j%2Feasy-deploy.svg"></a>
+    <a href="#"><img src = "https://img.shields.io/github/license/lin2j/easy-deploy" ></a>
     <a href="https://www.lin2j.tech"><img src="https://img.shields.io/badge/author-lin2j-brightgreen"></a>
     <a href="#"><img src="https://img.shields.io/badge/idea-193.5662%2B-yellow"></a>
 </div>
 
 [**简体中文**](README_zh_CN.md) 🐼
 
-Simple Deployment is a plug-in developed by me using the Alibaba Cloud Toolkit plug-in to facilitate the deployment of services during the development process.
+Easy Deploy is a plug-in developed by me using the Alibaba Cloud Toolkit plug-in to facilitate the deployment of services during the development process.
 
 Compared with the Alibaba Cloud Toolkit, the plug-in functions I develop will be much less, because I can't use many functions of ACT, and it is a bit bloated for me.
 
@@ -23,16 +23,16 @@ I gave this plugin this name because its functionality is really seldom simple, 
 
 This is also the first IntelliJ platform plug-in I developed. Many problems were solved little by little after a long search. I also plan to write the process of developing plug-ins in the future.
 
-Now that the plug-in has been released to the plug-in market, search and install it by the name Simple Deployment, or download the installation package for manual installation.
+Now that the plug-in has been released to the plug-in market, search and install it by the name Easy Deploy, or download the installation package for manual installation.
 
 
-👉👉 [Find in plugin marketplace](https://plugins.jetbrains.com/plugin/19432-simple-deployment)
+👉👉 [Find in plugin marketplace](https://plugins.jetbrains.com/plugin/19432-easy-deploy)
 
 🪐🪐 [My Blog](https://www.lin2j.tech)
 
 # Support
 
-Simple Deployment need your support, please give a star on this repo if it helped you. ⭐️⭐ 
+Easy Deploy need your support, please give a star on this repo if it helped you. ⭐️⭐ 
 
 # Features
 
