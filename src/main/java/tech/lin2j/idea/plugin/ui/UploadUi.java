@@ -149,7 +149,7 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
                 cmd = NoneCommand.INSTANCE;
                 profile.setCommandId(null);
             }
-            commandLabel.setText(cmd.toString());
+            commandLabel.setText(cmd.toString().substring(0, 100) + "...");
         } else {
             commandLabel.setText("");
         }
