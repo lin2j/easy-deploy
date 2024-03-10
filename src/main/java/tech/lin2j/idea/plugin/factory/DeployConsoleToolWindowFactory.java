@@ -23,7 +23,7 @@ public class DeployConsoleToolWindowFactory implements ToolWindowFactory {
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         // deploy tab
         DeployConsoleView deployConsoleView = new DeployConsoleView(project);
-        Content deploy = contentFactory.createContent(deployConsoleView, "Deploy", false);
+        Content deploy = contentFactory.createContent(deployConsoleView, "Dashboard", false);
         toolWindow.getContentManager().addContent(deploy);
         // messages tab
         CommandExecuteView commandExecuteView = new CommandExecuteView(project);

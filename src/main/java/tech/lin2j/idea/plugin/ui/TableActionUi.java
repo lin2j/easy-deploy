@@ -12,10 +12,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.terminal.TerminalView;
 import org.jetbrains.plugins.terminal.cloud.CloudTerminalRunner;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
-import tech.lin2j.idea.plugin.enums.AuthType;
-import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
+import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
+import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
 import tech.lin2j.idea.plugin.terminal.CloudTerminalRunnerWrapper;
@@ -145,7 +145,7 @@ public class TableActionUi extends JBLabel implements TableCellRenderer, TableCe
                 return;
             }
             SshStatus status = new SshStatus(false, null);
-            String title = String.format("opening terminal %s:%s", server.getIp(), server.getPort());
+            String title = String.format("Opening terminal %s:%s", server.getIp(), server.getPort());
             ProgressManager.getInstance().run(new Task.Backgroundable(project, title) {
                 CloudTerminalRunner runner = null;
                 @Override

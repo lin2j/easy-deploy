@@ -19,7 +19,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author linjinjia
@@ -54,7 +53,7 @@ public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
         });
 
 
-        PromptSupport.setPrompt("IP | Port | Username", searchInput);
+        PromptSupport.setPrompt("IP | Name | Desc", searchInput);
         searchInput.requestFocus(false);
         searchButton.addActionListener(e -> {
             String keyword = searchInput.getText();
@@ -77,7 +76,8 @@ public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
                     searchResult.add(server);
                     continue;
                 }
-                if (Objects.equals(server.getPort().toString(), keyword)) {
+                String desc = server.getDescription();
+                if (StringUtil.isNotEmpty(desc) && desc.contains(keyword)) {
                     searchResult.add(server);
                 }
             }

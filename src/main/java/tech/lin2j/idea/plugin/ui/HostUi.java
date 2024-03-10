@@ -14,8 +14,8 @@ import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
-import tech.lin2j.idea.plugin.service.ISshService;
 import tech.lin2j.idea.plugin.factory.SshServiceFactory;
+import tech.lin2j.idea.plugin.service.ISshService;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 

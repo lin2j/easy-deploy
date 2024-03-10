@@ -69,16 +69,13 @@ public class CommandUtil {
                         return;
                     }
                     if (profile.getCommandId() == null) {
-                        SwingUtilities.invokeLater(() -> {
-                            Messages.showInfoMessage("Upload success", "Upload");
-                        });
                         indicator.setFraction(1f);
                         return;
                     }
                     indicator.setFraction(0.5f);
                 }
 
-                setTitle(String.format("executing command on %s:%s", server.getIp(), server.getPort()));
+                setTitle(String.format("Executing command on %s:%s", server.getIp(), server.getPort()));
 
                 try {
                     // it is not recommended to executing command like "tail -f",

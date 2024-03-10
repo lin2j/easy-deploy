@@ -3,8 +3,9 @@ package tech.lin2j.idea.plugin.ui;
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jdesktop.swingx.prompt.PromptSupport;
 import org.jetbrains.annotations.NotNull;
@@ -29,9 +30,6 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
-import java.io.File;
 import java.util.Objects;
 
 /**
@@ -41,21 +39,22 @@ import java.util.Objects;
 public class AddUploadProfile extends DialogWrapper {
     private JTextField nameInput;
     private JComboBox<Command> commandBox;
-    private JTextField fileInput;
+    private TextFieldWithBrowseButton fileInput;
     private JButton cancelBtn;
     private JButton okBtn;
-    private JButton browserButton;
     private JTextField locationInput;
     private JPanel mainPanel;
     private JTextField excludeInput;
 
     private final Integer sshId;
     private final UploadProfile profile;
+    private final Project project;
 
-    public AddUploadProfile(Integer sshId, UploadProfile profile) {
+    public AddUploadProfile(Integer sshId, Project project, UploadProfile profile) {
         super(true);
         this.sshId = sshId;
         this.profile = profile;
+        this.project = project;
 
         initUi();
         setTitle("Add Upload Profile");
@@ -88,20 +87,9 @@ public class AddUploadProfile extends DialogWrapper {
             }
         }
 
-        fileInput.addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-            }
-            @Override
-            public void focusLost(FocusEvent e) {
-                excludeInput.setEnabled(FileUtil.isDirectory(fileInput.getText()));
-            }
-        });
-
-        browserButton.addActionListener(e -> {
-            Project project = ProjectManager.getInstance().getDefaultProject();
-            FileChooserDescriptor chooserDescriptor = new FileChooserDescriptor(true, true, true, true, true, false);
-            VirtualFile virtualFile = FileChooser.chooseFile(chooserDescriptor, project, null);
+        fileInput.addActionListener(e -> {
+            FileChooserDescriptor descriptor = new FileChooserDescriptor(true, true, true, true, true, false);
+            VirtualFile virtualFile = FileChooser.chooseFile(descriptor, fileInput, project,  getCurrentWorkingDir());
             if (virtualFile != null) {
                 fileInput.setText(virtualFile.getPath());
                 excludeInput.setEnabled(virtualFile.isDirectory());
@@ -110,9 +98,7 @@ public class AddUploadProfile extends DialogWrapper {
 
         okBtn.addActionListener(new OkListener());
 
-        cancelBtn.addActionListener(e -> {
-            close(OK_EXIT_CODE);
-        });
+        cancelBtn.addActionListener(e -> close(OK_EXIT_CODE));
     }
 
     @Override
@@ -168,4 +154,15 @@ public class AddUploadProfile extends DialogWrapper {
             close(OK_EXIT_CODE);
         }
     }
+
+    @Nullable
+    private VirtualFile getCurrentWorkingDir() {
+        String dir = project != null ? project.getBasePath() : null;
+        VirtualFile result = null;
+        if (dir != null) {
+            result = LocalFileSystem.getInstance().findFileByPath(dir);
+        }
+        return result;
+    }
+
 }

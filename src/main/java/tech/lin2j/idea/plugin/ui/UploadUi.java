@@ -99,14 +99,14 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
                 menu.add(new JMenuItem(new AbstractAction("Add") {
                     @Override
                     public void actionPerformed(ActionEvent e) {
-                        new AddUploadProfile(sshServer.getId(), null).showAndGet();
+                        new AddUploadProfile(sshServer.getId(), project, null).showAndGet();
                     }
                 }));
                 menu.add(new JMenuItem(new AbstractAction("Edit") {
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         UploadProfile profile = (UploadProfile) profileBox.getSelectedItem();
-                        new AddUploadProfile(sshServer.getId(), profile).showAndGet();
+                        new AddUploadProfile(sshServer.getId(), project, profile).showAndGet();
                     }
                 }));
                 menu.add(new JMenuItem(new AbstractAction("Remove") {
