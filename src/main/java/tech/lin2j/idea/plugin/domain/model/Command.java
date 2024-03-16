@@ -65,7 +65,10 @@ public class Command {
 
     @Override
     public String toString() {
-        String newContent = content == null ? null : content.substring(0, 100);
+        String newContent = null;
+        if (content != null) {
+            newContent = content.substring(0, Math.min(content.length(), 100));
+        }
         return String.format("Command: %s, Directory: %s", newContent, dir);
     }
 }

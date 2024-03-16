@@ -22,6 +22,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.3.0</h2>
+    <ul>
+        <li>Fixed some bugs.</li>
+        <li>Optimized the operation logic and text prompts.</li>
+    </ul>
+
     <h2>release 1.2.10</h2>
     <ul>
         <li>Supports higher versions of OpenSSH encryption algorithms.</li>
