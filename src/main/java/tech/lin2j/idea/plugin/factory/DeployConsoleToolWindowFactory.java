@@ -27,7 +27,7 @@ public class DeployConsoleToolWindowFactory implements ToolWindowFactory {
         toolWindow.getContentManager().addContent(deploy);
         // messages tab
         CommandExecuteView commandExecuteView = new CommandExecuteView(project);
-        Content messages = contentFactory.createContent(commandExecuteView, "Messages", false);
+        Content messages = contentFactory.createContent(commandExecuteView, "Console", false);
         toolWindow.getContentManager().addContent(messages);
 
         // make sure every time you click on the tool window is the console
@@ -43,6 +43,6 @@ public class DeployConsoleToolWindowFactory implements ToolWindowFactory {
 
         ApplicationContext.getApplicationContext().addApplicationListener(deployConsoleView.getConsoleUi());
         ApplicationContext.getApplicationContext().addApplicationListener(new UploadProfileSelectedListener());
-        ApplicationContext.getApplicationContext().addApplicationListener(commandExecuteView.getMessageUi());
+        ApplicationContext.getApplicationContext().addApplicationListener(commandExecuteView.getCommandLogViewer());
     }
 }

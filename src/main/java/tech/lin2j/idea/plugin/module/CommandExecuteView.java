@@ -3,7 +3,7 @@ package tech.lin2j.idea.plugin.module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.JBSplitter;
-import tech.lin2j.idea.plugin.ui.MessageUi;
+import tech.lin2j.idea.plugin.ui.CommandLogViewer;
 
 /**
  * @author linjinjia
@@ -11,7 +11,7 @@ import tech.lin2j.idea.plugin.ui.MessageUi;
  */
 public class CommandExecuteView extends SimpleToolWindowPanel {
 
-    private final MessageUi messageUi;
+    private final CommandLogViewer commandLogViewer;
 
     private final Project project;
 
@@ -19,17 +19,17 @@ public class CommandExecuteView extends SimpleToolWindowPanel {
         super(false, true);
 
         this.project = project;
-        this.messageUi = new MessageUi();
+        this.commandLogViewer = new CommandLogViewer(project);
 
         JBSplitter splitter = new JBSplitter(false);
         splitter.setSplitterProportionKey("main.splitter.key");
-        splitter.setFirstComponent(messageUi.getMainPanel());
+        splitter.setFirstComponent(commandLogViewer.getMainPanel());
         splitter.setProportion(0.3f);
         setContent(splitter);
     }
 
-    public MessageUi getMessageUi() {
-        return messageUi;
+    public CommandLogViewer getCommandLogViewer() {
+        return commandLogViewer;
     }
 
     public Project getProject() {
