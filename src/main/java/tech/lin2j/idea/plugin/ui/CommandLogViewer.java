@@ -10,6 +10,7 @@ import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
@@ -90,16 +91,13 @@ public class CommandLogViewer implements ApplicationListener<CommandExecuteEvent
             deployToolWindow.getContentManager().setSelectedContent(messages);
         }
 
-
-        String time = String.format("%tF %<tT", System.currentTimeMillis());
         if (clear) {
             printResult(event);
         } else if (append) {
             if (firstMsg) {
                 SshServer server = event.getServer();
-                String title = String.format("\n%s [INFO] Executing command on %s:%s\n", time, server.getIp(), server.getPort());
-                print(title);
-                print(String.format("%s [INFO] user custom command: {%s}\n", time, event.getExecResult()));
+                print(String.format("Executing command on %s:%s", server.getIp(), server.getPort()));
+                print(String.format("User custom command: {%s}", event.getExecResult()));
             } else {
                 print(event.getExecResult());
             }
@@ -109,19 +107,19 @@ public class CommandLogViewer implements ApplicationListener<CommandExecuteEvent
     private void printResult(CommandExecuteEvent event) {
         SshServer server = event.getServer();
         Command cmd = event.getCommand();
-        String time = String.format("%tF %<tT", System.currentTimeMillis());
-        String title = String.format("\n%s [INFO] Executing command on %s:%s\n", time, server.getIp(), server.getPort());
+        String title = String.format("Executing command on %s:%s", server.getIp(), server.getPort());
         print(title);
         if (cmd != null) {
-            print(String.format("%s [INFO] user custom command: {%s}\n", time, cmd.generateCmdLine()));
+            print(String.format("User custom command: {%s}",cmd.generateCmdLine()));
         }
-        print(String.format("%s [INFO] %s\n", time, event.getExecResult()));
-        String finishedTime = String.format("%tF %<tT", System.currentTimeMillis());
-        print(String.format("%s [INFO] finished\n\n", finishedTime));
+        print(event.getExecResult());
+        print("finished");
     }
 
     private void print(String content) {
-        myConsoleView.print(content, ConsoleViewContentType.NORMAL_OUTPUT);
+        String time = String.format("%tF %<tT", System.currentTimeMillis());
+        String msg = String.format("%s [INFO] %s\n", time, content);
+        myConsoleView.print(msg, ConsoleViewContentType.NORMAL_OUTPUT);
     }
 
     @Override

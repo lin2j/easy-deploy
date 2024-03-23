@@ -72,7 +72,7 @@ public class FileFilterAdapter implements FileFilter {
             msg = filename;
         } else {
             // accept and after uploading file
-            msg = String.format("\t Result: %s\n", "[OK]");
+            msg = "Result: [OK]";
         }
         invokeUi(msg);
     }
