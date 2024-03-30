@@ -22,6 +22,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.3.2</h2>
+    <ul>
+        <li>Fix the bug of unable to open server terminal in 233.* version.</li>
+    </ul>
+
     <h2>release 1.3.1</h2>
     <ul>
         <li>Displaying command results using the ConsoleViewer component.</li>
