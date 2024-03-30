@@ -9,6 +9,7 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.components.JBLabel;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.plugins.terminal.TerminalTabState;
 import org.jetbrains.plugins.terminal.TerminalView;
 import org.jetbrains.plugins.terminal.cloud.CloudTerminalRunner;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
@@ -18,7 +19,8 @@ import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
-import tech.lin2j.idea.plugin.terminal.CloudTerminalRunnerWrapper;
+import tech.lin2j.idea.plugin.terminal.CustomSshTerminalRunner;
+import tech.lin2j.idea.plugin.uitl.TerminalRunnerUtil;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
 
 import javax.swing.AbstractAction;
@@ -152,7 +154,7 @@ public class TableActionUi extends JBLabel implements TableCellRenderer, TableCe
                 public void run(@NotNull ProgressIndicator indicator) {
                     indicator.setIndeterminate(false);
                     try {
-                        runner = new CloudTerminalRunnerWrapper(project, server).getCloudTerminalRunner();
+                        runner = TerminalRunnerUtil.createCloudTerminalRunner(project, server);
                         status.setSuccess(true);
                     } catch (RemoteSdkException ex) {
                         status.setMessage("Error connecting server: " + ex.getMessage());
@@ -168,7 +170,9 @@ public class TableActionUi extends JBLabel implements TableCellRenderer, TableCe
                         return ;
                     }
                     TerminalView terminalView = TerminalView.getInstance(project);
-                    terminalView.createNewSession(runner);
+                    TerminalTabState tabState = new TerminalTabState();
+                    tabState.myTabName = server.getIp() + ":" + server.getPort();
+                    terminalView.createNewSession(runner, tabState);
                 }
             });
         }

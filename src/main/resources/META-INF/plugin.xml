@@ -2,7 +2,7 @@
     <id>tech.lin2j.simple-deployment</id>
     <name>Easy Deploy</name>
     <vendor email="linjinjia047@163.com" url="https://www.lin2j.tech">Lin2j</vendor>
-    <idea-version since-build="193.5662" until-build="232.*" />
+    <idea-version since-build="193.5662"/>
 
     <description><![CDATA[
     Easy Deploy is a plugin for IntelliJ platform that
