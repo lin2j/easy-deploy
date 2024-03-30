@@ -47,7 +47,7 @@ public class TerminalRunnerUtil {
      */
     public static CloudTerminalRunner createCloudTerminalRunner(@NotNull Project project,
                                                                     SshServer server) {
-        String presentableName = "SSH Terminal";
+        String presentableName = server.getIp() + ":" + server.getPort();
         CustomTtyConnector ttyConnector = CustomTtyConnectorFactory.getCustomTtyConnector(CustomTtyConnector.SSHJ, server);
         ttyConnector.setName(presentableName);
         SshProcess p = new SshProcess(ttyConnector);
