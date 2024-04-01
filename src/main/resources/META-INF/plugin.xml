@@ -118,6 +118,8 @@
 
     <extensions defaultExtensionNs="com.intellij">
         <!-- Add your extensions here -->
+        <fileEditorProvider implementation="tech.lin2j.idea.plugin.ui.editor.ConsoleEditorProvider"/>
+        <projectService serviceImplementation="tech.lin2j.idea.plugin.ui.editor.ConsoleFileSystem"/>
     </extensions>
 
     <actions>

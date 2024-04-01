@@ -32,7 +32,7 @@ public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
     private JButton refreshBtn;
     private JTextField searchInput;
     private JButton searchButton;
-    String[] columnNames = {"ID", "Address", "Username", "Description", "Actions"};
+    private final String[] columnNames = {"ID", "Address", "Username", "Description", "Actions"};
 
     private final Project project;
 
