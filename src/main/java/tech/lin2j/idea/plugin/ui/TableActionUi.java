@@ -12,6 +12,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.plugins.terminal.TerminalTabState;
 import org.jetbrains.plugins.terminal.TerminalView;
 import org.jetbrains.plugins.terminal.cloud.CloudTerminalRunner;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.enums.AuthType;
@@ -21,7 +23,7 @@ import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
 import tech.lin2j.idea.plugin.ui.editor.ConsoleFileSystem;
 import tech.lin2j.idea.plugin.ui.editor.ConsoleVirtualFile;
-import tech.lin2j.idea.plugin.ui.ftp.FtpConsoleUi;
+import tech.lin2j.idea.plugin.ui.ftp.FTPConsoleUi;
 import tech.lin2j.idea.plugin.uitl.TerminalRunnerUtil;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
 
@@ -38,6 +40,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.EventObject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -47,6 +50,8 @@ import java.util.concurrent.ConcurrentHashMap;
  * @date 2022/4/26 10:40
  */
 public class TableActionUi extends JBLabel implements TableCellRenderer, TableCellEditor {
+    public static final Logger log = LoggerFactory.getLogger(TableActionUi.class);
+
     private JPanel actionPanel;
     private JButton uploadBtn;
     private JButton commandBtn;
@@ -197,12 +202,16 @@ public class TableActionUi extends JBLabel implements TableCellRenderer, TableCe
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     SshServer server = ConfigHelper.getSshServerById(sshId);
-                    ConsoleVirtualFile consoleVirtualFile = new ConsoleVirtualFile(
-                            server.getIp(),
-                            project,
-                            new FtpConsoleUi(project, server)
-                    );
-                    ConsoleFileSystem.getInstance(project).openEditor(consoleVirtualFile);
+                    try {
+                        ConsoleVirtualFile consoleVirtualFile = new ConsoleVirtualFile(
+                                server.getIp(),
+                                project,
+                                new FTPConsoleUi(project, server)
+                        );
+                        ConsoleFileSystem.getInstance(project).openEditor(consoleVirtualFile);
+                    } catch (IOException ex) {
+                        log.error(ex.getMessage(), e);
+                    }
                 }
             }));
 

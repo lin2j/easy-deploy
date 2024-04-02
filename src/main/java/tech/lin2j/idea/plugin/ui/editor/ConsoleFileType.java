@@ -15,23 +15,17 @@ import javax.swing.Icon;
  */
 public class ConsoleFileType implements FileType {
     @Override
-    public @NonNls
-    @NotNull
-    String getName() {
+    public @NonNls @NotNull String getName() {
         return "FTP Console";
     }
 
     @Override
-    public
-    @NotNull
-    String getDescription() {
+    public @NotNull String getDescription() {
         return "A-Ftp console";
     }
 
     @Override
-    public
-    @NotNull
-    String getDefaultExtension() {
+    public @NotNull String getDefaultExtension() {
         return "";
     }
 
@@ -51,9 +45,7 @@ public class ConsoleFileType implements FileType {
     }
 
     @Override
-    public @NonNls
-    @Nullable
-    String getCharset(@NotNull VirtualFile file, byte @NotNull [] content) {
+    public @NonNls @Nullable String getCharset(@NotNull VirtualFile file, byte @NotNull [] content) {
         return null;
     }
 }
