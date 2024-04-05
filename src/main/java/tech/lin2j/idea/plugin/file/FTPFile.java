@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.ui.ftp;
+package tech.lin2j.idea.plugin.file;
 
 import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.util.PlatformIcons;

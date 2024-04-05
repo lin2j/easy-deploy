@@ -23,6 +23,7 @@ import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
 import tech.lin2j.idea.plugin.ui.editor.ConsoleFileSystem;
 import tech.lin2j.idea.plugin.ui.editor.ConsoleVirtualFile;
+import tech.lin2j.idea.plugin.ui.ftp.FTPConsole;
 import tech.lin2j.idea.plugin.ui.ftp.FTPConsoleUi;
 import tech.lin2j.idea.plugin.uitl.TerminalRunnerUtil;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
@@ -206,7 +207,7 @@ public class TableActionUi extends JBLabel implements TableCellRenderer, TableCe
                         ConsoleVirtualFile consoleVirtualFile = new ConsoleVirtualFile(
                                 server.getIp(),
                                 project,
-                                new FTPConsoleUi(project, server)
+                                new FTPConsole(project, server)
                         );
                         ConsoleFileSystem.getInstance(project).openEditor(consoleVirtualFile);
                     } catch (IOException ex) {

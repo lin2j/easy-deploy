@@ -7,6 +7,7 @@ import com.intellij.openapi.vfs.VirtualFileSystem;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tech.lin2j.idea.plugin.ui.ftp.FTPConsole;
 import tech.lin2j.idea.plugin.ui.ftp.FTPConsoleUi;
 
 import javax.swing.JPanel;
@@ -26,6 +27,12 @@ public class ConsoleVirtualFile extends VirtualFile {
     @Override
     public @NotNull FileType getFileType() {
         return new ConsoleFileType();
+    }
+
+    public ConsoleVirtualFile(String name, Project project, FTPConsole console) {
+        this.project = project;
+        this.name = name;
+        this.consolePanel = console.createUi();
     }
 
     public ConsoleVirtualFile(String name, Project project, FTPConsoleUi ftpConsoleUi) {

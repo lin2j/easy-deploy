@@ -4,6 +4,7 @@ import net.schmizz.sshj.DefaultConfig;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import org.junit.Test;
+import tech.lin2j.idea.plugin.file.FTPFile;
 
 import java.util.List;
 

@@ -1,10 +1,7 @@
 package tech.lin2j.idea.plugin.ui.ftp;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.actionSystem.ex.ActionManagerEx;
 import com.intellij.openapi.project.Project;
@@ -16,6 +13,7 @@ import com.intellij.ui.components.JBList;
 import com.intellij.ui.table.JBTable;
 import net.schmizz.sshj.sftp.SFTPClient;
 import org.jetbrains.annotations.NotNull;
+import tech.lin2j.idea.plugin.file.FTPFile;
 import tech.lin2j.idea.plugin.ssh.SshConnectionManager;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.uitl.IconUtil;
@@ -31,6 +29,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -73,11 +75,11 @@ public class FTPConsoleUi {
         final ActionManagerEx mgr = (ActionManagerEx) ActionManager.getInstance();
         // local toolbar
         ActionToolbar localActionToolbar = mgr.createActionToolbar("ToolbarDecorator",
-                new DefaultActionGroup(new LocalToolBar().actions()), true);
+                new DefaultActionGroup(new LocalToolBar(localFileList, localPath).actions()), true);
         localToolbar.add(localActionToolbar.getComponent());
         // remote toolbar
         ActionToolbar remoteActionToolbar = mgr.createActionToolbar("ToolbarDecorator",
-                new DefaultActionGroup(new LocalToolBar().actions()), true);
+                new DefaultActionGroup(new RemoteToolBar(remoteFileList).actions()), true);
         remoteToolbar.add(remoteActionToolbar.getComponent());
 
         VirtualFile vFile = LocalFileSystem.getInstance().findFileByIoFile(new File(this.localPath.getText()));
@@ -101,6 +103,7 @@ public class FTPConsoleUi {
     }
 
     public List<FTPFile> getRemoteFile() throws IOException {
+
          return sftpClient.ls("/root").stream().map(FTPFile::new).collect(Collectors.toList());
     }
 
@@ -141,54 +144,26 @@ public class FTPConsoleUi {
         }
     }
 
-    /**
-     * Local file action toolbar
-     */
-    private static class LocalToolBar {
+    private static class LocalPathActionListener implements ActionListener {
+        @Override
+        public void actionPerformed(ActionEvent e) {
 
-        /**
-         * If the selected file is a directory, enter the directory; otherwise, take no action.
-         * @return action
-         */
-        public AnAction forwardAction() {
-            return new AnAction(AllIcons.Actions.Forward) {
-                @Override
-                public void actionPerformed(@NotNull AnActionEvent e) {
-                    System.out.println("local forward");
-                }
-            };
+        }
+    }
+
+    private static class LocalPathEnterKeyListener extends KeyAdapter {
+
+        @Override
+        public void keyTyped(KeyEvent e) {
+            System.out.println("typed");
         }
 
-        /**
-         * If the current directory is not the top-level directory, you can navigate up one level.
-         * @return action
-         */
-        public AnAction backAction() {
-            return new AnAction(AllIcons.Actions.Back) {
-                @Override
-                public void actionPerformed(@NotNull AnActionEvent e) {
-                    System.out.println("local back");
-                }
-            };
-        }
-
-        /**
-         * Refresh the file list in the current path.
-         *
-         * @return action
-         */
-        public AnAction refreshAction() {
-            return new AnAction(AllIcons.Actions.Refresh) {
-                @Override
-                public void actionPerformed(@NotNull AnActionEvent e) {
-                    System.out.println("local refresh");
-                }
-            };
-        }
-
-        public AnAction[] actions() {
-            LocalToolBar localToolBar = new LocalToolBar();
-            return new AnAction[] {localToolBar.backAction(), localToolBar.forwardAction(), refreshAction()};
+        @Override
+        public void keyPressed(KeyEvent e) {
+            System.out.println(e);
+            if (e.getKeyCode() == KeyEvent.VK_ENTER) {
+                System.out.println("enter");
+            }
         }
     }
 }
