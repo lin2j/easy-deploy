@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.ui.components.JBList;
 import org.jetbrains.annotations.NotNull;
-import tech.lin2j.idea.plugin.file.FTPFile;
+import tech.lin2j.idea.plugin.file.RemoteTableFile;
 
 /**
  * @author linjinjia
@@ -13,9 +13,9 @@ import tech.lin2j.idea.plugin.file.FTPFile;
  */
 public class RemoteToolBar {
 
-    private final JBList<FTPFile> fileList;
+    private final JBList<RemoteTableFile> fileList;
 
-    public RemoteToolBar(JBList<FTPFile> fileList) {
+    public RemoteToolBar(JBList<RemoteTableFile> fileList) {
         this.fileList = fileList;
     }
 

@@ -7,39 +7,34 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.SystemInfo;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
-import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.JBUI;
-import com.intellij.util.ui.table.IconTableCellRenderer;
-import org.apache.commons.lang.time.DateFormatUtils;
-import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.action.ftp.local.CreateNewFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.local.DeleteFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.local.GoToDesktopAction;
 import tech.lin2j.idea.plugin.action.ftp.local.GoToParentFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.local.HomeDirectoryAction;
 import tech.lin2j.idea.plugin.action.ftp.local.RefreshFolderAction;
+import tech.lin2j.idea.plugin.action.ftp.RowDoubleClickAction;
 import tech.lin2j.idea.plugin.action.ftp.local.ShowHiddenFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.local.UploadFileAndDirAction;
-import tech.lin2j.idea.plugin.uitl.IconUtil;
+import tech.lin2j.idea.plugin.file.LocalTableFile;
+import tech.lin2j.idea.plugin.file.TableFile;
+import tech.lin2j.idea.plugin.ui.table.FileNameCellRenderer;
+import tech.lin2j.idea.plugin.ui.table.FileTableModel;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.Icon;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.table.DefaultTableModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
-import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -48,13 +43,13 @@ import java.util.stream.Collectors;
  * @author linjinjia
  * @date 2024/4/4 10:19
  */
-public class LocalFileContainer extends SimpleToolWindowPanel {
+public class LocalFileContainer extends SimpleToolWindowPanel implements FileTableContainer{
+
+    private static final int NAME_COLUMN = 0;
 
     private JBTextField filePath;
-    private JBList<VirtualFile> fileList;
-    private JTable table;
-
-    private static final String[] columnNames = {"Name", "Size", "Type", "Modified"};
+    private JBTable table;
+    private List<TableFile> fileList;
 
     public LocalFileContainer(Project project) {
         super(true);
@@ -70,6 +65,14 @@ public class LocalFileContainer extends SimpleToolWindowPanel {
         refreshFileList();
     }
 
+    public JBTable getTable() {
+        return table;
+    }
+
+    public List<TableFile> getFileList() {
+        return fileList;
+    }
+
     public void refreshFileList() {
         File file = new File(filePath.getText());
         if (!file.exists() || !file.isDirectory()) {
@@ -77,29 +80,28 @@ public class LocalFileContainer extends SimpleToolWindowPanel {
             return;
         }
         VirtualFile vFile = LocalFileSystem.getInstance().findFileByIoFile(file);
-        if (vFile != null) {
-            List<VirtualFile> children = Arrays.stream(vFile.getChildren())
-                    .sorted(Comparator.comparing(VirtualFile::getName)).collect(Collectors.toList());
-            Object[][] data = new Object[children.size()][4];
-            for (int i = 0; i < children.size(); i++) {
-                VirtualFile vf = children.get(i);
-                data[i][0] = vf.getName();
-                data[i][1] = StringUtil.formatFileSize(vf.getLength());
-                data[i][2] = vf.isDirectory() ? "Folder" : vf.getFileType().getName();
-                String modified = DateFormatUtils.format(vf.getTimeStamp(), "yyyy-MM-dd HH:mm:ss");
-                data[i][3] = modified;
-            }
-
-            table.setModel(new DefaultTableModel(data, columnNames));
+        if (vFile == null) {
+            return;
         }
+        fileList = Arrays.stream(vFile.getChildren())
+                .sorted(Comparator.comparing(VirtualFile::getName))
+                .map(LocalTableFile::new)
+                .filter(f -> !f.isHidden())
+                .collect(Collectors.toList());
+
+        FileTableModel tableModel = new FileTableModel(fileList);
+        table.setModel(tableModel);
+
+        TableColumn nameColumn = table.getColumnModel().getColumn(NAME_COLUMN);
+        nameColumn.setCellRenderer(new FileNameCellRenderer());
     }
 
     private void init() {
         filePath = new JBTextField();
-        fileList = new JBList<>();
-        table = new JBTable();
+        filePath.setText(System.getProperty("user.home"));
+
         initToolBar();
-        initFileList();
+        initFileTable();
     }
 
     private void initToolBar() {
@@ -131,59 +133,17 @@ public class LocalFileContainer extends SimpleToolWindowPanel {
         setToolbar(northPanel);
     }
 
-    private void initFileList() {
-        filePath.setText(System.getProperty("user.home"));
+    private void initFileTable() {
+        table = new JBTable(new FileTableModel(Collections.emptyList()));
+        table.getEmptyText().setText("No Data");
+        table.setRowSelectionAllowed(true);
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-        Object[][] data = new Object[0][4];
-
-        DefaultTableModel tableModel = new DefaultTableModel(data, columnNames);
-        table.setModel(tableModel);
-        table.setFocusable(false);
-        table.setRowSelectionAllowed(false);
-        table.setFillsViewportHeight(true);
-        table.setRowHeight(30);
-        table.setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
-
-        TableColumn typeColumn = table.getColumn("Name");
-        typeColumn.setCellRenderer(new IconTableCellRenderer<Icon>() {
-            @NotNull
-            @Override
-            protected Icon getIcon(@NotNull Icon value, JTable table, int row) {
-                return value;
-            }
-
-            @Override
-            public Component getTableCellRendererComponent(JTable table, Object value, boolean selected, boolean focus, int row, int column) {
-                super.getTableCellRendererComponent(table, value, selected, focus, row, column);
-                setText("");
-                return this;
-            }
-
-            @Override
-            protected boolean isCenterAlignment() {
-                return true;
-            }
-        });
+        new RowDoubleClickAction(this).installOn(table);
 
         refreshFileList();
 
         setContent(new JScrollPane(table));
     }
 
-    /**
-     * Local JBList cell renderer
-     */
-    private static class LocalListCellRenderer extends DefaultListCellRenderer {
-        @NotNull
-        @Override
-        public Component getListCellRendererComponent(@NotNull JList list, Object value,
-                                                      int index, boolean isSelected, boolean cellHasFocus) {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            VirtualFile vFile = (VirtualFile) value;
-            Icon icon = IconUtil.getIcon(vFile);
-            setText(vFile.getName());
-            setIcon(icon);
-            return this;
-        }
-    }
 }

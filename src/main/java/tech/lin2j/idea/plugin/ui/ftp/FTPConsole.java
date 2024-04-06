@@ -8,7 +8,6 @@ import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
-import java.awt.Component;
 import java.io.IOException;
 
 /**

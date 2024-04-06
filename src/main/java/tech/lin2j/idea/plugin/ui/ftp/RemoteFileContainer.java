@@ -1,18 +1,15 @@
 package tech.lin2j.idea.plugin.ui.ftp;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
-import com.intellij.ui.CollectionListModel;
-import com.intellij.ui.components.JBList;
+import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.JBUI;
+import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.sftp.SFTPClient;
-import org.jetbrains.annotations.NotNull;
+import tech.lin2j.idea.plugin.action.ftp.RowDoubleClickAction;
 import tech.lin2j.idea.plugin.action.ftp.remote.CreateNewFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.remote.DeleteFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.remote.DownloadFileAndDirAction;
@@ -20,16 +17,20 @@ import tech.lin2j.idea.plugin.action.ftp.remote.GoToParentFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.remote.HomeDirectoryAction;
 import tech.lin2j.idea.plugin.action.ftp.remote.RefreshFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.remote.ShowHiddenFileAndDirAction;
-import tech.lin2j.idea.plugin.file.FTPFile;
+import tech.lin2j.idea.plugin.file.RemoteTableFile;
+import tech.lin2j.idea.plugin.file.TableFile;
+import tech.lin2j.idea.plugin.ui.table.FileNameCellRenderer;
+import tech.lin2j.idea.plugin.ui.table.FileTableModel;
 
-import javax.swing.DefaultListCellRenderer;
-import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import java.awt.Component;
+import javax.swing.ListSelectionModel;
+import javax.swing.table.TableColumn;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,10 +38,13 @@ import java.util.stream.Collectors;
  * @author linjinjia
  * @date 2024/4/4 10:19
  */
-public class RemoteFileContainer extends SimpleToolWindowPanel {
+public class RemoteFileContainer extends SimpleToolWindowPanel implements FileTableContainer {
+
+    private static final int NAME_COLUMN = 0;
 
     private JTextField filePath;
-    private JBList<FTPFile> fileList;
+    private List<TableFile> fileList;
+    private JBTable table;
     private final Project project;
     private final SFTPClient sftpClient;
 
@@ -52,19 +56,46 @@ public class RemoteFileContainer extends SimpleToolWindowPanel {
         init();
     }
 
+
     public String getPath() {
         return filePath.getText();
     }
 
     public void setPath(String path) {
         filePath.setText(path);
+        refreshFileList();
+    }
+
+    public JBTable getTable() {
+        return table;
+    }
+
+    public List<TableFile> getFileList() {
+        return fileList;
+    }
+
+    private void refreshFileList() {
+        try {
+            fileList = sftpClient.ls("/root").stream()
+                    .sorted(Comparator.comparing(RemoteResourceInfo::getName))
+                    .map(RemoteTableFile::new)
+                    .filter(f -> !f.isHidden())
+                    .collect(Collectors.toList());
+
+            FileTableModel tableModel = new FileTableModel(fileList);
+            table.setModel(tableModel);
+
+            TableColumn nameColumn = table.getColumnModel().getColumn(NAME_COLUMN);
+            nameColumn.setCellRenderer(new FileNameCellRenderer());
+        } catch (Exception e) {
+
+        }
     }
 
     private void init() {
         filePath = new JTextField();
-        fileList = new JBList<>();
         initToolBar();
-        initFileList();
+        initFileTable();
     }
 
     private void initToolBar() {
@@ -93,31 +124,16 @@ public class RemoteFileContainer extends SimpleToolWindowPanel {
         setToolbar(northPanel);
     }
 
-    private void initFileList() {
-        try {
-            List<FTPFile> files = sftpClient.ls("/root").stream().map(FTPFile::new).collect(Collectors.toList());
-            fileList.setModel(new CollectionListModel<>(files));
-            fileList.setCellRenderer(new LocalListCellRenderer());
-            fileList.setEnabled(true);
-            setContent(new JScrollPane(fileList));
-        } catch (Exception e) {
+    private void initFileTable() {
+        table = new JBTable(new FileTableModel(Collections.emptyList()));
+        table.getEmptyText().setText("No Data");
+        table.setRowSelectionAllowed(true);
+        table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
-        }
-    }
+        new RowDoubleClickAction(this).installOn(table);
 
-    /**
-     * Local JBList cell renderer
-     */
-    private static class LocalListCellRenderer extends DefaultListCellRenderer {
-        @NotNull
-        @Override
-        public Component getListCellRendererComponent(@NotNull JList list, Object value,
-                                                      int index, boolean isSelected, boolean cellHasFocus) {
-            super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-            FTPFile vFile = (FTPFile) value;
-            setText(vFile.getName());
-            setIcon(vFile.getIcon());
-            return this;
-        }
+        refreshFileList();
+
+        setContent(new JScrollPane(table));
     }
 }

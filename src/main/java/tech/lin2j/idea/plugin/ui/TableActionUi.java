@@ -24,7 +24,6 @@ import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
 import tech.lin2j.idea.plugin.ui.editor.ConsoleFileSystem;
 import tech.lin2j.idea.plugin.ui.editor.ConsoleVirtualFile;
 import tech.lin2j.idea.plugin.ui.ftp.FTPConsole;
-import tech.lin2j.idea.plugin.ui.ftp.FTPConsoleUi;
 import tech.lin2j.idea.plugin.uitl.TerminalRunnerUtil;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
 

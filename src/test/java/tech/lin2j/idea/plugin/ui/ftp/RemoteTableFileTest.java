@@ -4,7 +4,7 @@ import net.schmizz.sshj.DefaultConfig;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import org.junit.Test;
-import tech.lin2j.idea.plugin.file.FTPFile;
+import tech.lin2j.idea.plugin.file.RemoteTableFile;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ import java.util.List;
  * @author linjinjia
  * @date 2024/4/1 23:03
  */
-public class FTPFileTest {
+public class RemoteTableFileTest {
 
     @Test
     public void test() throws Exception{
@@ -20,6 +20,6 @@ public class FTPFileTest {
         sshClient.connect("192.168.0.104", 22);
         sshClient.authPassword("root", "123");
         List<RemoteResourceInfo> infos = sshClient.newSFTPClient().ls("/root");
-        infos.stream().map(FTPFile::new).forEach(System.out::println);
+        infos.stream().map(RemoteTableFile::new).forEach(System.out::println);
     }
 }

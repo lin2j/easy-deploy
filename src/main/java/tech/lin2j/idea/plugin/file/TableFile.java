@@ -1,0 +1,30 @@
+package tech.lin2j.idea.plugin.file;
+
+import javax.swing.Icon;
+
+/**
+ * @author linjinjia
+ * @date 2024/4/6 10:08
+ */
+public interface TableFile {
+
+    Icon getIcon();
+
+    String getName();
+
+    String getSize();
+
+    String getType();
+
+    String getModified();
+
+    boolean isDirectory();
+
+    default boolean isHidden() {
+        return getName().startsWith(".");
+    }
+
+    String getParent();
+
+    String getFilePath();
+}

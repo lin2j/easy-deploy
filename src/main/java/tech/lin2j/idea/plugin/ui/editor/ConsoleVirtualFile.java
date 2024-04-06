@@ -8,7 +8,6 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.ui.ftp.FTPConsole;
-import tech.lin2j.idea.plugin.ui.ftp.FTPConsoleUi;
 
 import javax.swing.JPanel;
 import java.io.IOException;
@@ -33,12 +32,6 @@ public class ConsoleVirtualFile extends VirtualFile {
         this.project = project;
         this.name = name;
         this.consolePanel = console.createUi();
-    }
-
-    public ConsoleVirtualFile(String name, Project project, FTPConsoleUi ftpConsoleUi) {
-        this.project = project;
-        this.name = name;
-        this.consolePanel = ftpConsoleUi.getMainPanel();
     }
 
     public Project getProject() {
