@@ -47,7 +47,7 @@ public class RemoteTableFile implements TableFile {
 
     @Override
     public String getModified() {
-        long time = remoteResourceInfo.getAttributes().getAtime();
+        long time = remoteResourceInfo.getAttributes().getAtime() * 1000;
         return DateFormatUtils.format(time, "yyyy-MM-dd HH:mm:ss");
     }
 

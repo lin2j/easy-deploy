@@ -1,10 +1,11 @@
-package tech.lin2j.idea.plugin.action.ftp.remote;
+package tech.lin2j.idea.plugin.action.ftp;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.util.PathUtil;
 import org.jetbrains.annotations.NotNull;
-import tech.lin2j.idea.plugin.ui.ftp.RemoteFileContainer;
+import tech.lin2j.idea.plugin.ui.ftp.FileTableContainer;
 
 /**
  * @author linjinjia
@@ -12,15 +13,15 @@ import tech.lin2j.idea.plugin.ui.ftp.RemoteFileContainer;
  */
 public class GoToParentFolderAction extends AnAction {
 
-    private final RemoteFileContainer container;
+    private final FileTableContainer container;
 
-    public GoToParentFolderAction(RemoteFileContainer container) {
+    public GoToParentFolderAction(FileTableContainer container) {
         super("Parent Folder", "Go to parent folder", AllIcons.Actions.Rollback);
         this.container = container;
     }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-
+        container.setPath(container.getParentPath());
     }
 }

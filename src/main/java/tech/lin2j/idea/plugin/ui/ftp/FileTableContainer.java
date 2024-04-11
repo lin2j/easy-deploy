@@ -3,6 +3,7 @@ package tech.lin2j.idea.plugin.ui.ftp;
 import com.intellij.ui.table.JBTable;
 import tech.lin2j.idea.plugin.file.TableFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -15,7 +16,23 @@ public interface FileTableContainer {
 
     List<TableFile> getFileList();
 
+    List<TableFile> getSelectedFiles();
+
     void setPath(String path);
 
     String getPath();
+
+    String getHomePath();
+
+    String getParentPath();
+
+    void deleteFileAndDir();
+
+    boolean createNewFolder(String path) throws IOException;
+
+    boolean showHiddenFileAndDir();
+
+    void reversedHiddenFlag();
+
+    void refreshFileList();
 }

@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.action.ftp.local;
+package tech.lin2j.idea.plugin.action.ftp;
 
 /**
  * @author linjinjia
@@ -8,20 +8,24 @@ package tech.lin2j.idea.plugin.action.ftp.local;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
-import tech.lin2j.idea.plugin.ui.ftp.LocalFileContainer;
+import tech.lin2j.idea.plugin.ui.ftp.LocalFileTableContainer;
 
 public class GoToDesktopAction extends AnAction {
 
-    private final LocalFileContainer container;
+    private final LocalFileTableContainer container;
 
-    public GoToDesktopAction(LocalFileContainer container) {
+    public GoToDesktopAction(LocalFileTableContainer container) {
         super("Desktop Directory", "Go to desktop directory", AllIcons.Nodes.Desktop);
         this.container = container;
     }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-
+        VirtualFile desktop = container.getDesktopDirectory();
+        if (desktop != null) {
+            container.setPath(desktop.getPath());
+        }
     }
 }

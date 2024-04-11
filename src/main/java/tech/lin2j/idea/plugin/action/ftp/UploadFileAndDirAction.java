@@ -1,10 +1,10 @@
-package tech.lin2j.idea.plugin.action.ftp.local;
+package tech.lin2j.idea.plugin.action.ftp;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import org.jetbrains.annotations.NotNull;
-import tech.lin2j.idea.plugin.ui.ftp.LocalFileContainer;
+import tech.lin2j.idea.plugin.ui.ftp.LocalFileTableContainer;
 
 /**
  * @author linjinjia
@@ -12,11 +12,11 @@ import tech.lin2j.idea.plugin.ui.ftp.LocalFileContainer;
  */
 public class UploadFileAndDirAction extends AnAction {
 
-    private final LocalFileContainer localFileContainer;
+    private final LocalFileTableContainer localFileTableContainer;
 
-    public UploadFileAndDirAction(LocalFileContainer localFileContainer) {
+    public UploadFileAndDirAction(LocalFileTableContainer localFileTableContainer) {
         super("Upload", "Upload file and directory", AllIcons.Actions.Upload);
-        this.localFileContainer =  localFileContainer;
+        this.localFileTableContainer = localFileTableContainer;
     }
 
     @Override
