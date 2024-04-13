@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.ui.ftp;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.ui.table.JBTable;
 import tech.lin2j.idea.plugin.file.TableFile;
 
@@ -26,7 +27,7 @@ public interface FileTableContainer {
 
     String getParentPath();
 
-    void deleteFileAndDir();
+    void deleteFileAndDir(TableFile tf);
 
     boolean createNewFolder(String path) throws IOException;
 
@@ -35,4 +36,6 @@ public interface FileTableContainer {
     void reversedHiddenFlag();
 
     void refreshFileList();
+
+    Project getProject();
 }

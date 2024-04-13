@@ -3,12 +3,14 @@ package tech.lin2j.idea.plugin.ui.ftp;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.PathUtil;
 import com.intellij.util.ui.JBUI;
+import org.apache.commons.collections.CollectionUtils;
 import tech.lin2j.idea.plugin.action.ftp.CreateNewFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.DeleteFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.DownloadFileAndDirAction;
@@ -27,6 +29,7 @@ import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
@@ -36,6 +39,7 @@ import java.util.List;
  */
 public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel implements FileTableContainer {
 
+    private final Project project;
     protected boolean showHiddenFileAndDir = false;
     protected JBTable table;
     protected List<TableFile> fileList;
@@ -43,8 +47,9 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
     private final boolean isLocalPanel;
     private final String actionPlace;
 
-    public AbstractFileTableContainer(boolean vertical, boolean isLocalPanel) {
+    public AbstractFileTableContainer(boolean vertical, Project project, boolean isLocalPanel) {
         super(vertical);
+        this.project = project;
         this.isLocalPanel = isLocalPanel;
         this.actionPlace = isLocalPanel ? "LocalFileContainer@bar" : "RemoteFileContainer@bar";
     }
@@ -69,9 +74,17 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
 
     @Override
     public List<TableFile> getSelectedFiles() {
+        if (CollectionUtils.isEmpty(fileList)) {
+            return Collections.emptyList();
+        }
         int[] rows = table.getSelectedRows();
-
-        return null;
+        List<TableFile> selectedFiles = new ArrayList<>();
+        for (int idx : rows) {
+            if (idx < fileList.size()) {
+                selectedFiles.add(fileList.get(idx));
+            }
+        }
+        return selectedFiles;
     }
 
     @Override
@@ -97,6 +110,11 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
     public void setPath(String path) {
         filePath.setText(path);
         refreshFileList();
+    }
+
+    @Override
+    public Project getProject() {
+        return project;
     }
 
     protected void addExtractAction(DefaultActionGroup actionGroup) {

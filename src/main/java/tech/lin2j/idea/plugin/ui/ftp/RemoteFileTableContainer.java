@@ -3,6 +3,7 @@ package tech.lin2j.idea.plugin.ui.ftp;
 import com.intellij.openapi.project.Project;
 import net.schmizz.sshj.sftp.SFTPClient;
 import tech.lin2j.idea.plugin.file.RemoteTableFile;
+import tech.lin2j.idea.plugin.file.TableFile;
 import tech.lin2j.idea.plugin.ssh.SshConnectionManager;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ui.table.FileNameCellRenderer;
@@ -21,13 +22,11 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
 
     private static final int NAME_COLUMN = 0;
 
-    private final Project project;
     private final SshServer server;
     private SFTPClient sftpClient;
 
     public RemoteFileTableContainer(Project project, SshServer server) {
-        super(true, false);
-        this.project = project;
+        super(true, project, false);
         this.server = server;
         try {
             this.sftpClient = SshConnectionManager.makeSshClient(server).newSFTPClient();
@@ -79,7 +78,20 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
     }
 
     @Override
-    public void deleteFileAndDir() {
+    public void deleteFileAndDir(TableFile tf) {
+        if (sftpClient == null) {
+            return;
+        }
+        try {
+            String path = tf.getFilePath();
+            if (tf.isDirectory()) {
+                sftpClient.rmdir(path);
+            } else {
+                sftpClient.rm(path);
+            }
+        } catch (Exception ignored) {
+
+        }
 
     }
 

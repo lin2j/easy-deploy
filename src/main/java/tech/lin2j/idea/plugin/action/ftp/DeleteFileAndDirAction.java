@@ -3,9 +3,15 @@ package tech.lin2j.idea.plugin.action.ftp;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.io.FileUtil;
+import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
+import tech.lin2j.idea.plugin.file.TableFile;
+import tech.lin2j.idea.plugin.ui.dialog.FilesDeleteConfirmDialog;
 import tech.lin2j.idea.plugin.ui.ftp.FileTableContainer;
+
+import java.io.File;
+import java.util.List;
 
 /**
  * @author linjinjia
@@ -22,12 +28,20 @@ public class DeleteFileAndDirAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
+        List<TableFile> selectedFiles = container.getSelectedFiles();
+        if (CollectionUtils.isEmpty(selectedFiles)) {
+            return;
+        }
 
+        boolean confirm = new FilesDeleteConfirmDialog(selectedFiles).showAndGet();
+        if (!confirm) {
+            return;
+        }
 
-        // 删除前确认
-//        Messages.showConfirmationDialog(container, "")
+        for (TableFile selectedFile : selectedFiles) {
+            container.deleteFileAndDir(selectedFile);
+        }
 
-        // 最后再执行删除
-        container.deleteFileAndDir();
+        container.refreshFileList();
     }
 }

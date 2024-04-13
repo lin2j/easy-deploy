@@ -10,6 +10,7 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.SystemProperties;
 import tech.lin2j.idea.plugin.file.LocalTableFile;
+import tech.lin2j.idea.plugin.file.TableFile;
 import tech.lin2j.idea.plugin.ui.table.FileNameCellRenderer;
 import tech.lin2j.idea.plugin.ui.table.FileTableModel;
 
@@ -26,11 +27,8 @@ public class LocalFileTableContainer extends AbstractFileTableContainer implemen
 
     private static final int NAME_COLUMN = 0;
 
-    private final Project project;
-
     public LocalFileTableContainer(Project project) {
-        super(true, true);
-        this.project = project;
+        super(true, project, true);
         init();
     }
 
@@ -40,8 +38,8 @@ public class LocalFileTableContainer extends AbstractFileTableContainer implemen
     }
 
     @Override
-    public void deleteFileAndDir() {
-
+    public void deleteFileAndDir(TableFile tf) {
+        FileUtil.delete(new File(tf.getFilePath()));
     }
 
     @Override
