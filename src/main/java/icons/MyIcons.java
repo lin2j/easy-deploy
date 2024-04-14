@@ -13,4 +13,8 @@ public interface MyIcons {
     Icon DEPLOY = IconLoader.getIcon("/icons/deploy.svg", MyIcons.class);
 
     Icon DEPLOY_DARK = IconLoader.getIcon("/icons/deploy_dark.svg", MyIcons.class);
+
+    Icon TRANSFER = IconLoader.getIcon("/icons/transferToolWindow.svg", MyIcons.class);
+
+    Icon TRANSFER_DARK = IconLoader.getIcon("/icons/transferToolWindow_dark.svg", MyIcons.class);
 }
