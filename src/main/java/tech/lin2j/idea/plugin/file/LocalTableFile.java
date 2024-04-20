@@ -9,6 +9,7 @@ import com.intellij.util.PathUtil;
 import org.apache.commons.lang.time.DateFormatUtils;
 
 import javax.swing.Icon;
+import java.awt.Panel;
 import java.io.File;
 
 /**
@@ -36,6 +37,9 @@ public class LocalTableFile implements TableFile {
 
     @Override
     public String getSize() {
+        if (isDirectory()) {
+            return "";
+        }
         return StringUtil.formatFileSize(vf.length());
     }
 

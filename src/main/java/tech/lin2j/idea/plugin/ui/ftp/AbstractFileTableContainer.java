@@ -6,6 +6,7 @@ import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.SystemInfo;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.PathUtil;
@@ -21,6 +22,7 @@ import tech.lin2j.idea.plugin.action.ftp.RefreshFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.RowDoubleClickAction;
 import tech.lin2j.idea.plugin.action.ftp.ShowHiddenFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.UploadFileAndDirAction;
+import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.file.TableFile;
 import tech.lin2j.idea.plugin.ui.table.FileTableModel;
 
@@ -98,7 +100,14 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
     }
 
     public String getPath() {
-        return filePath.getText();
+        String path = filePath.getText();
+        if (StringUtil.isEmpty(path)) {
+            return path;
+        }
+        if (path.endsWith("/")) {
+            path = path.substring(0, path.length() - 1);
+        }
+        return path;
     }
 
     @Override

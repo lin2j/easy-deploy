@@ -1,5 +1,7 @@
 package tech.lin2j.idea.plugin.uitl;
 
+import tech.lin2j.idea.plugin.file.DirectoryInfo;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -70,5 +72,39 @@ public class FileUtil {
      */
     public static String[] findAllFiles(String filepath) throws IOException {
         return null;
+    }
+
+    public static DirectoryInfo calculateDirectorySize(String directory) {
+        return calculateDirectorySize(new File(directory));
+    }
+
+    /**
+     * Calculates the size of a directory recursively.
+     *
+     * @param directory The directory whose size needs to be calculated.
+     * @return The total size of the directory and its contents, in bytes.
+     */
+    public static DirectoryInfo calculateDirectorySize(File directory) {
+        DirectoryInfo di = new DirectoryInfo();
+        // If the given file object is not a directory, return its size
+        if (!directory.isDirectory()) {
+            di.setDirectory(false);
+            di.setFiles(1);
+            di.setSize(directory.length());
+            return di;
+        }
+
+        di.setDirectory(true);
+        // Traverse all files and subdirectories in the directory and accumulate their sizes
+        File[] files = directory.listFiles();
+        if (files != null) {
+            for (File file : files) {
+                DirectoryInfo subDi = calculateDirectorySize(file);
+                di.setSize(di.getSize() + subDi.getSize());
+                di.setFiles(di.getFiles() + subDi.getFiles());
+            }
+        }
+
+        return di;
     }
 }

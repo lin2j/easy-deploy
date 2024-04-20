@@ -198,7 +198,7 @@ public class TableActionUi extends JBLabel implements TableCellRenderer, TableCe
                 }
             }));
 
-            menu.add(new JMenuItem(new AbstractAction("SFTP") {
+            menu.add(new JMenuItem(new AbstractAction("SFTP (Beta)") {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     SshServer server = ConfigHelper.getSshServerById(sshId);

@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.domain.model.event.FileTransferEvent;
-import tech.lin2j.idea.plugin.enums.FileTransferState;
+import tech.lin2j.idea.plugin.enums.TransferEventState;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.ui.ftp.LocalFileTableContainer;
 
@@ -24,6 +24,6 @@ public class UploadFileAndDirAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        ApplicationContext.getApplicationContext().publishEvent(new FileTransferEvent(true, FileTransferState.START));
+        ApplicationContext.getApplicationContext().publishEvent(new FileTransferEvent(true, TransferEventState.START));
     }
 }

@@ -2,6 +2,7 @@ package tech.lin2j.idea.plugin.ui.ftp;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.table.JBTable;
+import net.schmizz.sshj.sftp.SFTPClient;
 import tech.lin2j.idea.plugin.file.TableFile;
 
 import java.io.IOException;
@@ -38,4 +39,8 @@ public interface FileTableContainer {
     void refreshFileList();
 
     Project getProject();
+
+    default SFTPClient getFTPClient() {
+        throw new UnsupportedOperationException();
+    }
 }

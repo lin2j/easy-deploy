@@ -55,7 +55,7 @@ public class UiUtil {
      * @return true if user confirms to do this action, or return false
      */
     public static boolean deleteConfirm(@Nullable String specific) {
-        String defaultMessage = "Are you sure you want to remove the selected item ?";
+        String defaultMessage = "Are you sure you want to remove the selected item?";
         if (StringUtil.isNotEmpty(specific)) {
             defaultMessage = defaultMessage + "\n" + specific;
         }

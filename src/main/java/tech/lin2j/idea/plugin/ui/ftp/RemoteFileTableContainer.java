@@ -60,6 +60,11 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
     }
 
     @Override
+    public SFTPClient getFTPClient() {
+        return sftpClient;
+    }
+
+    @Override
     public String getHomePath() {
         if (Objects.equals("root", server.getUsername())) {
             return "/root";

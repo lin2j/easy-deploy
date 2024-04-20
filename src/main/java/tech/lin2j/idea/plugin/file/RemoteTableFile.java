@@ -37,6 +37,9 @@ public class RemoteTableFile implements TableFile {
 
     @Override
     public String getSize() {
+        if (isDirectory()) {
+            return "";
+        }
         return StringUtil.formatFileSize(remoteResourceInfo.getAttributes().getSize());
     }
 
