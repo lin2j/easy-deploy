@@ -4,6 +4,7 @@ import com.intellij.ide.highlighter.ArchiveFileType;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.UnknownFileType;
 import com.intellij.openapi.util.text.StringUtil;
+import tech.lin2j.idea.plugin.file.fileTypes.EbookFileType;
 import tech.lin2j.idea.plugin.file.fileTypes.SpecifiedArchiveFileType;
 import tech.lin2j.idea.plugin.file.fileTypes.VideoFileType;
 
@@ -39,7 +40,11 @@ public class MyFileTypeRegistry {
         FILE_TYPE_MAP.put("m4v", new VideoFileType("m4v"));
         FILE_TYPE_MAP.put("webm", new VideoFileType("webm"));
         FILE_TYPE_MAP.put("3gp", new VideoFileType("3gp"));
-        // installer
+        // ebook
+        FILE_TYPE_MAP.put("epub", new EbookFileType("epub"));
+        FILE_TYPE_MAP.put("mobi", new EbookFileType("mobi"));
+        FILE_TYPE_MAP.put("azw", new EbookFileType("azw"));
+        FILE_TYPE_MAP.put("azw3", new EbookFileType("azw3"));
 
     }
 

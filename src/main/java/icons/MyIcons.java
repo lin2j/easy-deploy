@@ -34,5 +34,6 @@ public interface MyIcons {
         Icon EXCEl = load("/icons/fileTypes/excel.svg");
         Icon PPT = load("/icons/fileTypes/ppt.svg");
         Icon PDF = load("/icons/fileTypes/pdf.svg");
+        Icon EBOOk = load("/icons/fileTypes/ebook.svg");
     }
 }

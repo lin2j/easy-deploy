@@ -120,54 +120,15 @@
         <!-- Add your extensions here -->
         <fileEditorProvider implementation="tech.lin2j.idea.plugin.ui.editor.ConsoleEditorProvider"/>
         <projectService serviceImplementation="tech.lin2j.idea.plugin.ui.editor.ConsoleFileSystem"/>
-        <fileType
-                implementationClass="tech.lin2j.idea.plugin.file.fileTypes.DmgFileType"
-                fieldName="INSTANCE"
-                name="Dmg file"
-                extensions="dmg"
-        />
-        <fileType
-                implementationClass="tech.lin2j.idea.plugin.file.fileTypes.ConfigFileType"
-                fieldName="INSTANCE"
-                name="Config file"
-                extensions="cfg;config;ini;"
-        />
-        <fileType
-                implementationClass="tech.lin2j.idea.plugin.file.fileTypes.CFileType"
-                fieldName="INSTANCE"
-                name="C file"
-                extensions="c"
-        />
-        <fileType
-                implementationClass="tech.lin2j.idea.plugin.file.fileTypes.CppFileType"
-                fieldName="INSTANCE"
-                name="C++ file"
-                extensions="cpp"
-        />
-        <fileType
-                implementationClass="tech.lin2j.idea.plugin.file.fileTypes.PdfFileType"
-                fieldName="INSTANCE"
-                name="PDF file"
-                extensions="pdf"
-        />
-        <fileType
-                implementationClass="tech.lin2j.idea.plugin.file.fileTypes.WordFileType"
-                fieldName="INSTANCE"
-                name="Word file"
-                extensions="doc;docx"
-        />
-        <fileType
-                implementationClass="tech.lin2j.idea.plugin.file.fileTypes.ExcelFileType"
-                fieldName="INSTANCE"
-                name="Excel file"
-                extensions="xlsx;xls"
-        />
-        <fileType
-                implementationClass="tech.lin2j.idea.plugin.file.fileTypes.PptFileType"
-                fieldName="INSTANCE"
-                name="PPT file"
-                extensions="ppt;pptx"
-        />
+        <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.DmgFileType" fieldName="INSTANCE" name="Dmg file" extensions="dmg"/>
+        <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.ConfigFileType" fieldName="INSTANCE" name="Config file" extensions="cfg;config;ini;"/>
+        <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.CFileType" fieldName="INSTANCE" name="C file" extensions="c"/>
+        <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.CppFileType" fieldName="INSTANCE" name="C++ file" extensions="cpp"/>
+        <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.PdfFileType" fieldName="INSTANCE" name="PDF file" extensions="pdf"/>
+        <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.WordFileType" fieldName="INSTANCE" name="Word file" extensions="doc;docx"/>
+        <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.ExcelFileType" fieldName="INSTANCE" name="Excel file" extensions="xlsx;xls"/>
+        <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.PptFileType" fieldName="INSTANCE" name="PPT file" extensions="ppt;pptx"/>
+        <fileType name="Other Image" implementationClass="org.intellij.images.fileTypes.impl.ImageFileType" fieldName="INSTANCE" extensions="heic;HEIC" />
     </extensions>
 
     <actions>
