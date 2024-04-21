@@ -1,16 +1,15 @@
-package tech.lin2j.idea.plugin.ui;
+package tech.lin2j.idea.plugin.ui.log;
 
 import com.intellij.execution.impl.ConsoleViewImpl;
+import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.execution.ui.RunContentDescriptor;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionPlaces;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.Disposer;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
@@ -28,17 +27,17 @@ import java.awt.BorderLayout;
  * @author linjinjia
  * @date 2024/3/16 18:53
  */
-public class CommandLogViewer implements ApplicationListener<CommandExecuteEvent>, Disposable {
+public class ConsoleLogViewer implements ApplicationListener<CommandExecuteEvent>, Disposable {
 
-    private static final String ID = "CommandLogViewer";
-    private static final String TITLE = "Remote Command Execute Result";
+    private static final String ID = "ConsoleLogViewer";
+    private static final String TITLE = "Console Log";
 
     private final Project project;
     private ConsoleViewImpl myConsoleView;
 
     private JPanel mainPanel;
 
-    public CommandLogViewer(Project project) {
+    public ConsoleLogViewer(Project project) {
         this.project = project;
     }
 
@@ -61,7 +60,7 @@ public class CommandLogViewer implements ApplicationListener<CommandExecuteEvent
         final DefaultActionGroup actionGroup = new DefaultActionGroup();
         actionGroup.addAll(myConsoleView.createConsoleActions());
 
-        final ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar(ActionPlaces.UNKNOWN, actionGroup, false);
+        final ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar(ID, actionGroup, false);
         toolbar.setTargetComponent(consoleViewComponent);
 
         final JComponent ui = descriptor.getComponent();
@@ -72,11 +71,15 @@ public class CommandLogViewer implements ApplicationListener<CommandExecuteEvent
         consoleViewComponent.setBorder(BorderFactory.createEmptyBorder());
     }
 
-
     public JPanel getMainPanel() {
         layoutConsoleView();
         return mainPanel;
     }
+
+    public ConsoleView getConsoleView() {
+        return myConsoleView;
+    }
+
     @Override
     public void onApplicationEvent(CommandExecuteEvent event) {
         boolean append = event.getSignal() == CommandExecuteEvent.SIGNAL_APPEND;

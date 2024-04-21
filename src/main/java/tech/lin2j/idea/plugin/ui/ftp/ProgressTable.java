@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.ui.ftp;
 
+import com.intellij.execution.ui.ConsoleView;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.util.ColorProgressBar;
 import com.intellij.openapi.util.text.StringUtil;
@@ -48,10 +49,11 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
 
     private JBTable outputTable;
     private DefaultTableModel tableModel;
+    private SFTPClient sftpClient;
+    private ConsoleView consoleView;
     private int rows = 0;
     private final FileTableContainer localContainer;
     private final FileTableContainer remoteContainer;
-    private SFTPClient sftpClient;
     private final BlockingQueue<TransferTask> TASK_QUEUE = new ArrayBlockingQueue<>(1000);
     private final Thread transferTaskThread = new Thread(() -> {
         for (; ; ) {
@@ -69,9 +71,12 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
         }
     });
 
-    public ProgressTable(FileTableContainer localContainer, FileTableContainer remoteContainer) {
+    public ProgressTable(FileTableContainer localContainer,
+                         FileTableContainer remoteContainer,
+                         ConsoleView consoleView) {
         this.localContainer = localContainer;
         this.remoteContainer = remoteContainer;
+        this.consoleView = consoleView;
 
         setLayout(new BorderLayout());
         init();
@@ -135,7 +140,8 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
                 rows++;
 
                 // serialize transfer task
-                TransferListener transferListener = new ProgressTransferListener(sourceContainer.getPath(), cell);
+                String realPath = sourceContainer.getPath();
+                TransferListener transferListener = new ProgressTransferListener(realPath, cell, consoleView);
                 TASK_QUEUE.add(new TransferTask(transferListener, cell, isUpload, local, remote, targetContainer));
             }
         } catch (Exception e) {
