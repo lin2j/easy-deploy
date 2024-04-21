@@ -1,6 +1,12 @@
 package tech.lin2j.idea.plugin.uitl;
 
+import com.intellij.ide.highlighter.ArchiveFileType;
+import com.intellij.openapi.fileTypes.FileType;
+import com.intellij.openapi.fileTypes.FileTypeRegistry;
+import com.intellij.openapi.fileTypes.UnknownFileType;
 import tech.lin2j.idea.plugin.file.DirectoryInfo;
+import tech.lin2j.idea.plugin.file.MyFileTypeRegistry;
+import tech.lin2j.idea.plugin.file.fileTypes.SpecifiedArchiveFileType;
 
 import java.io.File;
 import java.io.IOException;
@@ -106,5 +112,26 @@ public class FileUtil {
         }
 
         return di;
+    }
+
+    public static FileType getFileType(String filename) {
+        FileType fileType = FileTypeRegistry.getInstance().getFileTypeByFileName(filename);
+
+        String ext = getExtension(filename);
+        if (fileType instanceof ArchiveFileType) {
+            fileType = new SpecifiedArchiveFileType(fileType, ext);
+        }
+
+        if (fileType instanceof UnknownFileType) {
+            fileType = MyFileTypeRegistry.getFileTypeByExtension(ext);
+        }
+
+        return fileType;
+    }
+
+    public static String getExtension(String filename) {
+        int index = filename.lastIndexOf('.');
+        if (index < 0) return "";
+        return filename.substring(index + 1);
     }
 }

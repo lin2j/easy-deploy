@@ -1,15 +1,14 @@
 package tech.lin2j.idea.plugin.file;
 
 import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.util.PathUtil;
 import com.intellij.util.PlatformIcons;
 import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
 import net.schmizz.sshj.xfer.FilePermission;
 import org.apache.commons.lang.time.DateFormatUtils;
 import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.uitl.FileUtil;
 import tech.lin2j.idea.plugin.uitl.PosixUtil;
 
 import javax.swing.Icon;
@@ -24,15 +23,15 @@ public class RemoteTableFile implements TableFile {
 
     private final RemoteResourceInfo remoteResourceInfo;
     private final FileMode.Type type;
-    private final Icon icon;
-    private final FileType fileType;
     private final SshServer server;
+    private FileType fileType;
+    private final Icon icon;
 
     public RemoteTableFile(SshServer server, RemoteResourceInfo remoteResourceInfo) {
         this.server = server;
         this.remoteResourceInfo = remoteResourceInfo;
         this.type = this.remoteResourceInfo.getAttributes().getType();
-        this.fileType = FileTypeRegistry.getInstance().getFileTypeByFileName(getName());
+        this.fileType = FileUtil.getFileType(getName());
         this.icon = getIcon();
     }
 

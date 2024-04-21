@@ -7,6 +7,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.PathUtil;
 import org.apache.commons.lang.time.DateFormatUtils;
+import tech.lin2j.idea.plugin.uitl.FileUtil;
 
 import javax.swing.Icon;
 import java.awt.Panel;
@@ -22,7 +23,7 @@ public class LocalTableFile implements TableFile {
 
     public LocalTableFile(File vf) {
         this.vf = vf;
-        this.fileType = FileTypeRegistry.getInstance().getFileTypeByFileName(vf.getName());
+        this.fileType = FileUtil.getFileType(getName());
     }
 
     @Override
