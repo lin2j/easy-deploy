@@ -74,8 +74,8 @@ public class FileUtil {
         return null;
     }
 
-    public static DirectoryInfo calculateDirectorySize(String directory) {
-        return calculateDirectorySize(new File(directory));
+    public static DirectoryInfo calcDirectorySize(String directory) {
+        return calcDirectorySize(new File(directory));
     }
 
     /**
@@ -84,7 +84,7 @@ public class FileUtil {
      * @param directory The directory whose size needs to be calculated.
      * @return The total size of the directory and its contents, in bytes.
      */
-    public static DirectoryInfo calculateDirectorySize(File directory) {
+    public static DirectoryInfo calcDirectorySize(File directory) {
         DirectoryInfo di = new DirectoryInfo();
         // If the given file object is not a directory, return its size
         if (!directory.isDirectory()) {
@@ -99,7 +99,7 @@ public class FileUtil {
         File[] files = directory.listFiles();
         if (files != null) {
             for (File file : files) {
-                DirectoryInfo subDi = calculateDirectorySize(file);
+                DirectoryInfo subDi = calcDirectorySize(file);
                 di.setSize(di.getSize() + subDi.getSize());
                 di.setFiles(di.getFiles() + subDi.getFiles());
             }

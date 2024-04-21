@@ -3,35 +3,28 @@ package tech.lin2j.idea.plugin.ui.table;
 import com.intellij.openapi.progress.util.ColorProgressBar;
 import com.intellij.ui.table.JBTable;
 import tech.lin2j.idea.plugin.file.DirectoryInfo;
-import tech.lin2j.idea.plugin.ui.ftp.FileTableContainer;
+
+import javax.swing.table.TableModel;
 
 /**
  * @author linjinjia
  * @date 2024/4/15 22:23
  */
 public class ProgressCell {
-    private JBTable table;
-    private int row;
-    private ColorProgressBar colorProgressBar;
-    private boolean isDirectoryRow;
+    private final JBTable table;
+    private final ColorProgressBar colorProgressBar;
     private DirectoryInfo directoryInfo;
+    private int row;
     private long transferred;
-    private String cellKey;
-    private final FileTableContainer targetContainer;
 
-    public ProgressCell(JBTable table, int row, ColorProgressBar colorProgressBar, FileTableContainer targetContainer) {
+    public ProgressCell(JBTable table, int row, ColorProgressBar colorProgressBar) {
         this.table = table;
         this.row = row;
         this.colorProgressBar = colorProgressBar;
-        this.targetContainer = targetContainer;
     }
 
     public JBTable getTable() {
         return table;
-    }
-
-    public void setTable(JBTable table) {
-        this.table = table;
     }
 
     public int getRow() {
@@ -42,25 +35,20 @@ public class ProgressCell {
         this.row = row;
     }
 
-
     public ColorProgressBar getColorProgressBar() {
         return colorProgressBar;
     }
 
-    public void setColorProgressBar(ColorProgressBar colorProgressBar) {
-        this.colorProgressBar = colorProgressBar;
-    }
-
     public boolean isDirectoryRow() {
-        return isDirectoryRow;
+        return directoryInfo.isDirectory();
     }
 
-    public void setDirectoryRow(boolean directoryRow) {
-        isDirectoryRow = directoryRow;
+    public long getDirectorySize() {
+        return directoryInfo.getSize();
     }
 
-    public DirectoryInfo getDirectoryInfo() {
-        return directoryInfo;
+    public TableModel getTableModel() {
+        return table.getModel();
     }
 
     public void setDirectoryInfo(DirectoryInfo directoryInfo) {
@@ -71,23 +59,7 @@ public class ProgressCell {
         return transferred;
     }
 
-    public void setTransferred(long transferred) {
-        this.transferred = transferred;
-    }
-
     public void addTransferred(long transferred) {
         this.transferred += transferred;
-    }
-
-    public String getCellKey() {
-        return cellKey;
-    }
-
-    public void setCellKey(String cellKey) {
-        this.cellKey = cellKey;
-    }
-
-    public FileTableContainer getTargetContainer() {
-        return targetContainer;
     }
 }

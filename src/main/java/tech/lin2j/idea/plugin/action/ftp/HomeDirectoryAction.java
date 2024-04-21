@@ -5,7 +5,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
-import tech.lin2j.idea.plugin.ui.ftp.FileTableContainer;
+import tech.lin2j.idea.plugin.ui.ftp.container.FileTableContainer;
 
 /**
  * @author linjinjia

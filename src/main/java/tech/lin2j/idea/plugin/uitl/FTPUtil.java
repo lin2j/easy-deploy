@@ -22,7 +22,7 @@ public class FTPUtil {
      * @return The total size of the remote directory and its contents, in bytes.
      * @throws IOException If an I/O error occurs while accessing the FTP server.
      */
-    public static DirectoryInfo calculateRemoteDirectorySize(SFTPClient ftpClient, String remoteDir) throws IOException {
+    public static DirectoryInfo calcDirectorySize(SFTPClient ftpClient, String remoteDir) throws IOException {
         DirectoryInfo di = new DirectoryInfo();
         FileMode.Type type = ftpClient.type(remoteDir);
         if (type != FileMode.Type.DIRECTORY) {
@@ -35,7 +35,7 @@ public class FTPUtil {
         List<RemoteResourceInfo> files = ftpClient.ls(remoteDir);
         if (files != null) {
             for (RemoteResourceInfo file : files) {
-                DirectoryInfo subDi = calculateRemoteDirectorySize(ftpClient, remoteDir + "/" + file.getName());
+                DirectoryInfo subDi = calcDirectorySize(ftpClient, remoteDir + "/" + file.getName());
                 di.setFiles(di.getFiles() + subDi.getFiles());
                 di.setSize(di.getSize() + subDi.getSize());
             }

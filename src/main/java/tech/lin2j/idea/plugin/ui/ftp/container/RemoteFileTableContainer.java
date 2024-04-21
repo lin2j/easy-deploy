@@ -1,16 +1,23 @@
-package tech.lin2j.idea.plugin.ui.ftp;
+package tech.lin2j.idea.plugin.ui.ftp.container;
 
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
+import net.schmizz.sshj.sftp.FileAttributes;
+import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.SFTPClient;
 import tech.lin2j.idea.plugin.file.RemoteTableFile;
 import tech.lin2j.idea.plugin.file.TableFile;
 import tech.lin2j.idea.plugin.ssh.SshConnectionManager;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ui.table.FileNameCellRenderer;
-import tech.lin2j.idea.plugin.ui.table.FileTableModel;
+import tech.lin2j.idea.plugin.ui.table.LocalFileTableModel;
+import tech.lin2j.idea.plugin.ui.table.RemoteFileTableModel;
 
+import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -21,6 +28,7 @@ import java.util.stream.Collectors;
 public class RemoteFileTableContainer extends AbstractFileTableContainer implements FileTableContainer {
 
     private static final int NAME_COLUMN = 0;
+    private static final int MODIFIED_COLUMN = 3;
 
     private final SshServer server;
     private SFTPClient sftpClient;
@@ -30,8 +38,7 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
         this.server = server;
         try {
             this.sftpClient = SshConnectionManager.makeSshClient(server).newSFTPClient();
-        } catch (IOException e) {
-
+        } catch (IOException ignored) {
         }
 
         init();
@@ -39,23 +46,34 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
 
     @Override
     public void refreshFileList() {
-        if (sftpClient == null) {
-            return;
-        }
         try {
+            if (sftpClient == null) {
+                this.sftpClient = SshConnectionManager.makeSshClient(server).newSFTPClient();
+            }
+            FileAttributes atts = sftpClient.stat(getPath());
+            if (atts == null || atts.getType() != FileMode.Type.DIRECTORY) {
+                Messages.showErrorDialog("Specified path not found.", "Path");
+                return;
+            }
             fileList = sftpClient.ls(getPath()).stream()
-                    .map(RemoteTableFile::new)
+                    .map(rf -> new RemoteTableFile(server, rf))
                     .filter(this::showFile)
                     .sorted()
                     .collect(Collectors.toList());
 
-            FileTableModel tableModel = new FileTableModel(fileList);
+            RemoteFileTableModel tableModel = new RemoteFileTableModel(fileList);
             table.setModel(tableModel);
 
             TableColumn nameColumn = table.getColumnModel().getColumn(NAME_COLUMN);
             nameColumn.setCellRenderer(new FileNameCellRenderer());
-        } catch (Exception e) {
+            nameColumn.setMinWidth(200);
 
+            TableColumn modifiedColumn = table.getColumnModel().getColumn(MODIFIED_COLUMN);
+            modifiedColumn.setMinWidth(150);
+        } catch (Exception e) {
+            SwingUtilities.invokeLater(() -> {
+                Messages.showErrorDialog("The specified path cannot be opened: " + e.getMessage(), "Path");
+            });
         }
     }
 
@@ -75,7 +93,7 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
     @Override
     public String getParentPath() {
         // More than one '/'
-        if (getPath().lastIndexOf('/') > 0){
+        if (getPath().lastIndexOf('/') > 0) {
             return super.getParentPath();
         } else {
             return "/";
@@ -104,5 +122,10 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
     public boolean createNewFolder(String path) throws IOException {
         sftpClient.mkdirs(path);
         return true;
+    }
+
+    @Override
+    protected TableModel getTableModel() {
+        return new RemoteFileTableModel(Collections.emptyList());
     }
 }

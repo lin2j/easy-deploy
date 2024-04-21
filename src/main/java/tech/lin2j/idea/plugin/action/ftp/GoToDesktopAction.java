@@ -10,7 +10,7 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.NotNull;
-import tech.lin2j.idea.plugin.ui.ftp.LocalFileTableContainer;
+import tech.lin2j.idea.plugin.ui.ftp.container.LocalFileTableContainer;
 
 public class GoToDesktopAction extends AnAction {
 

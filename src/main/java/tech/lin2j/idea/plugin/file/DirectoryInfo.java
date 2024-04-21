@@ -9,7 +9,6 @@ public class DirectoryInfo {
     private long size;
     private int files;
     private boolean isDirectory;
-    private boolean isUpload;
 
     public long getSize() {
         return size;
@@ -33,13 +32,5 @@ public class DirectoryInfo {
 
     public void setDirectory(boolean directory) {
         isDirectory = directory;
-    }
-
-    public boolean isUpload() {
-        return isUpload;
-    }
-
-    public void setUpload(boolean upload) {
-        isUpload = upload;
     }
 }

@@ -8,7 +8,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tech.lin2j.idea.plugin.ui.ftp.FileTableContainer;
+import tech.lin2j.idea.plugin.ui.ftp.container.FileTableContainer;
 
 import java.io.IOException;
 
@@ -51,10 +51,7 @@ public class CreateNewFolderAction extends AnAction {
             err = ex.getMessage();
         }
         if (!success) {
-            Messages.showErrorDialog("create directory failed", "Create Folder Error");
-        }
-        if (err != null) {
-            Messages.showErrorDialog(err, "Create Folder Error");
+            Messages.showErrorDialog("create directory failed: " + err , "Create Folder Error");
         }
     }
 

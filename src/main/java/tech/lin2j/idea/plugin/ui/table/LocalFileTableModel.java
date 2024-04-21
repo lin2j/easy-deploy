@@ -13,7 +13,7 @@ import java.util.List;
  * @author linjinjia
  * @date 2024/4/6 10:07
  */
-public class FileTableModel extends AbstractTableModel implements ItemRemovable {
+public class LocalFileTableModel extends AbstractTableModel implements ItemRemovable {
     private final String[] ourColumnNames = new String[]{
             "Name", "Size", "Type", "Modified"
     };
@@ -23,7 +23,7 @@ public class FileTableModel extends AbstractTableModel implements ItemRemovable 
 
     private final List<? extends TableFile> myPatterns;
 
-    public FileTableModel(List<? extends TableFile> patterns) {
+    public LocalFileTableModel(List<? extends TableFile> patterns) {
         myPatterns = patterns;
     }
 

@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.ui.ftp;
+package tech.lin2j.idea.plugin.ui.ftp.container;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.table.JBTable;

@@ -8,6 +8,8 @@ import com.intellij.ui.components.JBTabbedPane;
 import icons.MyIcons;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.ui.ftp.container.LocalFileTableContainer;
+import tech.lin2j.idea.plugin.ui.ftp.container.RemoteFileTableContainer;
 
 import javax.swing.JPanel;
 import java.awt.BorderLayout;

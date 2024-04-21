@@ -2,7 +2,7 @@ package tech.lin2j.idea.plugin.action.ftp;
 
 import com.intellij.ui.DoubleClickListener;
 import tech.lin2j.idea.plugin.file.TableFile;
-import tech.lin2j.idea.plugin.ui.ftp.FileTableContainer;
+import tech.lin2j.idea.plugin.ui.ftp.container.FileTableContainer;
 
 import java.awt.event.MouseEvent;
 

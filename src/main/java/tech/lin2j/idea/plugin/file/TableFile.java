@@ -40,4 +40,12 @@ public interface TableFile extends Comparable<TableFile> {
         }
         return this.getName().compareTo(f2.getName());
     }
+
+    default String getAccess() {
+        return "";
+    }
+
+    default String getOwner() {
+        return "";
+    }
 }

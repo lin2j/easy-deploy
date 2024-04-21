@@ -7,10 +7,14 @@ import com.intellij.util.PathUtil;
 import com.intellij.util.PlatformIcons;
 import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.RemoteResourceInfo;
+import net.schmizz.sshj.xfer.FilePermission;
 import org.apache.commons.lang.time.DateFormatUtils;
+import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.uitl.PosixUtil;
 
 import javax.swing.Icon;
 import java.util.Objects;
+import java.util.Set;
 
 /**
  * @author linjinjia
@@ -22,8 +26,10 @@ public class RemoteTableFile implements TableFile {
     private final FileMode.Type type;
     private final Icon icon;
     private final FileType fileType;
+    private final SshServer server;
 
-    public RemoteTableFile(RemoteResourceInfo remoteResourceInfo) {
+    public RemoteTableFile(SshServer server, RemoteResourceInfo remoteResourceInfo) {
+        this.server = server;
         this.remoteResourceInfo = remoteResourceInfo;
         this.type = this.remoteResourceInfo.getAttributes().getType();
         this.fileType = FileTypeRegistry.getInstance().getFileTypeByFileName(getName());
@@ -78,6 +84,18 @@ public class RemoteTableFile implements TableFile {
             return PlatformIcons.FOLDER_ICON;
         }
         return fileType.getIcon();
+    }
+
+    @Override
+    public String getAccess() {
+        Set<FilePermission> perms = remoteResourceInfo.getAttributes().getPermissions();
+        return PosixUtil.toString(perms);
+    }
+
+    @Override
+    public String getOwner() {
+        int uid = remoteResourceInfo.getAttributes().getUID();
+        return PosixUtil.getUser(server, uid);
     }
 
     @Override

@@ -1,6 +1,6 @@
 package tech.lin2j.idea.plugin.domain.model.event;
 
-import tech.lin2j.idea.plugin.enums.TransferEventState;
+import tech.lin2j.idea.plugin.enums.TransferEventType;
 import tech.lin2j.idea.plugin.event.ApplicationEvent;
 
 /**
@@ -9,23 +9,23 @@ import tech.lin2j.idea.plugin.event.ApplicationEvent;
  */
 public class FileTransferEvent extends ApplicationEvent {
 
-    private final TransferEventState state;
+    private final TransferEventType state;
 
     private final boolean isUpload;
 
-    public FileTransferEvent(Object source, boolean isUpload, TransferEventState state) {
+    public FileTransferEvent(Object source, boolean isUpload, TransferEventType state) {
         super(source);
         this.isUpload = isUpload;
         this.state = state;
     }
 
-    public FileTransferEvent(boolean isUpload, TransferEventState state) {
+    public FileTransferEvent(boolean isUpload, TransferEventType state) {
         super(new Object());
         this.isUpload = isUpload;
         this.state = state;
     }
 
-    public TransferEventState getState() {
+    public TransferEventType getState() {
         return state;
     }
 

@@ -1,8 +1,9 @@
-package tech.lin2j.idea.plugin.ui.ftp;
+package tech.lin2j.idea.plugin.ui.ftp.container;
 
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.SystemInfo;
@@ -22,15 +23,16 @@ import tech.lin2j.idea.plugin.action.ftp.RefreshFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.RowDoubleClickAction;
 import tech.lin2j.idea.plugin.action.ftp.ShowHiddenFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.UploadFileAndDirAction;
-import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.file.TableFile;
-import tech.lin2j.idea.plugin.ui.table.FileTableModel;
 
+import javax.swing.AbstractAction;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.ListSelectionModel;
+import javax.swing.table.TableModel;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -59,6 +61,13 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
     protected void init() {
         filePath = new JBTextField();
         filePath.setText(getHomePath());
+        filePath.setColumns(1);
+        filePath.setAction(new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                setPath(filePath.getText());
+            }
+        });
 
         initToolBar();
         initFileTable();
@@ -157,8 +166,7 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
 
         final JPanel northPanel = new JPanel(new GridBagLayout());
         northPanel.setBorder(JBUI.Borders.empty(2, 0));
-
-        northPanel.add(toolbar.getComponent(), new GridBagConstraints(0, 0, 1, 1, 1, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL,
+        northPanel.add(toolbar.getComponent(), new GridBagConstraints(0, 0, 1, 1, 0, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL,
                 JBUI.emptyInsets(), 0, 0));
         northPanel.add(filePath, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.BASELINE_TRAILING, GridBagConstraints.HORIZONTAL,
                 JBUI.emptyInsets(), 0, 0));
@@ -166,14 +174,15 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
     }
 
     protected void initFileTable() {
-        table = new JBTable(new FileTableModel(Collections.emptyList()));
+        table = new JBTable(getTableModel());
         table.getEmptyText().setText("No Data");
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         new RowDoubleClickAction(this).installOn(table);
 
-        refreshFileList();
+        // async
+        ApplicationManager.getApplication().executeOnPooledThread(this::refreshFileList);
 
         setContent(new JScrollPane(table));
     }
@@ -182,4 +191,6 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
         if (showHiddenFileAndDir) return true;
         return !tf.isHidden();
     }
+
+    protected abstract TableModel getTableModel();
 }

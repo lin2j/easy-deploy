@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.ui.ftp;
+package tech.lin2j.idea.plugin.ui.ftp.container;
 
 import com.intellij.execution.configurations.GeneralCommandLine;
 import com.intellij.execution.util.ExecUtil;
@@ -12,11 +12,13 @@ import com.intellij.util.SystemProperties;
 import tech.lin2j.idea.plugin.file.LocalTableFile;
 import tech.lin2j.idea.plugin.file.TableFile;
 import tech.lin2j.idea.plugin.ui.table.FileNameCellRenderer;
-import tech.lin2j.idea.plugin.ui.table.FileTableModel;
+import tech.lin2j.idea.plugin.ui.table.LocalFileTableModel;
 
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import java.io.File;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.stream.Collectors;
 
 /**
@@ -77,10 +79,15 @@ public class LocalFileTableContainer extends AbstractFileTableContainer implemen
                 .sorted()
                 .collect(Collectors.toList());
 
-        FileTableModel tableModel = new FileTableModel(fileList);
+        LocalFileTableModel tableModel = new LocalFileTableModel(fileList);
         table.setModel(tableModel);
 
         TableColumn nameColumn = table.getColumnModel().getColumn(NAME_COLUMN);
         nameColumn.setCellRenderer(new FileNameCellRenderer());
+    }
+
+    @Override
+    protected TableModel getTableModel() {
+        return new LocalFileTableModel(Collections.emptyList());
     }
 }
