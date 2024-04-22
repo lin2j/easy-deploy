@@ -9,7 +9,9 @@ import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -27,6 +29,8 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
     private List<Command> commands;
 
     private List<UploadProfile> uploadProfiles;
+
+    private List<String> serverTags;
 
     @Override
     public @Nullable ConfigPersistence getState() {
@@ -69,5 +73,17 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
 
     public void setUploadProfiles(List<UploadProfile> uploadProfiles) {
         this.uploadProfiles = uploadProfiles;
+    }
+
+    public List<String> getServerTags() {
+        if (serverTags == null) {
+            serverTags = new ArrayList<>();
+            serverTags.add("Default");
+        }
+        return serverTags;
+    }
+
+    public void setServerTags(List<String> serverTags) {
+        this.serverTags = serverTags;
     }
 }

@@ -93,6 +93,11 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
 
     @Override
     public void onApplicationEvent(FileTransferEvent event) {
+        Object source = event.getSource();
+        if (source != localContainer && source != remoteContainer) {
+            return;
+        }
+
         if (event.getState().isEnd()) {
             cleanTable();
             return;
@@ -109,10 +114,10 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
 
         FileTableContainer sourceContainer = isUpload ? localContainer : remoteContainer;
         FileTableContainer targetContainer = isUpload ? remoteContainer : localContainer;
-        List<TableFile> source = sourceContainer.getSelectedFiles();
+        List<TableFile> sourceFiles = sourceContainer.getSelectedFiles();
 
         try {
-            for (TableFile tf : source) {
+            for (TableFile tf : sourceFiles) {
                 String size, local, remote;
                 String name = tf.getName();
                 TransferState state;

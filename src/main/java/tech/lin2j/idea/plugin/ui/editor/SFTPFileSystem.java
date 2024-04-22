@@ -8,27 +8,29 @@ import com.intellij.openapi.vfs.VirtualFileSystem;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tech.lin2j.idea.plugin.file.SFTPVirtualFile;
 
 import java.io.IOException;
 
 /**
- * @author mzyupc@163.com
+ * @author linjinjia
+ * @date 2024/4/22 21:56
  */
-public class ConsoleFileSystem extends VirtualFileSystem {
+public class SFTPFileSystem extends VirtualFileSystem {
 
-    public static ConsoleFileSystem getInstance(Project project) {
-        return project.getService(ConsoleFileSystem.class);
+    public static SFTPFileSystem getInstance(Project project) {
+        return project.getService(SFTPFileSystem.class);
     }
 
-    public void openEditor(ConsoleVirtualFile consoleVirtualFile) {
-        FileEditorManager fileEditorManager = FileEditorManager.getInstance(consoleVirtualFile.getProject());
-        fileEditorManager.openFile(consoleVirtualFile, true);
+    public void openEditor(SFTPVirtualFile SFTPVirtualFile) {
+        FileEditorManager fileEditorManager = FileEditorManager.getInstance(SFTPVirtualFile.getProject());
+        fileEditorManager.openFile(SFTPVirtualFile, true);
     }
 
     @Override
     public @NonNls
     @NotNull String getProtocol() {
-        return "FTP";
+        return "SFTP";
     }
 
     @Override

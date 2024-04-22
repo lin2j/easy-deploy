@@ -2,6 +2,7 @@ package tech.lin2j.idea.plugin.ui.ftp.container;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.text.StringUtil;
 import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -10,7 +11,6 @@ import tech.lin2j.idea.plugin.file.TableFile;
 import tech.lin2j.idea.plugin.ssh.SshConnectionManager;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ui.table.FileNameCellRenderer;
-import tech.lin2j.idea.plugin.ui.table.LocalFileTableModel;
 import tech.lin2j.idea.plugin.ui.table.RemoteFileTableModel;
 
 import javax.swing.SwingUtilities;
@@ -93,11 +93,11 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
     @Override
     public String getParentPath() {
         // More than one '/'
-        if (getPath().lastIndexOf('/') > 0) {
-            return super.getParentPath();
-        } else {
-            return "/";
+        String parent = super.getParentPath();
+        if (StringUtil.isEmpty(parent)) {
+            parent = "/";
         }
+        return parent;
     }
 
     @Override

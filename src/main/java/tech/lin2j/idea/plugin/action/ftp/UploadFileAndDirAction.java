@@ -15,15 +15,16 @@ import tech.lin2j.idea.plugin.ui.ftp.container.LocalFileTableContainer;
  */
 public class UploadFileAndDirAction extends AnAction {
 
-    private final LocalFileTableContainer localFileTableContainer;
+    private final LocalFileTableContainer localContainer;
 
-    public UploadFileAndDirAction(LocalFileTableContainer localFileTableContainer) {
+    public UploadFileAndDirAction(LocalFileTableContainer localContainer) {
         super("Upload", "Upload file and directory", AllIcons.Actions.Upload);
-        this.localFileTableContainer = localFileTableContainer;
+        this.localContainer = localContainer;
     }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        ApplicationContext.getApplicationContext().publishEvent(new FileTransferEvent(true, TransferEventType.START));
+        FileTransferEvent event = new FileTransferEvent(localContainer, true, TransferEventType.START);
+        ApplicationContext.getApplicationContext().publishEvent(event);
     }
 }

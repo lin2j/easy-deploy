@@ -117,4 +117,8 @@ public class ConfigHelper {
         UPLOAD_PROFILE_MAP = CONFIG_PERSISTENCE.getUploadProfiles().stream()
                 .collect(Collectors.groupingBy(UploadProfile::getSshId));
     }
+
+    public static List<String> getServerTags() {
+        return CONFIG_PERSISTENCE.getServerTags();
+    }
 }

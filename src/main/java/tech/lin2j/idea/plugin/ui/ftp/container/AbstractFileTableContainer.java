@@ -1,13 +1,16 @@
 package tech.lin2j.idea.plugin.ui.ftp.container;
 
+import com.intellij.ide.browsers.DefaultBrowserPolicy;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.ui.CollectionComboBoxModel;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.PathUtil;
@@ -33,9 +36,15 @@ import javax.swing.table.TableModel;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.ItemEvent;
+import java.io.File;
+import java.nio.file.Files;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * @author linjinjia
@@ -113,7 +122,7 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
         if (StringUtil.isEmpty(path)) {
             return path;
         }
-        if (path.endsWith("/")) {
+        if (!"/".equals(path) && path.endsWith("/")) {
             path = path.substring(0, path.length() - 1);
         }
         return path;
@@ -121,7 +130,22 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
 
     @Override
     public String getParentPath() {
-        return PathUtil.getParentPath(getPath());
+        String cur = getPath();
+        // windows
+        if (SystemInfo.isWindows) {
+            // root
+            if (StringUtil.isNotEmpty(cur)
+                    && cur.length() == 3
+                    && cur.matches("[A-Za-z]:\\\\")) {
+                return cur;
+            }
+        }
+        String parent = PathUtil.getParentPath(cur);
+        if (SystemInfo.isUnix && StringUtil.isEmpty(parent)) {
+            parent = "/";
+        }
+
+        return parent;
     }
 
     @Override
@@ -165,10 +189,23 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
         toolbar.setTargetComponent(this);
 
         final JPanel northPanel = new JPanel(new GridBagLayout());
+        int gridx = 0;
         northPanel.setBorder(JBUI.Borders.empty(2, 0));
-        northPanel.add(toolbar.getComponent(), new GridBagConstraints(0, 0, 1, 1, 0, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL,
+        northPanel.add(toolbar.getComponent(), new GridBagConstraints(gridx, 0, 1, 1, 0, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL,
                 JBUI.emptyInsets(), 0, 0));
-        northPanel.add(filePath, new GridBagConstraints(1, 0, 1, 1, 1, 1, GridBagConstraints.BASELINE_TRAILING, GridBagConstraints.HORIZONTAL,
+        gridx++;
+        if (isLocalPanel && SystemInfo.isWindows) {
+            List<String> roots = Arrays.stream(File.listRoots()).map(File::toString).collect(Collectors.toList());
+            ComboBox<String> fileSystemRoots = new ComboBox<>(new CollectionComboBoxModel<>(roots));
+            fileSystemRoots.addItemListener(e -> {
+                String root = Objects.toString(fileSystemRoots.getSelectedItem());
+                setPath(root);
+            });
+            northPanel.add(fileSystemRoots, new GridBagConstraints(gridx, 0, 1, 1, 0, 1, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL,
+                    JBUI.emptyInsets(), 0, 0));
+            gridx++;
+        }
+        northPanel.add(filePath, new GridBagConstraints(gridx, 0, 1, 1, 1, 1, GridBagConstraints.BASELINE_TRAILING, GridBagConstraints.HORIZONTAL,
                 JBUI.emptyInsets(), 0, 0));
         setToolbar(northPanel);
     }

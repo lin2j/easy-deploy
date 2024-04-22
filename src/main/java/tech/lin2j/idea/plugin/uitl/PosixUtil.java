@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.uitl;
 
+import com.intellij.openapi.util.text.StringUtil;
 import net.schmizz.sshj.xfer.FilePermission;
 import tech.lin2j.idea.plugin.factory.SshServiceFactory;
 import tech.lin2j.idea.plugin.service.ISshService;
@@ -39,6 +40,9 @@ public class PosixUtil {
         SshStatus status = sshClient.execute(server, "id -nu " + uid);
         if (status.isSuccess()) {
             String user = status.getMessage();
+            if (StringUtil.isNotEmpty(user) && user.contains("no such user")) {
+                user = uid + "";
+            }
             USER_NAME_MAP.put(key, user);
             return user;
         }

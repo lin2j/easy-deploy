@@ -11,25 +11,25 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tech.lin2j.idea.plugin.file.SFTPVirtualFile;
 
 import javax.swing.*;
 import java.beans.PropertyChangeListener;
 
 /**
- * @author mzyupc@163.com
- *
- * key-value展示
+ * @author linjinjia
+ * @date 2024/4/22 21:56
  */
-public class ConsoleEditor extends UserDataHolderBase implements FileEditor {
-    private ConsoleVirtualFile consoleVirtualFile;
+public class SFTPEditor extends UserDataHolderBase implements FileEditor {
+    private final SFTPVirtualFile SFTPVirtualFile;
 
-    public ConsoleEditor(VirtualFile consoleVirtualFile) {
-        this.consoleVirtualFile = (ConsoleVirtualFile) consoleVirtualFile;
+    public SFTPEditor(VirtualFile consoleVirtualFile) {
+        this.SFTPVirtualFile = (SFTPVirtualFile) consoleVirtualFile;
     }
 
     @Override
     public @NotNull JComponent getComponent() {
-        return consoleVirtualFile.getConsolePanel();
+        return SFTPVirtualFile.getConsolePanel();
     }
 
     @Override
@@ -105,7 +105,7 @@ public class ConsoleEditor extends UserDataHolderBase implements FileEditor {
 
     @Override
     public @Nullable VirtualFile getFile() {
-        return this.consoleVirtualFile;
+        return this.SFTPVirtualFile;
     }
 
     @Override

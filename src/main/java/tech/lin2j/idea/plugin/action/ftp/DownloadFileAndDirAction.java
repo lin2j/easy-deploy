@@ -23,6 +23,7 @@ public class DownloadFileAndDirAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        ApplicationContext.getApplicationContext().publishEvent(new FileTransferEvent(false, TransferEventType.START));
+        FileTransferEvent event = new FileTransferEvent(container, false, TransferEventType.START);
+        ApplicationContext.getApplicationContext().publishEvent(event);
     }
 }

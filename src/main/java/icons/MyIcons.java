@@ -23,6 +23,15 @@ public interface MyIcons {
 
     Icon TRANSFER_DARK = IconLoader.getIcon("/icons/transferToolWindow_dark.svg", MyIcons.class);
 
+    Icon TAG = IconLoader.getIcon("/icons/tag.svg", MyIcons.class);
+
+    Icon SFTP = IconLoader.getIcon("/icons/sftp.svg", MyIcons.class);
+
+    interface Actions {
+        Icon SHOW_HIDDENS = load("/icons/actions/showHiddens.svg");
+        Icon SHOW_HIDDENS_DARK = load("/icons/actions/showHiddens_dark.svg");
+    }
+
     interface FileType {
         Icon VIDEO = load("/icons/fileTypes/video.svg");
         Icon DMG = load("/icons/fileTypes/dmg.svg");

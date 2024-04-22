@@ -10,6 +10,7 @@ import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.ui.dialog.SettingsDialog;
 
 import javax.swing.JButton;
 import javax.swing.JPanel;
@@ -32,6 +33,7 @@ public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
     private JButton refreshBtn;
     private JTextField searchInput;
     private JButton searchButton;
+    private JButton settingsButton;
     private final String[] columnNames = {"ID", "Address", "Username", "Description", "Actions"};
 
     private final Project project;
@@ -43,6 +45,8 @@ public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
     }
 
     private void initUi() {
+        settingsButton.addActionListener(e -> SettingsDialog.show(project));
+
         addHostBtn.addActionListener(e -> {
             // 显示 HostUi
             new HostUi(project, null).showAndGet();
@@ -84,6 +88,7 @@ public class ConsoleUi implements ApplicationListener<TableRefreshEvent> {
 
             ApplicationContext.getApplicationContext().publishEvent(new TableRefreshEvent(searchResult));
         });
+
 
     }
 

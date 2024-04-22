@@ -21,8 +21,8 @@ import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
-import tech.lin2j.idea.plugin.ui.editor.ConsoleFileSystem;
-import tech.lin2j.idea.plugin.ui.editor.ConsoleVirtualFile;
+import tech.lin2j.idea.plugin.ui.editor.SFTPFileSystem;
+import tech.lin2j.idea.plugin.file.SFTPVirtualFile;
 import tech.lin2j.idea.plugin.ui.ftp.FTPConsole;
 import tech.lin2j.idea.plugin.uitl.TerminalRunnerUtil;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
@@ -203,12 +203,12 @@ public class TableActionUi extends JBLabel implements TableCellRenderer, TableCe
                 public void actionPerformed(ActionEvent e) {
                     SshServer server = ConfigHelper.getSshServerById(sshId);
                     try {
-                        ConsoleVirtualFile consoleVirtualFile = new ConsoleVirtualFile(
+                        SFTPVirtualFile SFTPVirtualFile = new SFTPVirtualFile(
                                 server.getIp(),
                                 project,
                                 new FTPConsole(project, server)
                         );
-                        ConsoleFileSystem.getInstance(project).openEditor(consoleVirtualFile);
+                        SFTPFileSystem.getInstance(project).openEditor(SFTPVirtualFile);
                     } catch (IOException ex) {
                         log.error(ex.getMessage(), e);
                     }

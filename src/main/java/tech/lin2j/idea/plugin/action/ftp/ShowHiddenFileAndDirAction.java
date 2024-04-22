@@ -1,8 +1,8 @@
 package tech.lin2j.idea.plugin.action.ftp;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.ToggleAction;
+import icons.MyIcons;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.ui.ftp.container.FileTableContainer;
 
@@ -17,7 +17,7 @@ public class ShowHiddenFileAndDirAction extends ToggleAction {
         super(
                 "Show Hidden Files And Directories",
                 "Show hidden files and directories",
-                AllIcons.Actions.ShowHiddens
+                MyIcons.Actions.SHOW_HIDDENS
         );
         this.container = container;
     }

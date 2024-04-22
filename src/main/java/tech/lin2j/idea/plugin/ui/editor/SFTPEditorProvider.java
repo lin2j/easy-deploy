@@ -10,19 +10,21 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jdom.Element;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
+import tech.lin2j.idea.plugin.file.SFTPVirtualFile;
 
 /**
- * @author mzyupc@163.com
+ * @author linjinjia
+ * @date 2024/4/22 21:56
  */
-public class ConsoleEditorProvider implements FileEditorProvider, DumbAware {
+public class SFTPEditorProvider implements FileEditorProvider, DumbAware {
     @Override
     public boolean accept(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        return virtualFile instanceof ConsoleVirtualFile;
+        return virtualFile instanceof SFTPVirtualFile;
     }
 
     @Override
     public @NotNull FileEditor createEditor(@NotNull Project project, @NotNull VirtualFile virtualFile) {
-        return new ConsoleEditor(virtualFile);
+        return new SFTPEditor(virtualFile);
     }
 
     @Override

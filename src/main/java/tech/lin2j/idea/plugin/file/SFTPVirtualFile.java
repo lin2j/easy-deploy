@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.ui.editor;
+package tech.lin2j.idea.plugin.file;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
@@ -7,6 +7,8 @@ import com.intellij.openapi.vfs.VirtualFileSystem;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tech.lin2j.idea.plugin.file.fileTypes.SFTPFileType;
+import tech.lin2j.idea.plugin.ui.editor.SFTPFileSystem;
 import tech.lin2j.idea.plugin.ui.ftp.FTPConsole;
 
 import javax.swing.JPanel;
@@ -18,17 +20,17 @@ import java.io.OutputStream;
  * @author linjinjia
  * @date 2024/3/31 02:29
  */
-public class ConsoleVirtualFile extends VirtualFile {
+public class SFTPVirtualFile extends VirtualFile {
     private final String name;
     private final Project project;
     private final JPanel consolePanel;
 
     @Override
     public @NotNull FileType getFileType() {
-        return new ConsoleFileType();
+        return new SFTPFileType();
     }
 
-    public ConsoleVirtualFile(String name, Project project, FTPConsole console) {
+    public SFTPVirtualFile(String name, Project project, FTPConsole console) {
         this.project = project;
         this.name = name;
         this.consolePanel = console.createUi();
@@ -41,13 +43,13 @@ public class ConsoleVirtualFile extends VirtualFile {
     @Override
     public @NotNull
     String getName() {
-        return name;
+        return "[SFTP]" + name;
     }
 
     @Override
     public @NotNull
     VirtualFileSystem getFileSystem() {
-        return ConsoleFileSystem.getInstance(project);
+        return SFTPFileSystem.getInstance(project);
     }
 
     @Override
