@@ -35,7 +35,7 @@ public class EbookFileType implements FileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return null;
+        return "epub";
     }
 
     @Nullable

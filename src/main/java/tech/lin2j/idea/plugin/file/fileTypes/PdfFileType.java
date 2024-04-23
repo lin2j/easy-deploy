@@ -31,7 +31,7 @@ public class PdfFileType implements FileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return null;
+        return "pdf";
     }
 
     @Nullable

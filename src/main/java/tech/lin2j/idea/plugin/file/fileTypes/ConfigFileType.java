@@ -31,7 +31,7 @@ public class ConfigFileType implements FileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return null;
+        return "cfg";
     }
 
     @Nullable

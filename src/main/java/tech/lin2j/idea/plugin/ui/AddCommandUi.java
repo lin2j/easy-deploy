@@ -2,6 +2,7 @@ package tech.lin2j.idea.plugin.ui;
 
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
+import com.intellij.openapi.util.text.StringUtil;
 import org.jdesktop.swingx.prompt.PromptSupport;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,14 +32,16 @@ public class AddCommandUi extends DialogWrapper {
     private JTextArea cmdContent;
     private JPanel mainPanel;
     private JScrollPane cmdScroll;
+    private JTextField titleInput;
 
-    private Integer sshId;
-    private Integer cmdId;
+    private final Integer sshId;
+    private final Integer cmdId;
 
-    public AddCommandUi(Integer sshId, Integer cmdId, String dir, String content) {
+    public AddCommandUi(Integer sshId, Integer cmdId, String title, String dir, String content) {
         super(true);
         this.sshId = sshId;
         this.cmdId = cmdId;
+        this.titleInput.setText(title);
         this.dirInput.setText(dir);
         this.cmdContent.setText(content);
         uiInit();
@@ -50,10 +53,11 @@ public class AddCommandUi extends DialogWrapper {
         cmdScroll.setMinimumSize(new Dimension(400, 300));
         PromptSupport.setPrompt("Please input absolute path", dirInput);
         okBtn.addActionListener(e -> {
+            String title = titleInput.getText();
             String dir = dirInput.getText();
             String cmdStr = cmdContent.getText();
-            if (dir.isEmpty() || cmdStr.isEmpty()) {
-                Messages.showErrorDialog("Add Command", "Content of Directory and Command Must not Be Null");
+            if (StringUtil.isEmpty(dir) || StringUtil.isEmpty(cmdStr) || StringUtil.isEmpty(title)) {
+                Messages.showErrorDialog("Title or directory or command must not be null", "Add Command");
                 return;
             }
             // update config if command is exist
@@ -63,7 +67,7 @@ public class AddCommandUi extends DialogWrapper {
                 command.setContent(cmdStr);
             } else {
                 int id = ConfigHelper.maxCommandId() + 1;
-                Command cmd = new Command(id, sshId, dir, cmdStr);
+                Command cmd = new Command(id, sshId, title, dir, cmdStr);
                 ConfigHelper.addCommand(cmd);
             }
             close(OK_EXIT_CODE);

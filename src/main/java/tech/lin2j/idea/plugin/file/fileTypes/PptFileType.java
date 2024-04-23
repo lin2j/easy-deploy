@@ -31,7 +31,7 @@ public class PptFileType implements FileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return null;
+        return "ppt";
     }
 
     @Nullable

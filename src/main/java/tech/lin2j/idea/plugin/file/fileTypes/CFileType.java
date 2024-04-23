@@ -1,6 +1,5 @@
 package tech.lin2j.idea.plugin.file.fileTypes;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.vfs.VirtualFile;
 import icons.MyIcons;
@@ -32,7 +31,7 @@ public class CFileType implements FileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return null;
+        return "c";
     }
 
     @Nullable

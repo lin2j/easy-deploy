@@ -31,7 +31,7 @@ public class ExcelFileType implements FileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return null;
+        return "xlsx";
     }
 
     @Nullable

@@ -10,6 +10,8 @@ public class Command {
 
     private Integer sshId;
 
+    private String title;
+
     private String dir;
 
     private String content;
@@ -17,10 +19,11 @@ public class Command {
     public Command() {
     }
 
-    public Command(Integer id, Integer sshId, String dir, String content) {
+    public Command(Integer id, Integer sshId, String title, String dir, String content) {
         super();
         this.id = id;
         this.sshId = sshId;
+        this.title = title;
         this.dir = dir;
         this.content = content;
     }
@@ -63,11 +66,19 @@ public class Command {
         this.content = content;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
     @Override
     public String toString() {
         String newContent = null;
         if (content != null) {
-            newContent = content.substring(0, Math.min(content.length(), 100));
+            newContent = content.substring(0, Math.min(content.length(), 30));
         }
         return String.format("Command: %s, Directory: %s", newContent, dir);
     }

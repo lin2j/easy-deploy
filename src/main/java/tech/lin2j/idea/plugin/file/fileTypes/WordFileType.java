@@ -31,7 +31,7 @@ public class WordFileType implements FileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return null;
+        return "docx";
     }
 
     @Nullable

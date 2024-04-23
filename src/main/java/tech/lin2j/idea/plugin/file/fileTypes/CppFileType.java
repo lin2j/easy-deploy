@@ -31,7 +31,7 @@ public class CppFileType implements FileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return null;
+        return "cpp";
     }
 
     @Nullable

@@ -4,9 +4,11 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.ui.CollectionComboBoxModel;
 import org.jdesktop.swingx.prompt.PromptSupport;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -37,6 +39,7 @@ import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 /**
@@ -61,6 +64,7 @@ public class HostUi extends DialogWrapper {
     private JTextField pemPrivateKeyInput;
     private JLabel pemPrivateKeyLabel;
     private JLabel passwordLabel;
+    private ComboBox<String> tagComboBox;
     private ButtonGroup authTypeGroup;
 
     private final Project project;
@@ -84,11 +88,14 @@ public class HostUi extends DialogWrapper {
         passRadio.setSelected(true);
         this.changePemPrivateKeyAuthTypeEnable(false);
 
+        tagComboBox.setModel(new CollectionComboBoxModel<>(ConfigHelper.getServerTags()));
+
         if (server != null) {
             ipInput.setText(server.getIp());
             portInput.setText(server.getPort().toString());
             userInput.setText(server.getUsername());
             passInput.setText(server.getPassword());
+            tagComboBox.setSelectedItem(server.getTag());
             descInput.setText(server.getDescription());
             pemPrivateKeyInput.setText(server.getPemPrivateKey());
             if (AuthType.needPassword(server.getAuthType())) {
@@ -224,6 +231,7 @@ public class HostUi extends DialogWrapper {
             server.setAuthType(AuthType.PEM_PRIVATE_KEY.getCode());
         }
         setText(descInput, false, server::setDescription);
+        server.setTag(Objects.toString(tagComboBox.getSelectedItem()));
         return miss;
     }
 

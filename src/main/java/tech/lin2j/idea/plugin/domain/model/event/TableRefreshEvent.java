@@ -11,6 +11,8 @@ import java.util.List;
  */
 public class TableRefreshEvent extends ApplicationEvent {
 
+    private boolean tagRefresh;
+
     List<SshServer> sshServers;
 
     public TableRefreshEvent(List<SshServer> sshServers) {
@@ -24,5 +26,13 @@ public class TableRefreshEvent extends ApplicationEvent {
 
     public List<SshServer> getSshServers() {
         return sshServers;
+    }
+
+    public boolean isTagRefresh() {
+        return tagRefresh;
+    }
+
+    public void setTagRefresh(boolean tagRefresh) {
+        this.tagRefresh = tagRefresh;
     }
 }

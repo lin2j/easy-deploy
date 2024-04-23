@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.ui;
 
+import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.text.StringUtil;
@@ -15,6 +16,7 @@ import tech.lin2j.idea.plugin.uitl.CommandUtil;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
 
 import javax.swing.Action;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JList;
@@ -22,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
 import java.util.List;
@@ -61,10 +64,24 @@ public class SelectCommandUi extends DialogWrapper implements ApplicationListene
 
         loadCommandList();
 
+        cmdList.setCellRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+                Command command = (Command) value;
+                setIcon(AllIcons.Debugger.Console);
+                if (StringUtil.isNotEmpty(command.getTitle())) {
+                    setText(command.getTitle());
+                } else {
+                    setText(command.toString());
+                }
+                return this;
+            }
+        });
         cmdScrollPanel.setMinimumSize(new Dimension(600, 300));
 
         addBtn.addActionListener(e -> {
-            new AddCommandUi(sshId, null, null, null).showAndGet();
+            new AddCommandUi(sshId, null, null, null, null).showAndGet();
         });
 
         editBtn.addActionListener(e -> {
@@ -72,7 +89,7 @@ public class SelectCommandUi extends DialogWrapper implements ApplicationListene
             if (cmd == null) {
                 return;
             }
-            new AddCommandUi(sshId, cmd.getId(), cmd.getDir(), cmd.getContent()).showAndGet();
+            new AddCommandUi(sshId, cmd.getId(), cmd.getTitle(), cmd.getDir(), cmd.getContent()).showAndGet();
         });
 
         deleteBtn.addActionListener(e -> {

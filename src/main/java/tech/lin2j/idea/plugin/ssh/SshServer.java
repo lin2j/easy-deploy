@@ -24,6 +24,8 @@ public class SshServer implements Cloneable{
     @Deprecated
     private String password;
 
+    private String tag;
+
     private String description;
 
     /**
@@ -142,5 +144,13 @@ public class SshServer implements Cloneable{
         } catch (CloneNotSupportedException e) {
             throw new AssertionError();
         }
+    }
+
+    public String getTag() {
+        return tag;
+    }
+
+    public void setTag(String tag) {
+        this.tag = tag;
     }
 }

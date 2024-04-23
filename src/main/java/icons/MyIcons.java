@@ -24,6 +24,7 @@ public interface MyIcons {
     Icon TRANSFER_DARK = IconLoader.getIcon("/icons/transferToolWindow_dark.svg", MyIcons.class);
 
     Icon TAG = IconLoader.getIcon("/icons/tag.svg", MyIcons.class);
+    Icon TAG_DARK = IconLoader.getIcon("/icons/tag_dark.svg", MyIcons.class);
 
     Icon SFTP = IconLoader.getIcon("/icons/sftp.svg", MyIcons.class);
 
