@@ -36,10 +36,6 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
     public RemoteFileTableContainer(Project project, SshServer server) {
         super(true, project, false);
         this.server = server;
-        try {
-            this.sftpClient = SshConnectionManager.makeSshClient(server).newSFTPClient();
-        } catch (IOException ignored) {
-        }
 
         init();
     }

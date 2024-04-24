@@ -1,6 +1,5 @@
 package tech.lin2j.idea.plugin.ui.ftp.container;
 
-import com.intellij.ide.browsers.DefaultBrowserPolicy;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
@@ -27,6 +26,7 @@ import tech.lin2j.idea.plugin.action.ftp.RowDoubleClickAction;
 import tech.lin2j.idea.plugin.action.ftp.ShowHiddenFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.UploadFileAndDirAction;
 import tech.lin2j.idea.plugin.file.TableFile;
+import tech.lin2j.idea.plugin.uitl.FileUtil;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -36,9 +36,7 @@ import javax.swing.table.TableModel;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ItemEvent;
 import java.io.File;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -143,6 +141,12 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
         String parent = PathUtil.getParentPath(cur);
         if (SystemInfo.isUnix && StringUtil.isEmpty(parent)) {
             parent = "/";
+        }
+        if (SystemInfo.isWindows
+                && StringUtil.isNotEmpty(parent)
+                && parent.length() == 2
+                && parent.matches("[A-Za-z]:")) {
+            parent += "\\";
         }
 
         return parent;

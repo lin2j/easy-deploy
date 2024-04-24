@@ -58,9 +58,6 @@ public class TableActionUi extends JBLabel implements TableCellRenderer, TableCe
     private JButton terminalBtn;
     private JButton moreBtn;
 
-    private int selectedRow;
-    private int selectedCol;
-
     private int sshId;
     private final Project project;
 
@@ -116,8 +113,6 @@ public class TableActionUi extends JBLabel implements TableCellRenderer, TableCe
         TableActionUi ui = uiMap.get(location);
         if (ui == null) {
             ui = new TableActionUi(project);
-            ui.selectedRow = row;
-            ui.selectedCol = column;
             Object sshId = table.getModel().getValueAt(row, 0);
             ui.sshId = Integer.parseInt(sshId.toString());
             uiMap.put(location, ui);

@@ -63,6 +63,7 @@ public class AddCommandUi extends DialogWrapper {
             // update config if command is exist
             if (cmdId != null) {
                 Command command = ConfigHelper.getCommandById(cmdId);
+                command.setTitle(title);
                 command.setDir(dir);
                 command.setContent(cmdStr);
             } else {
