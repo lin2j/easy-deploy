@@ -21,6 +21,7 @@ import tech.lin2j.idea.plugin.action.ftp.DownloadFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.GoToDesktopAction;
 import tech.lin2j.idea.plugin.action.ftp.GoToParentFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.HomeDirectoryAction;
+import tech.lin2j.idea.plugin.action.ftp.ProjectPathAction;
 import tech.lin2j.idea.plugin.action.ftp.RefreshFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.RowDoubleClickAction;
 import tech.lin2j.idea.plugin.action.ftp.ShowHiddenFileAndDirAction;
@@ -170,8 +171,11 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
     protected void initToolBar() {
         DefaultActionGroup actionGroup = new DefaultActionGroup();
         actionGroup.add(new HomeDirectoryAction(this));
-        if (isLocalPanel && SystemInfo.isWindows) {
-            actionGroup.add(new GoToDesktopAction((LocalFileTableContainer) this));
+        if (isLocalPanel) {
+            actionGroup.add(new ProjectPathAction((LocalFileTableContainer) this));
+            if (SystemInfo.isWindows) {
+                actionGroup.add(new GoToDesktopAction((LocalFileTableContainer) this));
+            }
         }
         actionGroup.add(new GoToParentFolderAction(this));
         actionGroup.addSeparator();

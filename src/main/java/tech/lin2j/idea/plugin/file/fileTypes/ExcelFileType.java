@@ -37,7 +37,7 @@ public class ExcelFileType implements FileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return MyIcons.FileType.EXCEl;
+        return MyIcons.FileType.Excel;
     }
 
     @Override

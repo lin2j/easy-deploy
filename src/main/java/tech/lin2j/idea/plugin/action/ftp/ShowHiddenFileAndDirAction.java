@@ -17,7 +17,7 @@ public class ShowHiddenFileAndDirAction extends ToggleAction {
         super(
                 "Show Hidden Files And Directories",
                 "Show hidden files and directories",
-                MyIcons.Actions.SHOW_HIDDENS
+                MyIcons.Actions.showHidden
         );
         this.container = container;
     }

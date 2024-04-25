@@ -37,7 +37,7 @@ public class DmgFileType implements FileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return MyIcons.FileType.DMG;
+        return MyIcons.FileType.Dmg;
     }
 
     @Override

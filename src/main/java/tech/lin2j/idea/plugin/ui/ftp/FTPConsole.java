@@ -1,6 +1,5 @@
 package tech.lin2j.idea.plugin.ui.ftp;
 
-import com.intellij.execution.impl.ConsoleViewImpl;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.JBSplitter;
@@ -51,7 +50,7 @@ public class FTPConsole {
         ProgressTable progressTable = new ProgressTable(localContainer, remoteContainer, logViewer.getConsoleView());
 
         JBTabbedPane transferPane = new JBTabbedPane();
-        transferPane.addTab("Transfer", MyIcons.TRANSFER, progressTable);
+        transferPane.addTab("Transfer", MyIcons.Transfer, progressTable);
         transferPane.addTab("Log" , AllIcons.Debugger.Console, logViewer.getMainPanel());
 
         mainPanel.setSecondComponent(transferPane);

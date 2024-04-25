@@ -41,7 +41,7 @@ public class EbookFileType implements FileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return MyIcons.FileType.EBOOk;
+        return MyIcons.FileType.EBook;
     }
 
     @Override

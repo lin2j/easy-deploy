@@ -1,6 +1,5 @@
 package tech.lin2j.idea.plugin.ui.settings;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.ActionToolbarPosition;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
@@ -37,7 +36,7 @@ import java.util.Objects;
  */
 public class ServerTagConfigurable implements SearchableConfigurable, Configurable.NoScroll {
 
-    private static final Icon TAG = MyIcons.TAG;
+    private static final Icon TAG = MyIcons.Tag;
 
     private final JBList<String> tagList;
     private final List<String> tagData;

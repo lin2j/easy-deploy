@@ -42,7 +42,7 @@ public class VideoFileType implements FileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return MyIcons.FileType.VIDEO;
+        return MyIcons.FileType.Video;
     }
 
     @Override

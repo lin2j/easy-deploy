@@ -1,6 +1,5 @@
 package icons;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.ui.IconManager;
 
@@ -15,35 +14,37 @@ public interface MyIcons {
         return IconManager.getInstance().getIcon(path, MyIcons.class);
     }
 
-    Icon DEPLOY = IconLoader.getIcon("/icons/deploy.svg", MyIcons.class);
+    Icon Deploy = IconLoader.getIcon("/icons/deploy.svg", MyIcons.class);
+    Icon DeployDark = IconLoader.getIcon("/icons/deploy_dark.svg", MyIcons.class);
 
-    Icon DEPLOY_DARK = IconLoader.getIcon("/icons/deploy_dark.svg", MyIcons.class);
+    Icon Transfer = IconLoader.getIcon("/icons/transferToolWindow.svg", MyIcons.class);
+    Icon TransferDark = IconLoader.getIcon("/icons/transferToolWindow_dark.svg", MyIcons.class);
 
-    Icon TRANSFER = IconLoader.getIcon("/icons/transferToolWindow.svg", MyIcons.class);
-
-    Icon TRANSFER_DARK = IconLoader.getIcon("/icons/transferToolWindow_dark.svg", MyIcons.class);
-
-    Icon TAG = IconLoader.getIcon("/icons/tag.svg", MyIcons.class);
-    Icon TAG_DARK = IconLoader.getIcon("/icons/tag_dark.svg", MyIcons.class);
+    Icon Tag = IconLoader.getIcon("/icons/tag.svg", MyIcons.class);
+    Icon TagDark = IconLoader.getIcon("/icons/tag_dark.svg", MyIcons.class);
 
     Icon SFTP = IconLoader.getIcon("/icons/sftp.svg", MyIcons.class);
 
     interface Actions {
-        Icon SHOW_HIDDENS = load("/icons/actions/showHiddens.svg");
-        Icon SHOW_HIDDENS_DARK = load("/icons/actions/showHiddens_dark.svg");
+        Icon showHidden = load("/icons/actions/showHiddens.svg");
+        Icon showHiddenDark = load("/icons/actions/showHiddens_dark.svg");
+        Icon AddHost = IconLoader.getIcon("/icons/actions/host.svg", MyIcons.class);
+        Icon Settings = IconLoader.getIcon("/icons/actions/settings.svg", MyIcons.class);
+        Icon Refresh = IconLoader.getIcon("/icons/actions/refresh.svg", MyIcons.class);
+        Icon Github = IconLoader.getIcon("/icons/actions/github.svg", MyIcons.class);
     }
 
     interface FileType {
-        Icon VIDEO = load("/icons/fileTypes/video.svg");
-        Icon DMG = load("/icons/fileTypes/dmg.svg");
+        Icon Video = load("/icons/fileTypes/video.svg");
+        Icon Dmg = load("/icons/fileTypes/dmg.svg");
         Icon C = load("/icons/fileTypes/c.svg");
-        Icon C_DARK = load("/icons/fileTypes/c_dark.svg");
+        Icon CDark = load("/icons/fileTypes/c_dark.svg");
         Icon CPP = load("/icons/fileTypes/cpp.svg");
-        Icon CPP_DARK = load("/icons/fileTypes/cpp_dark.svg");
-        Icon WORD = load("/icons/fileTypes/word.svg");
-        Icon EXCEl = load("/icons/fileTypes/excel.svg");
+        Icon CPPDark = load("/icons/fileTypes/cpp_dark.svg");
+        Icon Word = load("/icons/fileTypes/word.svg");
+        Icon Excel = load("/icons/fileTypes/excel.svg");
         Icon PPT = load("/icons/fileTypes/ppt.svg");
         Icon PDF = load("/icons/fileTypes/pdf.svg");
-        Icon EBOOk = load("/icons/fileTypes/ebook.svg");
+        Icon EBook = load("/icons/fileTypes/ebook.svg");
     }
 }

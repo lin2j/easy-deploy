@@ -37,7 +37,7 @@ public class WordFileType implements FileType {
     @Nullable
     @Override
     public Icon getIcon() {
-        return MyIcons.FileType.WORD;
+        return MyIcons.FileType.Word;
     }
 
     @Override

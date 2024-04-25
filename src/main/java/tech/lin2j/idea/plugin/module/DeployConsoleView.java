@@ -3,7 +3,7 @@ package tech.lin2j.idea.plugin.module;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.JBSplitter;
-import tech.lin2j.idea.plugin.ui.ConsoleUi;
+import tech.lin2j.idea.plugin.ui.DashboardView;
 
 /**
  * @author linjinjia
@@ -12,16 +12,16 @@ import tech.lin2j.idea.plugin.ui.ConsoleUi;
 public class DeployConsoleView extends SimpleToolWindowPanel {
 
     private final Project project;
-    private final ConsoleUi consoleUi;
+    private final DashboardView consoleUi;
 
     public DeployConsoleView(Project project) {
         super(false, true);
         this.project = project;
-        this.consoleUi = new ConsoleUi(project);
+        this.consoleUi = new DashboardView(project);
 
         JBSplitter splitter = new JBSplitter(false);
         splitter.setSplitterProportionKey("main.splitter.key");
-        splitter.setFirstComponent(consoleUi.getMainPanel());
+        splitter.setFirstComponent(consoleUi);
         splitter.setProportion(0.3f);
         setContent(splitter);
     }
@@ -30,7 +30,7 @@ public class DeployConsoleView extends SimpleToolWindowPanel {
         return project;
     }
 
-    public ConsoleUi getConsoleUi() {
+    public DashboardView getConsoleUi() {
         return consoleUi;
     }
 }
