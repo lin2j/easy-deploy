@@ -76,10 +76,21 @@ public class Command {
 
     @Override
     public String toString() {
+        String newDir = null;
         String newContent = null;
         if (content != null) {
             newContent = content.substring(0, Math.min(content.length(), 30));
+            if (newContent.length() < content.length()) {
+                newContent += "...";
+            }
         }
-        return String.format("Command: %s, Directory: %s", newContent, dir);
+        if (dir != null) {
+            newDir = dir.substring(0, Math.min(dir.length(), 20));
+            if (newDir.length() < dir.length()) {
+                newDir += "...";
+            }
+        }
+
+        return String.format("Directory: %s, Command: %s", newDir, newContent);
     }
 }

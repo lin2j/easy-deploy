@@ -4,6 +4,10 @@ import com.intellij.icons.AllIcons;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.ui.ColoredListCellRenderer;
+import com.intellij.ui.EditorTextField;
+import com.intellij.ui.JBColor;
+import com.intellij.ui.SimpleTextAttributes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.domain.model.Command;
@@ -12,6 +16,7 @@ import tech.lin2j.idea.plugin.domain.model.event.CommandAddEvent;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.ui.render.CommandColoredListCellRenderer;
 import tech.lin2j.idea.plugin.uitl.CommandUtil;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
 
@@ -19,11 +24,13 @@ import javax.swing.Action;
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Toolkit;
@@ -64,20 +71,7 @@ public class SelectCommandUi extends DialogWrapper implements ApplicationListene
 
         loadCommandList();
 
-        cmdList.setCellRenderer(new DefaultListCellRenderer() {
-            @Override
-            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
-                super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-                Command command = (Command) value;
-                setIcon(AllIcons.Debugger.Console);
-                if (StringUtil.isNotEmpty(command.getTitle())) {
-                    setText(command.getTitle());
-                } else {
-                    setText(command.toString());
-                }
-                return this;
-            }
-        });
+        cmdList.setCellRenderer(new CommandColoredListCellRenderer());
         cmdScrollPanel.setMinimumSize(new Dimension(600, 300));
 
         addBtn.addActionListener(e -> {

@@ -1,8 +1,10 @@
 package tech.lin2j.idea.plugin.ui.ftp.container;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.ui.components.JBLoadingPanel;
 import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.FileMode;
 import net.schmizz.sshj.sftp.SFTPClient;
@@ -16,20 +18,23 @@ import tech.lin2j.idea.plugin.ui.table.RemoteFileTableModel;
 import javax.swing.SwingUtilities;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableModel;
+import java.awt.BorderLayout;
 import java.io.IOException;
 import java.util.Collections;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 /**
  * @author linjinjia
  * @date 2024/4/4 10:19
  */
-public class RemoteFileTableContainer extends AbstractFileTableContainer implements FileTableContainer {
+public class RemoteFileTableContainer extends AbstractFileTableContainer implements FileTableContainer, Disposable {
 
     private static final int NAME_COLUMN = 0;
     private static final int MODIFIED_COLUMN = 3;
 
+    private JBLoadingPanel loadingPanel;
     private final SshServer server;
     private SFTPClient sftpClient;
 
@@ -43,6 +48,7 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
     @Override
     public void refreshFileList() {
         try {
+            loadingPanel.startLoading();
             if (sftpClient == null) {
                 this.sftpClient = SshConnectionManager.makeSshClient(server).newSFTPClient();
             }
@@ -70,6 +76,8 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
             SwingUtilities.invokeLater(() -> {
                 Messages.showErrorDialog("The specified path cannot be opened: " + e.getMessage(), "Path");
             });
+        } finally {
+            loadingPanel.stopLoading();
         }
     }
 
@@ -123,5 +131,17 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
     @Override
     protected TableModel getTableModel() {
         return new RemoteFileTableModel(Collections.emptyList());
+    }
+
+    protected void addTableLoadingLayer() {
+        loadingPanel = new JBLoadingPanel(new BorderLayout(), this, 200);
+        loadingPanel.setLoadingText("Loading...");
+        loadingPanel.setName("Remote SFTP Directories");
+        loadingPanel.add(this);
+    }
+
+    @Override
+    public void dispose() {
+        // clean sftp resource
     }
 }

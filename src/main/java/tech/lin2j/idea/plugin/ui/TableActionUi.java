@@ -18,11 +18,11 @@ import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
+import tech.lin2j.idea.plugin.file.SFTPVirtualFile;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
 import tech.lin2j.idea.plugin.ui.editor.SFTPFileSystem;
-import tech.lin2j.idea.plugin.file.SFTPVirtualFile;
 import tech.lin2j.idea.plugin.ui.ftp.FTPConsole;
 import tech.lin2j.idea.plugin.uitl.TerminalRunnerUtil;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
@@ -33,6 +33,7 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTable;
+import javax.swing.UIManager;
 import javax.swing.event.CellEditorListener;
 import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
@@ -91,15 +92,27 @@ public class TableActionUi extends JBLabel implements TableCellRenderer, TableCe
     @Override
     public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected,
                                                    boolean hasFocus, int row, int column) {
-        TableActionUi ui = getTableActionUi(table, row, column);
-        Color tableBg;
-        if (isSelected) {
-            tableBg = table.getSelectionBackground();
-        } else {
-            tableBg = table.getBackground();
+        TableActionUi actionUi = getTableActionUi(table, row, column);
+
+        Color bg = null;
+        Color fg = null;
+
+        JTable.DropLocation dropLocation = table.getDropLocation();
+        if (dropLocation != null
+                && dropLocation.isInsertRow()
+                && dropLocation.getRow() == row) {
+            bg = UIManager.getColor("Table.dropCellBackground");
+            fg = UIManager.getColor("Table.dropCellForeground");
+            isSelected = true;
         }
-        ui.actionPanel.setBackground(tableBg);
-        return ui.actionPanel;
+        if (isSelected) {
+            actionUi.actionPanel.setBackground(bg == null ? table.getSelectionBackground() : bg);
+            actionUi.actionPanel.setForeground(fg == null ? table.getSelectionForeground() : fg);
+        } else {
+            actionUi.actionPanel.setBackground(table.getBackground());
+            actionUi.actionPanel.setForeground(table.getForeground());
+        }
+        return actionUi.actionPanel;
     }
 
     @Override

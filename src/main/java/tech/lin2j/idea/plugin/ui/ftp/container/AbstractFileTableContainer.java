@@ -27,7 +27,6 @@ import tech.lin2j.idea.plugin.action.ftp.RowDoubleClickAction;
 import tech.lin2j.idea.plugin.action.ftp.ShowHiddenFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.UploadFileAndDirAction;
 import tech.lin2j.idea.plugin.file.TableFile;
-import tech.lin2j.idea.plugin.uitl.FileUtil;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -168,6 +167,13 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
 
     }
 
+    /**
+     * Add a loading component to the remote panel.
+     */
+    protected void addTableLoadingLayer() {
+
+    }
+
     protected void initToolBar() {
         DefaultActionGroup actionGroup = new DefaultActionGroup();
         actionGroup.add(new HomeDirectoryAction(this));
@@ -225,11 +231,10 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
 
         new RowDoubleClickAction(this).installOn(table);
-
+        setContent(new JScrollPane(table));
+        addTableLoadingLayer();
         // async
         ApplicationManager.getApplication().executeOnPooledThread(this::refreshFileList);
-
-        setContent(new JScrollPane(table));
     }
 
     protected boolean showFile(TableFile tf) {

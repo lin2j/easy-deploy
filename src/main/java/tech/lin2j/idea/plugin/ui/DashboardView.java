@@ -1,6 +1,5 @@
 package tech.lin2j.idea.plugin.ui;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.AnAction;
@@ -12,8 +11,10 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.CollectionComboBoxModel;
 import com.intellij.ui.SearchTextField;
+import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.JBUI;
+import com.intellij.util.ui.StatusText;
 import icons.MyIcons;
 import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
@@ -23,7 +24,6 @@ import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ui.dialog.SettingsDialog;
-import tech.lin2j.idea.plugin.uitl.WebBrowseUtil;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -119,6 +119,10 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
 
     private void initSearchTextField() {
         searchInput = new SearchTextField();
+        String text = "IP | Name | Desc";
+        StatusText emptyText = searchInput.getTextEditor().getEmptyText();
+        emptyText.appendText(text, SimpleTextAttributes.GRAY_ATTRIBUTES);
+        searchInput.setToolTipText("IP | Name | Desc");
         searchInput.addKeyboardListener(new KeyAdapter() {
             @Override
             public void keyPressed(KeyEvent e) {
@@ -131,14 +135,15 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
             }
 
             private void search(KeyEvent e) {
-                String keyword = searchInput.getText();
-                if (StringUtil.isEmpty(keyword)) {
-                    return;
-                }
-
                 List<SshServer> searchResult = new ArrayList<>();
                 List<SshServer> serverInConfig = ConfigHelper.sshServers();
                 if (CollectionUtils.isEmpty(serverInConfig)) {
+                    return;
+                }
+
+                String keyword = searchInput.getText();
+                if (StringUtil.isEmpty(keyword)) {
+                    loadTableData(null);
                     return;
                 }
 
@@ -151,10 +156,6 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
                         searchResult.add(server);
                         continue;
                     }
-                    if (server.getTag() != null && server.getTag().contains(keyword)) {
-                        searchResult.add(server);
-                        continue;
-                    }
                     String desc = server.getDescription();
                     if (StringUtil.isNotEmpty(desc) && desc.contains(keyword)) {
                         searchResult.add(server);
@@ -162,14 +163,12 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
                 }
 
                 loadTableData(new TableRefreshEvent(searchResult));
-
             }
         });
     }
 
     private void initHostTable() {
         hostTable = new JBTable();
-
 
         setContent(new JScrollPane(hostTable));
         loadTableData(null);

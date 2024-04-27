@@ -17,6 +17,7 @@ import tech.lin2j.idea.plugin.domain.model.UploadProfile;
 import tech.lin2j.idea.plugin.domain.model.event.UploadProfileAddEvent;
 import tech.lin2j.idea.plugin.domain.model.event.UploadProfileSelectedEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
+import tech.lin2j.idea.plugin.ui.render.CommandColoredListCellRenderer;
 import tech.lin2j.idea.plugin.uitl.FileUtil;
 
 import javax.swing.Action;
@@ -65,6 +66,7 @@ public class AddUploadProfile extends DialogWrapper {
         Toolkit tk = Toolkit.getDefaultToolkit();
         mainPanel.setMinimumSize(new Dimension(tk.getScreenSize().width / 2, 0));
 
+        commandBox.setRenderer(new CommandColoredListCellRenderer());
         commandBox.addItem(NoneCommand.INSTANCE);
         ConfigHelper.getCommandsBySshId(sshId).forEach(cmd -> commandBox.addItem(cmd));
 

@@ -8,6 +8,10 @@ public class NoneCommand extends Command {
 
     public static final NoneCommand INSTANCE = new NoneCommand();
 
+    public NoneCommand() {
+        setTitle("None");
+    }
+
     @Override
     public String toString() {
         return "None";

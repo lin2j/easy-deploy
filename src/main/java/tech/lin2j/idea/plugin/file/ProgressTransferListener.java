@@ -3,6 +3,7 @@ package tech.lin2j.idea.plugin.file;
 import com.google.common.util.concurrent.AtomicDouble;
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
+import com.intellij.openapi.util.text.StringUtil;
 import net.schmizz.sshj.common.StreamCopier;
 import net.schmizz.sshj.xfer.TransferListener;
 import tech.lin2j.idea.plugin.ui.ftp.ProgressTable;
@@ -38,7 +39,7 @@ public class ProgressTransferListener implements TransferListener {
     @Override
     public StreamCopier.Listener file(final String name, final long size) {
         final String path = relPath + name;
-        print("Transfer file: " + path + "\n");
+        print("Transfer file: " + path + ", Size: " + StringUtil.formatFileSize(size) + "\n");
         AtomicDouble prePercent = new AtomicDouble(0);
         AtomicLong preTransferred = new AtomicLong();
         return transferred -> {
@@ -53,23 +54,28 @@ public class ProgressTransferListener implements TransferListener {
                 preTransferred.set(transferred);
             }
 
+            // update progress cell of output table
             double percent = 0;
             if (finalSize > 0) {
                 percent = finalTransferred / (double) finalSize;
             }
-
-            boolean completed = 1 - percent < 1e-6;
+            boolean completed = Math.abs(1 - percent) < 1e-6;
             boolean step = Math.abs(percent - prePercent.get() - 0.01) > 1e-6;
             if (step || completed) {
                 DefaultTableModel tableModel = (DefaultTableModel) progressCell.getTableModel();
                 int row = progressCell.getRow();
-
                 prePercent.set(percent);
                 progressCell.getColorProgressBar().setFraction(percent);
                 tableModel.fireTableCellUpdated(row, ProgressTable.PROGRESS_COL);
-
-                log((int)(percent * 100), completed);
             }
+
+            // update log progress of log panel
+            double fileProgress = 0;
+            if (size > 0) {
+                fileProgress = transferred / (double) size;
+            }
+            boolean fileCompleted = Math.abs(1 - fileProgress) < 1e-6;
+            log((int) (fileProgress * 100), fileCompleted);
 
         };
     }

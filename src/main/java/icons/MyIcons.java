@@ -29,8 +29,8 @@ public interface MyIcons {
         Icon showHidden = load("/icons/actions/showHiddens.svg");
         Icon showHiddenDark = load("/icons/actions/showHiddens_dark.svg");
         Icon AddHost = IconLoader.getIcon("/icons/actions/host.svg", MyIcons.class);
-        Icon Settings = IconLoader.getIcon("/icons/actions/settings.svg", MyIcons.class);
-        Icon Refresh = IconLoader.getIcon("/icons/actions/refresh.svg", MyIcons.class);
+        Icon Settings = IconLoader.getIcon("/icons/actions/my_settings.svg", MyIcons.class);
+        Icon Refresh = IconLoader.getIcon("/icons/actions/my_refresh.svg", MyIcons.class);
         Icon Github = IconLoader.getIcon("/icons/actions/github.svg", MyIcons.class);
     }
 

@@ -3,6 +3,9 @@ package tech.lin2j.idea.plugin.ui;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.ui.SimpleColoredComponent;
+import com.intellij.ui.SimpleColoredText;
+import com.intellij.ui.SimpleTextAttributes;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.domain.model.Command;
@@ -35,6 +38,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.List;
 
+import static tech.lin2j.idea.plugin.ui.render.CommandColoredListCellRenderer.TEXT_PADDING;
+
 /**
  * @author linjinjia
  * @date 2022/4/25 22:25
@@ -47,9 +52,9 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
     private JComboBox<UploadProfile> profileBox;
     private JLabel fileLabel;
     private JLabel locationLabel;
-    private JLabel commandLabel;
     private JButton actionBtn;
     private JLabel excludeLabel;
+    private SimpleColoredComponent myCmdLabel;
 
     private final Project project;
     private final SshServer sshServer;
@@ -91,7 +96,7 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
             ApplicationContext.getApplicationContext().publishEvent(new UploadProfileSelectedEvent(profile));
         });
 
-        actionBtn.setText("Action ▼");
+        actionBtn.setText("Actions ▼");
         actionBtn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
@@ -143,15 +148,18 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
         fileLabel.setText(profile.getFile());
         excludeLabel.setText(profile.getExclude());
         locationLabel.setText(profile.getLocation());
+
+        myCmdLabel.clear();
         if (profile.getCommandId() != null) {
             Command cmd = ConfigHelper.getCommandById(profile.getCommandId());
             if (cmd == null) {
                 cmd = NoneCommand.INSTANCE;
                 profile.setCommandId(null);
             }
-            commandLabel.setText(cmd.toString());
-        } else {
-            commandLabel.setText("");
+            if (StringUtil.isNotEmpty(cmd.getTitle())) {
+                myCmdLabel.append(cmd.getTitle() + TEXT_PADDING);
+            }
+            myCmdLabel.append(cmd.toString(), SimpleTextAttributes.GRAY_ATTRIBUTES);
         }
     }
 
@@ -176,7 +184,7 @@ public class UploadUi extends DialogWrapper implements ApplicationListener<Uploa
         } else {
             fileLabel.setText("");
             locationLabel.setText("");
-            commandLabel.setText("");
+            myCmdLabel.clear();
         }
     }
 
