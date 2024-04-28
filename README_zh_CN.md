@@ -79,7 +79,7 @@ Easy Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己
 
 <img src="docs/media/Upload.gif" alt="upload">
 
-# 待实现
+# 功能
 
 - [x] 添加/编辑/删除服务器信息
 - [x] 添加/编辑/删除命令
@@ -89,7 +89,8 @@ Easy Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己
 - [x] ssh 免密登录（私钥登录）
 - [ ] 配置导入/导出
 - [x] 服务器搜索
-- [ ] 文件传输面板
+- [x] SFTP 传输面板
+- [x] 插件设置面板
 
 # 联系我🐾
 

@@ -94,7 +94,7 @@ uploading.
 
 <img src="docs/media/Upload.gif" alt="upload">
 
-# TODO
+# Features
 
 - [x] Add/Edit/Remove Server Information
 - [x] Add/Edit/Remove Commands
@@ -104,9 +104,10 @@ uploading.
 - [x] SSH Passwordless Login (Private Key Login)
 - [ ] Configuration Import/Export
 - [x] Server Search
-- [ ] File Transfer Panel
+- [x] SFTP Transfer Panel
+- [x] Plugin Settings
  
-# contact me 🐾
+# Contact me 🐾
 
 I'm relatively new to developing Idea plugins, so there might be some shortcomings in addressing certain issues.
 
