@@ -17,11 +17,11 @@ public class ConfigHelper {
     private static final ConfigPersistence CONFIG_PERSISTENCE =
             ApplicationManager.getApplication().getService(ConfigPersistence.class);
 
-    private static final Map<Integer, SshServer> SSH_SERVER_MAP;
+    private static final Map<Long, SshServer> SSH_SERVER_MAP;
 
-    private static Map<Integer, List<Command>> COMMAND_MAP;
+    private static Map<Long, List<Command>> COMMAND_MAP;
 
-    private static Map<Integer, List<UploadProfile>> UPLOAD_PROFILE_MAP;
+    private static Map<Long, List<UploadProfile>> UPLOAD_PROFILE_MAP;
 
     static {
         SSH_SERVER_MAP = CONFIG_PERSISTENCE.getSshServers().stream()
@@ -42,10 +42,10 @@ public class ConfigHelper {
         return CONFIG_PERSISTENCE.getSshServers();
     }
 
-    public static int maxSshServerId() {
+    public static long maxSshServerId() {
         return CONFIG_PERSISTENCE.getSshServers().stream()
                 .map(SshServer::getId)
-                .max(Integer::compareTo).orElse(0);
+                .max(Long::compareTo).orElse(0L);
     }
 
     public static void addSshServer(SshServer sshServer) {
@@ -58,7 +58,7 @@ public class ConfigHelper {
         SSH_SERVER_MAP.remove(sshServer.getId());
     }
 
-    public static void removeSshServer(Integer id) {
+    public static void removeSshServer(long id) {
         SshServer sshServer = SSH_SERVER_MAP.get(id);
         if (sshServer == null) {
             return;
@@ -74,7 +74,7 @@ public class ConfigHelper {
         profiles.forEach(profile -> CONFIG_PERSISTENCE.getUploadProfiles().remove(profile));
     }
 
-    public static List<Command> getCommandsBySshId(int sshId) {
+    public static List<Command> getCommandsBySshId(long sshId) {
         return COMMAND_MAP.getOrDefault(sshId, new ArrayList<>());
     }
 
@@ -90,19 +90,19 @@ public class ConfigHelper {
                 .collect(Collectors.groupingBy(Command::getSshId));
     }
 
-    public static Integer maxCommandId() {
+    public static Long maxCommandId() {
         return CONFIG_PERSISTENCE.getCommands().stream()
                 .map(Command::getId)
-                .max(Integer::compareTo).orElse(0);
+                .max(Long::compareTo).orElse(0L);
     }
 
-    public static Command getCommandById(int id) {
+    public static Command getCommandById(long id) {
         return CONFIG_PERSISTENCE.getCommands().stream()
                 .filter(command -> command.getId() == id)
                 .findFirst().orElse(null);
     }
 
-    public static List<UploadProfile> getUploadProfileBySshId(int sshId) {
+    public static List<UploadProfile> getUploadProfileBySshId(long sshId) {
         return UPLOAD_PROFILE_MAP.getOrDefault(sshId, new ArrayList<>());
     }
 

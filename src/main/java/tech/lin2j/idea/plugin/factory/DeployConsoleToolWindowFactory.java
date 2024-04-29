@@ -9,6 +9,7 @@ import com.intellij.ui.content.ContentFactory;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.event.listener.UploadProfileSelectedListener;
+import tech.lin2j.idea.plugin.init.ModelIdInitializer;
 import tech.lin2j.idea.plugin.module.CommandExecuteView;
 import tech.lin2j.idea.plugin.module.DeployConsoleView;
 
@@ -20,6 +21,8 @@ public class DeployConsoleToolWindowFactory implements ToolWindowFactory {
 
     @Override
     public void createToolWindowContent(@NotNull Project project, @NotNull ToolWindow toolWindow) {
+        new ModelIdInitializer().init();
+
         ContentFactory contentFactory = ContentFactory.SERVICE.getInstance();
         // deploy tab
         DeployConsoleView deployConsoleView = new DeployConsoleView(project);

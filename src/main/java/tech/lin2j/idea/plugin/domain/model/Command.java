@@ -6,9 +6,9 @@ package tech.lin2j.idea.plugin.domain.model;
  */
 public class Command {
 
-    private Integer id;
+    private Long id;
 
-    private Integer sshId;
+    private Long sshId;
 
     private String title;
 
@@ -19,7 +19,7 @@ public class Command {
     public Command() {
     }
 
-    public Command(Integer id, Integer sshId, String title, String dir, String content) {
+    public Command(Long id, Long sshId, String title, String dir, String content) {
         super();
         this.id = id;
         this.sshId = sshId;
@@ -33,11 +33,11 @@ public class Command {
                 String.join("; ", content.split("\n"));
     }
 
-    public Integer getSshId() {
+    public Long getSshId() {
         return sshId;
     }
 
-    public void setSshId(Integer sshId) {
+    public void setSshId(Long sshId) {
         this.sshId = sshId;
     }
 
@@ -50,11 +50,11 @@ public class Command {
         this.dir = dir;
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

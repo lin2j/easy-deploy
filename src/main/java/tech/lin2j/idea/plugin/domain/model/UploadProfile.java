@@ -7,9 +7,11 @@ package tech.lin2j.idea.plugin.domain.model;
  */
 public class UploadProfile {
 
+    private Long id;
+
     private String name;
 
-    private Integer sshId;
+    private Long sshId;
 
     private String file;
 
@@ -25,6 +27,14 @@ public class UploadProfile {
 
     private Boolean isSelected = false;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public String getName() {
         return name;
     }
@@ -33,11 +43,11 @@ public class UploadProfile {
         this.name = name;
     }
 
-    public Integer getSshId() {
+    public Long getSshId() {
         return sshId;
     }
 
-    public void setSshId(Integer sshId) {
+    public void setSshId(Long sshId) {
         this.sshId = sshId;
     }
 

@@ -13,7 +13,7 @@ import tech.lin2j.idea.plugin.enums.AuthType;
  */
 public class SshServer implements Cloneable{
 
-    private Integer id;
+    private Long id;
 
     private String ip;
 
@@ -71,11 +71,11 @@ public class SshServer implements Cloneable{
         PasswordSafe.getInstance().set(attributes, credentials);
     }
 
-    public Integer getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(Integer id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
