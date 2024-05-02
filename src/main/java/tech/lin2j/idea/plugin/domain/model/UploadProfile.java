@@ -1,11 +1,15 @@
 package tech.lin2j.idea.plugin.domain.model;
 
 
+import java.util.Objects;
+
 /**
  * @author linjinjia
  * @date 2022/5/24 15:57
  */
 public class UploadProfile {
+
+    private Integer id;
 
     private String name;
 
@@ -24,6 +28,14 @@ public class UploadProfile {
     private Integer commandId;
 
     private Boolean isSelected = false;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getName() {
         return name;
@@ -84,5 +96,21 @@ public class UploadProfile {
     @Override
     public String toString() {
         return name;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        UploadProfile that = (UploadProfile) o;
+        return Objects.equals(name, that.name)
+                && Objects.equals(file, that.file)
+                && Objects.equals(location, that.location)
+                && Objects.equals(commandId, that.commandId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, file, location, commandId, isSelected);
     }
 }

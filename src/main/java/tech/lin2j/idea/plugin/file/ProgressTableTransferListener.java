@@ -17,12 +17,12 @@ import java.util.stream.Stream;
  * @author linjinjia
  * @date 2024/4/13 16:09
  */
-public class ProgressTransferListener implements TransferListener {
+public class ProgressTableTransferListener implements TransferListener {
     private final String relPath;
     private final ConsoleView consoleView;
     private final ProgressCell progressCell;
 
-    public ProgressTransferListener(String relPath, ProgressCell cell, ConsoleView consoleView) {
+    public ProgressTableTransferListener(String relPath, ProgressCell cell, ConsoleView consoleView) {
         if (!relPath.endsWith("/")) {
             relPath += "/";
         }
@@ -33,7 +33,7 @@ public class ProgressTransferListener implements TransferListener {
 
     @Override
     public TransferListener directory(String name) {
-        return new ProgressTransferListener(relPath + name + "/", progressCell, consoleView);
+        return new ProgressTableTransferListener(relPath + name + "/", progressCell, consoleView);
     }
 
     @Override

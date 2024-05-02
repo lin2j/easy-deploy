@@ -11,7 +11,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tech.lin2j.idea.plugin.file.SFTPVirtualFile;
 
 import javax.swing.*;
 import java.beans.PropertyChangeListener;

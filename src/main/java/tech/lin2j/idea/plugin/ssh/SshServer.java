@@ -7,11 +7,13 @@ import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.util.xmlb.annotations.Transient;
 import tech.lin2j.idea.plugin.enums.AuthType;
 
+import java.util.Objects;
+
 /**
  * @author linjinjia
  * @date 2022/4/25 15:06
  */
-public class SshServer implements Cloneable{
+public class SshServer implements Cloneable {
 
     private Integer id;
 
@@ -152,5 +154,20 @@ public class SshServer implements Cloneable{
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        SshServer sshServer = (SshServer) o;
+        return Objects.equals(ip, sshServer.ip)
+                && Objects.equals(port, sshServer.port)
+                && Objects.equals(username, sshServer.username);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(ip, port, username);
     }
 }

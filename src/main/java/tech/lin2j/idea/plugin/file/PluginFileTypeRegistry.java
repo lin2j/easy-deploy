@@ -15,7 +15,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * @author linjinjia
  * @date 2024/4/21 12:18
  */
-public class MyFileTypeRegistry {
+public class PluginFileTypeRegistry {
 
     private static final Map<String, FileType> FILE_TYPE_MAP = new ConcurrentHashMap<>();
 

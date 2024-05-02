@@ -1,5 +1,7 @@
 package tech.lin2j.idea.plugin.domain.model;
 
+import java.util.Objects;
+
 /**
  * @author linjinjia
  * @date 2022/4/27 14:01
@@ -92,5 +94,20 @@ public class Command {
         }
 
         return String.format("Directory: %s, Command: %s", newDir, newContent);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Command command = (Command) o;
+        return Objects.equals(title, command.title)
+                && Objects.equals(dir, command.dir)
+                && Objects.equals(content, command.content);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(title, dir, content);
     }
 }

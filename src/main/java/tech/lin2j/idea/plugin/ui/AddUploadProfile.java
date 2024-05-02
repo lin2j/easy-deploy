@@ -140,6 +140,7 @@ public class AddUploadProfile extends DialogWrapper {
                 ApplicationContext.getApplicationContext().publishEvent(new UploadProfileSelectedEvent(profile));
             } else {
                 UploadProfile newProfile = new UploadProfile();
+                newProfile.setId(ConfigHelper.maxUploadProfileId());
                 newProfile.setName(name);
                 newProfile.setSshId(sshId);
                 newProfile.setFile(file);

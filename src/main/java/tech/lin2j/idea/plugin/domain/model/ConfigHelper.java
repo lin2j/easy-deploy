@@ -6,6 +6,7 @@ import tech.lin2j.idea.plugin.ssh.SshServer;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 /**
@@ -118,7 +119,20 @@ public class ConfigHelper {
                 .collect(Collectors.groupingBy(UploadProfile::getSshId));
     }
 
+    public static int maxUploadProfileId() {
+        return CONFIG_PERSISTENCE.getUploadProfiles().stream()
+                .filter(Objects::nonNull)
+                .map(UploadProfile::getId)
+                .max(Integer::compareTo).orElse(1);
+    }
+
     public static List<String> getServerTags() {
         return CONFIG_PERSISTENCE.getServerTags();
+    }
+
+    public static UploadProfile getOneUploadProfileByName(int sshId, int profileId) {
+        return getUploadProfileBySshId(sshId).stream()
+                .filter(p -> Objects.equals(p.getId(), profileId))
+                .findFirst().orElse(null);
     }
 }

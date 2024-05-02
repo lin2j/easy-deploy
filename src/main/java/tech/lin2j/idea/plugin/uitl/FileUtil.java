@@ -5,7 +5,7 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.fileTypes.UnknownFileType;
 import tech.lin2j.idea.plugin.file.DirectoryInfo;
-import tech.lin2j.idea.plugin.file.MyFileTypeRegistry;
+import tech.lin2j.idea.plugin.file.PluginFileTypeRegistry;
 import tech.lin2j.idea.plugin.file.fileTypes.SpecifiedArchiveFileType;
 
 import java.io.File;
@@ -123,7 +123,7 @@ public class FileUtil {
         }
 
         if (fileType instanceof UnknownFileType) {
-            fileType = MyFileTypeRegistry.getFileTypeByExtension(ext);
+            fileType = PluginFileTypeRegistry.getFileTypeByExtension(ext);
         }
 
         return fileType;

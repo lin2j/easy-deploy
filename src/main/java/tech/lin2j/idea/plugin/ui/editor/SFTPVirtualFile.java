@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.file;
+package tech.lin2j.idea.plugin.ui.editor;
 
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;

@@ -11,6 +11,7 @@ import tech.lin2j.idea.plugin.ssh.SshServer;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -67,6 +68,15 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
     public List<UploadProfile> getUploadProfiles() {
         if (uploadProfiles == null) {
             uploadProfiles = new CopyOnWriteArrayList<>();
+        }
+        //
+        int maxProfileId = uploadProfiles.stream().map(UploadProfile::getId)
+                .filter(Objects::nonNull)
+                .max(Integer::compareTo).orElse(0);
+        for (UploadProfile profile : uploadProfiles) {
+            if (profile.getId() == null) {
+                profile.setId(++maxProfileId);
+            }
         }
         return uploadProfiles;
     }

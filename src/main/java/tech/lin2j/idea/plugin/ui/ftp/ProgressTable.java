@@ -11,7 +11,7 @@ import tech.lin2j.idea.plugin.domain.model.event.FileTransferEvent;
 import tech.lin2j.idea.plugin.enums.TransferState;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.file.DirectoryInfo;
-import tech.lin2j.idea.plugin.file.ProgressTransferListener;
+import tech.lin2j.idea.plugin.file.ProgressTableTransferListener;
 import tech.lin2j.idea.plugin.file.TableFile;
 import tech.lin2j.idea.plugin.ui.ftp.container.FileTableContainer;
 import tech.lin2j.idea.plugin.ui.table.ProgressCell;
@@ -146,7 +146,7 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
 
                 // serialize transfer task
                 String realPath = sourceContainer.getPath();
-                TransferListener transferListener = new ProgressTransferListener(realPath, cell, consoleView);
+                TransferListener transferListener = new ProgressTableTransferListener(realPath, cell, consoleView);
                 TASK_QUEUE.add(new TransferTask(transferListener, cell, isUpload, local, remote, targetContainer));
             }
         } catch (Exception e) {

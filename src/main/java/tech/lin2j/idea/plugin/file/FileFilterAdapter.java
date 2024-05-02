@@ -78,10 +78,10 @@ public class FileFilterAdapter implements FileFilter {
     }
 
     private void invokeUi(String executeResult) {
-        SwingUtilities.invokeLater(() -> {
-            CommandExecuteEvent event = new CommandExecuteEvent(project, server, executeResult, index.get());
-            ApplicationContext.getApplicationContext().publishEvent(event);
-            index.incrementAndGet();
-        });
+//        SwingUtilities.invokeLater(() -> {
+//            CommandExecuteEvent event = new CommandExecuteEvent(project, server, executeResult, index.get());
+//            ApplicationContext.getApplicationContext().publishEvent(event);
+//            index.incrementAndGet();
+//        });
     }
 }

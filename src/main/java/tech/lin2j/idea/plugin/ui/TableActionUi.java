@@ -18,7 +18,7 @@ import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
-import tech.lin2j.idea.plugin.file.SFTPVirtualFile;
+import tech.lin2j.idea.plugin.ui.editor.SFTPVirtualFile;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;

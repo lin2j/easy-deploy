@@ -10,7 +10,6 @@ import com.intellij.openapi.vfs.VirtualFile;
 import org.jdom.Element;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
-import tech.lin2j.idea.plugin.file.SFTPVirtualFile;
 
 /**
  * @author linjinjia
