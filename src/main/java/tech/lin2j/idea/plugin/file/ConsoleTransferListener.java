@@ -31,8 +31,8 @@ public class ConsoleTransferListener implements TransferListener {
 
     @Override
     public StreamCopier.Listener file(final String name, final long size) {
-        final String path = relPath + name;
-        print("Transfer file: " + path + ", Size: " + StringUtil.formatFileSize(size) + "\n");
+        String path = relPath + name;
+        info("Transfer file: " + path + ", Size: " + StringUtil.formatFileSize(size) + "\n");
         return transferred -> {
             double fileProgress = 0;
             if (size > 0) {
@@ -60,5 +60,10 @@ public class ConsoleTransferListener implements TransferListener {
 
     private void print(String msg) {
         consoleView.print(msg, ConsoleViewContentType.NORMAL_OUTPUT);
+    }
+
+    private void info(String text) {
+        consoleView.print("[INFO] ", ConsoleViewContentType.LOG_INFO_OUTPUT);
+        consoleView.print(text, ConsoleViewContentType.NORMAL_OUTPUT);
     }
 }

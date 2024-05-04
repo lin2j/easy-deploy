@@ -21,6 +21,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.ssh.SshUploadTask;
 
+import java.time.LocalDateTime;
 import java.util.Iterator;
 import java.util.List;
 
@@ -75,11 +76,14 @@ public class DeployRunProfileState extends CommandLineState {
                         String[] ss = profile.split("@");
                         int sshId = Integer.parseInt(ss[0]);
                         int profileId = Integer.parseInt(ss[1]);
-                        new SshUploadTask(project, console, sshId, profileId).run();
+                        new SshUploadTask(console, sshId, profileId).run();
                     } catch (Exception e) {
                         console.print(e.getMessage() + "\n", ConsoleViewContentType.ERROR_OUTPUT);
                     }
                 }
+
+                console.print("[INFO] ", ConsoleViewContentType.LOG_INFO_OUTPUT);
+                console.print("Finished at: " + LocalDateTime.now(), ConsoleViewContentType.NORMAL_OUTPUT);
 
                 process.destroyProcess();
             }

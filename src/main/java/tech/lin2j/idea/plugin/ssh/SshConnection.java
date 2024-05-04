@@ -37,7 +37,7 @@ public interface SshConnection {
      * return results while others indicate errors, requiring the
      * caller to discern
      */
-    String execute(String cmd) throws IOException;
+    SshStatus execute(String cmd) throws IOException;
 
     /**
      * Create a directory, automatically creating parent directories
@@ -58,6 +58,4 @@ public interface SshConnection {
      * @return turn only if the connection has closed, otherwise return false
      */
     boolean isClosed();
-
-
 }

@@ -35,7 +35,7 @@ public class JschConnection implements SshConnection {
     }
 
     @Override
-    public String execute(String cmd) {
+    public SshStatus execute(String cmd) {
         return null;
     }
 

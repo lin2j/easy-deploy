@@ -10,6 +10,7 @@ import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.xfer.TransferListener;
 import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
 import tech.lin2j.idea.plugin.ssh.SshConnection;
+import tech.lin2j.idea.plugin.ssh.SshStatus;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -66,7 +67,7 @@ public class SshjConnection implements SshConnection {
     }
 
     @Override
-    public String execute(String cmd) throws IOException {
+    public SshStatus execute(String cmd) throws IOException {
         Session session = this.sshClient.startSession();
         try {
             Session.Command command = session.exec(cmd);
@@ -75,9 +76,10 @@ public class SshjConnection implements SshConnection {
             String err = IOUtils.readFully(command.getErrorStream()).toString();
             command.close();
 
-            return command.getExitStatus() == 0 ? result : err;
+            boolean isOk = command.getExitStatus() == 0;
+            String msg = isOk ? result : err;
+            return new SshStatus(isOk, msg);
         } finally {
-
             close(session);
         }
     }

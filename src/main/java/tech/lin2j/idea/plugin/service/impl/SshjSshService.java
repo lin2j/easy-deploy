@@ -44,20 +44,16 @@ public class SshjSshService implements ISshService {
 
     @Override
     public SshStatus execute(SshServer sshServer, String command) {
-        String msg = "OK";
-        boolean status = false;
         SshjConnection sshjConnection = null;
         try {
             sshjConnection = SshConnectionManager.makeSshjConnection(sshServer);
-            msg = sshjConnection.execute(command);
-            status = true;
+            return sshjConnection.execute(command);
         } catch (IOException e) {
             log.error(e.getMessage(), e);
-            msg = e.getMessage();
+            return new SshStatus(false, e.getMessage());
         } finally {
             close(sshjConnection);
         }
-        return new SshStatus(status, msg);
     }
 
     @Override

@@ -34,7 +34,7 @@ public class ConsoleFileFilterAdapter implements FileFilter {
         this.filter = fileFilter;
         this.server = server;
         this.console = console;
-        print(initMsg);
+        println("[" + server.getIp() + ":" + server.getPort() + "]: " + initMsg);
     }
 
     @Override
@@ -46,7 +46,7 @@ public class ConsoleFileFilterAdapter implements FileFilter {
     public void accept(String filename, FileAction<Boolean> action) throws Exception {
         boolean accept = filter.accept(filename);
         if (!accept) {
-            print(filename + " exclude\n");
+            println(filename + " exclude");
         }
         consoleOutput(filename, accept, true);
         action.execute(accept);
@@ -67,15 +67,15 @@ public class ConsoleFileFilterAdapter implements FileFilter {
         String msg;
         if (beforeExec) {
             // accept and before uploading file
-            msg = filename + "\n";
+            msg = filename;
         } else {
             // accept and after uploading file
-            msg = "Result: [OK]\n";
+            msg = "Result: [OK]";
         }
-        print(msg);
+        println(msg);
     }
 
-    private void print(String executeResult) {
-        console.print(executeResult, ConsoleViewContentType.NORMAL_OUTPUT);
+    private void println(String text) {
+        console.print(text + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
     }
 }

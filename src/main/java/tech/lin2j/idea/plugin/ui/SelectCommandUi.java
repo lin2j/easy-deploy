@@ -75,7 +75,7 @@ public class SelectCommandUi extends DialogWrapper implements ApplicationListene
         cmdScrollPanel.setMinimumSize(new Dimension(600, 300));
 
         addBtn.addActionListener(e -> {
-            new AddCommandUi(sshId, null, null, null, null).showAndGet();
+            new AddCommandUi(project, sshId, null, null, null, null).showAndGet();
         });
 
         editBtn.addActionListener(e -> {
@@ -83,7 +83,7 @@ public class SelectCommandUi extends DialogWrapper implements ApplicationListene
             if (cmd == null) {
                 return;
             }
-            new AddCommandUi(sshId, cmd.getId(), cmd.getTitle(), cmd.getDir(), cmd.getContent()).showAndGet();
+            new AddCommandUi(project, sshId, cmd.getId(), cmd.getTitle(), cmd.getDir(), cmd.getContent()).showAndGet();
         });
 
         deleteBtn.addActionListener(e -> {
