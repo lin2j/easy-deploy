@@ -18,8 +18,6 @@ import tech.lin2j.idea.plugin.factory.SshServiceFactory;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 
-import javax.swing.SwingUtilities;
-
 import static com.intellij.openapi.ui.DialogWrapper.OK_EXIT_CODE;
 
 /**
@@ -61,7 +59,7 @@ public class CommandUtil {
                     String localFile = profile.getFile();
                     String remoteTargetDir = profile.getLocation();
                     String exclude = profile.getExclude();
-                    SshStatus status = sshService.scpPut(project, server, localFile, remoteTargetDir, exclude);
+                    SshStatus status = sshService.upload(project, server, localFile, remoteTargetDir, exclude);
                     if (!status.isSuccess()) {
                         uploadEvent.setSuccess(false);
                         uploadEvent.setUploadResult(status.getMessage());

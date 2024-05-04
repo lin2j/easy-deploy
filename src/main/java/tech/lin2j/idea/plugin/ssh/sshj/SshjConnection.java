@@ -5,6 +5,9 @@ import com.intellij.openapi.util.text.StringUtil;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.channel.direct.Session;
+import net.schmizz.sshj.sftp.FileAttributes;
+import net.schmizz.sshj.sftp.SFTPClient;
+import net.schmizz.sshj.xfer.TransferListener;
 import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
 import tech.lin2j.idea.plugin.ssh.SshConnection;
 
@@ -21,9 +24,18 @@ public class SshjConnection implements SshConnection {
     private static final Logger log = Logger.getInstance(SshjConnection.class);
 
     private final SSHClient sshClient;
+    private final SFTPClient sftpClient;
 
-    public SshjConnection(SSHClient sshClient) {
+    public SshjConnection(SSHClient sshClient) throws IOException {
         this.sshClient = sshClient;
+        this.sftpClient = sshClient.newSFTPClient();
+    }
+
+    public void setTransferListener(TransferListener transferListener) {
+        if (transferListener == null) {
+            return;
+        }
+        sftpClient.getFileTransfer().setTransferListener(transferListener);
     }
 
     @Override
@@ -36,16 +48,12 @@ public class SshjConnection implements SshConnection {
         log.debug("Upload file from local to remote directory");
         File localFile = new File(local);
         if (localFile.exists() && localFile.canRead()) {
-            if (!this.execute("stat " + dest).contains("File")) {
+            FileAttributes attr = sftpClient.stat(dest);
+            if (attr == null) {
                 // remote directory not exist
-                String mkdirResult = this.execute("mkdir -p " + dest);
-                if (StringUtil.isNotEmpty(mkdirResult)) {
-                    // Command execution error
-                    throw new RuntimeException(mkdirResult);
-                }
+                mkdirs(dest);
             }
-            SCPFileTransfer scpFileTransfer = this.sshClient.newSCPFileTransfer();
-            scpFileTransfer.upload(local, dest);
+            sftpClient.put(local, dest);
         } else {
             throw new FileNotFoundException("local file not found: " + local);
         }
@@ -54,8 +62,7 @@ public class SshjConnection implements SshConnection {
 
     @Override
     public void download(String remote, String dest) throws IOException {
-        SCPFileTransfer scpFileTransfer = this.sshClient.newSCPFileTransfer();
-        scpFileTransfer.download(remote, dest);
+        sftpClient.get(remote, dest);
     }
 
     @Override
@@ -73,6 +80,11 @@ public class SshjConnection implements SshConnection {
 
             close(session);
         }
+    }
+
+    @Override
+    public void mkdirs(String dir) throws IOException {
+        sftpClient.mkdirs(dir);
     }
 
     @Override

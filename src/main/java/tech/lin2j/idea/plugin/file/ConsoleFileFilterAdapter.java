@@ -1,12 +1,11 @@
 package tech.lin2j.idea.plugin.file;
 
-import com.intellij.openapi.project.Project;
+import com.intellij.execution.ui.ConsoleView;
+import com.intellij.execution.ui.ConsoleViewContentType;
 import tech.lin2j.idea.plugin.domain.model.event.CommandExecuteEvent;
-import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import javax.annotation.concurrent.NotThreadSafe;
-import javax.swing.SwingUtilities;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -16,16 +15,16 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @date 2022/12/11 17:50
  */
 @NotThreadSafe
-public class FileFilterAdapter implements FileFilter {
+public class ConsoleFileFilterAdapter implements FileFilter {
     private final AtomicInteger index = new AtomicInteger();
 
     private final SshServer server;
 
     private final FileFilter filter;
 
-    private final Project project;
+    private final ConsoleView console;
 
-    public FileFilterAdapter(Project project, FileFilter fileFilter, SshServer server, String initMsg) {
+    public ConsoleFileFilterAdapter(ConsoleView console, FileFilter fileFilter, SshServer server, String initMsg) {
         if (server == null) {
             throw new IllegalArgumentException("ssh server information should not be null");
         }
@@ -34,8 +33,8 @@ public class FileFilterAdapter implements FileFilter {
         }
         this.filter = fileFilter;
         this.server = server;
-        this.project = project;
-        invokeUi(initMsg);
+        this.console = console;
+        print(initMsg);
     }
 
     @Override
@@ -47,41 +46,36 @@ public class FileFilterAdapter implements FileFilter {
     public void accept(String filename, FileAction<Boolean> action) throws Exception {
         boolean accept = filter.accept(filename);
         if (!accept) {
-            invokeUi(filename + " exclude\n");
+            print(filename + " exclude\n");
         }
-        publishEvent(filename, accept, true);
+        consoleOutput(filename, accept, true);
         action.execute(accept);
-        publishEvent(filename, accept, false);
+        consoleOutput(filename, accept, false);
     }
 
     /**
-     * publish an event, comprehensive file name and
-     * other conditions to determine the information content
+     * Output information to the console.
      *
      * @param filename   file name
      * @param accept     whether the file if accepted by filter
      * @param beforeExec whether before filter testing
      */
-    private void publishEvent(String filename, boolean accept, boolean beforeExec) {
+    private void consoleOutput(String filename, boolean accept, boolean beforeExec) {
         if (!accept) {
             return;
         }
         String msg;
         if (beforeExec) {
             // accept and before uploading file
-            msg = filename;
+            msg = filename + "\n";
         } else {
             // accept and after uploading file
-            msg = "Result: [OK]";
+            msg = "Result: [OK]\n";
         }
-        invokeUi(msg);
+        print(msg);
     }
 
-    private void invokeUi(String executeResult) {
-//        SwingUtilities.invokeLater(() -> {
-//            CommandExecuteEvent event = new CommandExecuteEvent(project, server, executeResult, index.get());
-//            ApplicationContext.getApplicationContext().publishEvent(event);
-//            index.incrementAndGet();
-//        });
+    private void print(String executeResult) {
+        console.print(executeResult, ConsoleViewContentType.NORMAL_OUTPUT);
     }
 }

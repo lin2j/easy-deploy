@@ -75,12 +75,12 @@ public class ProgressTableTransferListener implements TransferListener {
                 fileProgress = transferred / (double) size;
             }
             boolean fileCompleted = Math.abs(1 - fileProgress) < 1e-6;
-            log((int) (fileProgress * 100), fileCompleted);
+            printProgress((int) (fileProgress * 100), fileCompleted);
 
         };
     }
 
-    private void log(int complete, boolean completed) {
+    private void printProgress(int complete, boolean completed) {
         StringBuilder sb = new StringBuilder("[");
         Stream.generate(() -> '#').limit(complete).forEach(sb::append);
         Stream.generate(() -> '_').limit(100 - complete).forEach(sb::append);

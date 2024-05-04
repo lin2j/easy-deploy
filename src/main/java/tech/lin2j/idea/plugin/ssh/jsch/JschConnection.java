@@ -6,6 +6,8 @@ import com.jcraft.jsch.Session;
 import tech.lin2j.idea.plugin.ssh.SshConnection;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 
+import java.io.IOException;
+
 
 /**
  * @author linjinjia
@@ -35,6 +37,11 @@ public class JschConnection implements SshConnection {
     @Override
     public String execute(String cmd) {
         return null;
+    }
+
+    @Override
+    public void mkdirs(String dir) throws IOException {
+
     }
 
     @Override

@@ -2,10 +2,10 @@ package tech.lin2j.idea.plugin.service.impl;
 
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.util.text.StringUtil;
+import net.schmizz.sshj.xfer.TransferListener;
 import tech.lin2j.idea.plugin.file.ExtensionFilter;
 import tech.lin2j.idea.plugin.file.FileFilter;
-import tech.lin2j.idea.plugin.file.FileFilterAdapter;
+import tech.lin2j.idea.plugin.file.EventFileFilterAdapter;
 import tech.lin2j.idea.plugin.service.ISshService;
 import tech.lin2j.idea.plugin.ssh.SshConnectionManager;
 import tech.lin2j.idea.plugin.ssh.SshServer;
@@ -61,7 +61,7 @@ public class SshjSshService implements ISshService {
     }
 
     @Override
-    public SshStatus scpGet(SshServer sshServer, String remoteFile, String localFile) {
+    public SshStatus download(SshServer sshServer, String remoteFile, String localFile) {
         String msg = "OK";
         boolean status = false;
         SshjConnection sshjConnection = null;
@@ -79,37 +79,41 @@ public class SshjSshService implements ISshService {
     }
 
     @Override
-    public SshStatus scpPut(Project project, SshServer sshServer, String localFile, String remoteDir, String exclude) {
-        boolean status = false;
-        String msg = "failed";
+    public SshStatus upload(FileFilter filter, SshServer sshServer,
+                            String localFile, String remoteDir,
+                            TransferListener listener) {
+        SshStatus status = new SshStatus(true, "OK");
 
         SshjConnection sshjConnection = null;
         try {
             sshjConnection = SshConnectionManager.makeSshjConnection(sshServer);
+            sshjConnection.setTransferListener(listener);
 
             File file = new File(localFile);
             if (file.isDirectory()) {
-                remoteDir = remoteDir + "/" + file.getName();
-                execute(sshServer, "mkdir -p " + remoteDir);
+                sshjConnection.mkdirs(remoteDir);
             }
 
-            String cmd = "scp -r " + localFile + " " + remoteDir;
             if (new File(localFile).isDirectory()) {
-                FileFilter filter = new FileFilterAdapter(project, new ExtensionFilter(exclude), sshServer, cmd);
                 putDir(sshjConnection, filter, localFile, remoteDir);
             } else {
-                FileFilter filter = new FileFilterAdapter(project, new ExtensionFilter(""), sshServer, cmd);
                 putFile(sshjConnection, filter, localFile, remoteDir);
             }
-            status = true;
-            msg = "OK";
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-            msg = e.getMessage();
+            status.setSuccess(false);
+            status.setMessage(e.getMessage());
         } finally {
             close(sshjConnection);
         }
-        return new SshStatus(status, msg);
+        return status;
+    }
+
+    @Override
+    public SshStatus upload(Project project, SshServer sshServer, String localFile, String remoteDir, String exclude) {
+        String cmd = "upload [" + localFile + "] to [" + remoteDir + "]";
+        FileFilter filter = new EventFileFilterAdapter(project, new ExtensionFilter(exclude), sshServer, cmd);
+        return upload(filter, sshServer, localFile, remoteDir, null);
     }
 
     @Override

@@ -11,7 +11,7 @@ import java.util.stream.Collectors;
  * @author linjinjia
  * @date 2022/12/9 23:54
  */
-public class ExtensionFilter implements FileFilter{
+public class ExtensionFilter implements FileFilter {
     private final String extensions;
 
     private final Set<String> extensionSet;
@@ -23,13 +23,17 @@ public class ExtensionFilter implements FileFilter{
             return;
         }
         this.extensions = extensions;
-        extensionSet =Arrays.stream(extensions.split(";"))
+        extensionSet = Arrays.stream(extensions.split(";"))
                 .map(s -> s.replaceAll("\\*?\\.?", ""))
                 .collect(Collectors.toSet());
     }
 
     @Override
     public boolean accept(String f) {
+        if (StringUtil.isEmpty(extensions)) {
+            return true;
+        }
+
         int dot = f.lastIndexOf('.');
         if (dot == -1) {
             return true;

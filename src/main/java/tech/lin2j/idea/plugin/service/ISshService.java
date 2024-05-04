@@ -1,6 +1,8 @@
 package tech.lin2j.idea.plugin.service;
 
 import com.intellij.openapi.project.Project;
+import net.schmizz.sshj.xfer.TransferListener;
+import tech.lin2j.idea.plugin.file.FileFilter;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 
@@ -37,7 +39,11 @@ public interface ISshService {
      * @param localFile  local file absolute path
      * @return download result
      */
-    SshStatus scpGet(SshServer sshServer, String remoteFile, String localFile);
+    SshStatus download(SshServer sshServer, String remoteFile, String localFile);
+
+    SshStatus upload(FileFilter filter, SshServer server,
+                     String localFile, String remoteDir,
+                     TransferListener listener);
 
     /**
      * upload file to remote server
@@ -52,7 +58,7 @@ public interface ISshService {
      *                  uploading the folder will it be used
      * @return upload result
      */
-    SshStatus scpPut(Project project, SshServer sshServer, String localFile, String remoteDir, String exclude);
+    SshStatus upload(Project project, SshServer sshServer, String localFile, String remoteDir, String exclude);
 
 
     /**

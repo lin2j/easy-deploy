@@ -40,6 +40,15 @@ public interface SshConnection {
     String execute(String cmd) throws IOException;
 
     /**
+     * Create a directory, automatically creating parent directories
+     * if they do not exist.
+     *
+     * @param dir directory path
+     * @throws IOException IOException
+     */
+    void mkdirs(String dir) throws IOException;
+
+    /**
      * close the ssh connection
      */
     void close();
