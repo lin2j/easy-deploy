@@ -14,7 +14,7 @@ import java.util.Collections;
  * @author linjinjia
  * @date 2024/4/21 18:42
  */
-public class SettingsDialog {
+public class PluginSettingsDialog {
     public static Configurable[] createNewConfigurable(Project project) {
         return new Configurable[]{
                 new ServerTagConfigurable()

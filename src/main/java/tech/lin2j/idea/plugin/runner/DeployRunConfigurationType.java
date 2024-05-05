@@ -3,6 +3,7 @@ package tech.lin2j.idea.plugin.runner;
 import com.intellij.execution.configurations.ConfigurationTypeBase;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.NotNullLazyValue;
+import icons.MyIcons;
 
 /**
  * @author linjinjia
@@ -13,7 +14,7 @@ public class DeployRunConfigurationType extends ConfigurationTypeBase {
 
     DeployRunConfigurationType() {
         super(ID, "Easy Deploy", "Deploy service to remote server",
-                NotNullLazyValue.createValue(() -> AllIcons.Nodes.Console));
+                NotNullLazyValue.createValue(() -> MyIcons.Deploy));
         addFactory(new DeployConfigurationFactory(this));
     }
 

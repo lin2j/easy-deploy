@@ -4,10 +4,10 @@ import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.ssh.SshServer;
-import tech.lin2j.idea.plugin.ui.PasswordInputUi;
 
 import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
+import java.awt.Toolkit;
 
 /**
  * @author linjinjia
@@ -21,12 +21,14 @@ public class UiUtil {
      * @return password
      */
     public static String requestPassword() {
-        String[] password = new String[1];
-        new PasswordInputUi(password).showAndGet();
-        if (StringUtil.isEmpty(password[0])) {
-            Messages.showErrorDialog("Password not found", "Error");
+        String tip = MessagesBundle.getText("dialog.password.tip");
+        String title = MessagesBundle.getText("dialog.password.frame");
+        String password = Messages.showPasswordDialog(tip, title);
+
+        if (StringUtil.isEmpty(password)) {
+            Messages.showErrorDialog(MessagesBundle.getText("dialog.password.error"), "Error");
         }
-        return password[0];
+        return password;
     }
 
     /**
@@ -67,5 +69,10 @@ public class UiUtil {
                 JOptionPane.WARNING_MESSAGE,
                 null, options, options[0]);
         return foo == 0;
+    }
+
+    public static int screenWidth() {
+        Toolkit toolkit = Toolkit.getDefaultToolkit();
+        return toolkit.getScreenSize().width;
     }
 }

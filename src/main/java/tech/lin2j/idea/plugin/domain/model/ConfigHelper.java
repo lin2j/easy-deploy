@@ -35,6 +35,10 @@ public class ConfigHelper {
                 .collect(Collectors.groupingBy(UploadProfile::getSshId));
     }
 
+    public static int language() {
+        return 0;
+    }
+
     public static SshServer getSshServerById(int id) {
         return SSH_SERVER_MAP.get(id);
     }

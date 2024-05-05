@@ -3,9 +3,10 @@ package tech.lin2j.idea.plugin.ui.dialog;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.CollectionListModel;
 import com.intellij.ui.components.JBList;
+import com.intellij.ui.components.JBScrollPane;
+import com.intellij.util.ui.FormBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tech.lin2j.idea.plugin.file.RemoteTableFile;
 import tech.lin2j.idea.plugin.file.TableFile;
 
 import javax.swing.DefaultListCellRenderer;
@@ -14,7 +15,6 @@ import javax.swing.JList;
 import javax.swing.JPanel;
 import java.awt.Component;
 import java.awt.Dimension;
-import java.awt.Toolkit;
 import java.util.List;
 
 /**
@@ -23,19 +23,28 @@ import java.util.List;
  */
 public class FilesDeleteConfirmDialog extends DialogWrapper {
 
-    private JPanel root;
+    private final JPanel root;
     private JBList<TableFile> fileList;
 
     public FilesDeleteConfirmDialog(List<TableFile> files) {
         super(null);
 
-        fileList.setCellRenderer(new ListCellRenderer());
-        fileList.setModel(new CollectionListModel<>(files));
+        initFileList(files);
+
+        String tip = "The following files will be deleted.";
+        root = FormBuilder.createFormBuilder()
+                .addLabeledComponent(tip, new JBScrollPane(fileList), true)
+                .getPanel();
+
         setTitle("Delete Files And Directories");
         init();
+    }
 
-        Toolkit tk = Toolkit.getDefaultToolkit();
-        root.setMinimumSize(new Dimension(tk.getScreenSize().width / 3, 0));
+    private void initFileList(List<TableFile> files) {
+        fileList = new JBList<>();
+        fileList.setCellRenderer(new ListCellRenderer());
+        fileList.setModel(new CollectionListModel<>(files));
+        fileList.setPreferredSize(new Dimension(480, 240));
     }
 
     @Nullable
@@ -43,7 +52,6 @@ public class FilesDeleteConfirmDialog extends DialogWrapper {
     protected JComponent createCenterPanel() {
         return root;
     }
-
 
     /**
      * Local JBList cell renderer

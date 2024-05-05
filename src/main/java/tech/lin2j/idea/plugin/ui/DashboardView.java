@@ -23,7 +23,7 @@ import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.ssh.SshServer;
-import tech.lin2j.idea.plugin.ui.dialog.SettingsDialog;
+import tech.lin2j.idea.plugin.ui.dialog.PluginSettingsDialog;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -239,7 +239,7 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
 
         @Override
         public void actionPerformed(@NotNull AnActionEvent e) {
-            SettingsDialog.show(project);
+            PluginSettingsDialog.show(project);
         }
     }
 }

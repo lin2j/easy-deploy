@@ -18,6 +18,8 @@ import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
+import tech.lin2j.idea.plugin.ui.dialog.SelectCommandDialog;
+import tech.lin2j.idea.plugin.ui.dialog.UploadProfileDialog;
 import tech.lin2j.idea.plugin.ui.editor.SFTPVirtualFile;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
@@ -136,16 +138,16 @@ public class TableActionUi extends JBLabel implements TableCellRenderer, TableCe
     class UploadActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            UploadUi ui = new UploadUi(project, ConfigHelper.getSshServerById(sshId));
-            ApplicationContext.getApplicationContext().addApplicationListener(ui);
-            ui.showAndGet();
+            UploadProfileDialog dialog = new UploadProfileDialog(project, ConfigHelper.getSshServerById(sshId));
+            ApplicationContext.getApplicationContext().addApplicationListener(dialog);
+            dialog.showAndGet();
         }
     }
 
     class ExecuteActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            SelectCommandUi ui = new SelectCommandUi(project, sshId);
+            SelectCommandDialog ui = new SelectCommandDialog(project, sshId);
             ApplicationContext.getApplicationContext().addApplicationListener(ui);
             ui.showAndGet();
         }
