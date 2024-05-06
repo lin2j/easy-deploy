@@ -36,7 +36,7 @@ public class DeploySettingsEditor extends SettingsEditor<DeployRunConfiguration>
         initDeployProfileTable();
 
         myPanel = FormBuilder.createFormBuilder()
-                .addLabeledComponent("Deploy Profile", getDeployProfilePanel(), true)
+                .addLabeledComponent("Deploy profile", getDeployProfilePanel(), true)
                 .getPanel();
     }
 

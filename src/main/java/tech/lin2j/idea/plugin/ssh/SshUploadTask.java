@@ -2,6 +2,7 @@ package tech.lin2j.idea.plugin.ssh;
 
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
+import com.intellij.util.PathUtil;
 import net.schmizz.sshj.xfer.TransferListener;
 import tech.lin2j.idea.plugin.domain.model.Command;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
@@ -45,7 +46,7 @@ public class SshUploadTask implements Runnable{
 
         String realPath = localFile;
         if (new File(localFile).isFile()) {
-            realPath = realPath.substring(0, realPath.lastIndexOf(File.separator));
+            realPath = PathUtil.getParentPath(localFile);
         }
         TransferListener transferListener = new ConsoleTransferListener(realPath, console);
 

@@ -1,1 +1,7 @@
-<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="icon" width="16px" height="16.00px" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg"><path d="M512 53.312a458.688 458.688 0 1 0 0 917.376A458.688 458.688 0 0 0 512 53.312z m118.656 240l85.312 106.688a42.688 42.688 0 0 1-33.28 69.312H640V704a42.688 42.688 0 0 1-85.312 0V320a42.688 42.688 0 0 1 75.968-26.624zM469.376 320v384a42.688 42.688 0 0 1-76.032 26.688L308.032 624a42.688 42.688 0 0 1 33.28-69.312H384V320a42.688 42.688 0 1 1 85.312 0z" fill="#52a3a5" /></svg>
+<?xml version="1.0" standalone="no"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN"
+        "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+<svg class="icon" width="16px" height="16.00px" viewBox="0 0 1024 1024" version="1.1"
+     xmlns="http://www.w3.org/2000/svg">
+    <path d="M512 53.312a458.688 458.688 0 1 0 0 917.376A458.688 458.688 0 0 0 512 53.312z m118.656 240l85.312 106.688a42.688 42.688 0 0 1-33.28 69.312H640V704a42.688 42.688 0 0 1-85.312 0V320a42.688 42.688 0 0 1 75.968-26.624zM469.376 320v384a42.688 42.688 0 0 1-76.032 26.688L308.032 624a42.688 42.688 0 0 1 33.28-69.312H384V320a42.688 42.688 0 1 1 85.312 0z"
+          fill="#52a3a5"/>
+</svg>

@@ -1,39 +1,17 @@
 package tech.lin2j.idea.plugin.ui;
 
 
-import com.intellij.openapi.progress.ProgressIndicator;
-import com.intellij.openapi.progress.ProgressManager;
-import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.components.JBLabel;
-import org.jetbrains.annotations.NotNull;
-import org.jetbrains.plugins.terminal.TerminalTabState;
-import org.jetbrains.plugins.terminal.TerminalView;
-import org.jetbrains.plugins.terminal.cloud.CloudTerminalRunner;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
-import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
-import tech.lin2j.idea.plugin.enums.AuthType;
-import tech.lin2j.idea.plugin.event.ApplicationContext;
-import tech.lin2j.idea.plugin.ui.dialog.SelectCommandDialog;
-import tech.lin2j.idea.plugin.ui.dialog.UploadProfileDialog;
-import tech.lin2j.idea.plugin.ui.editor.SFTPVirtualFile;
-import tech.lin2j.idea.plugin.ssh.SshServer;
-import tech.lin2j.idea.plugin.ssh.SshStatus;
-import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
-import tech.lin2j.idea.plugin.ui.editor.SFTPFileSystem;
-import tech.lin2j.idea.plugin.ui.ftp.FTPConsole;
-import tech.lin2j.idea.plugin.uitl.TerminalRunnerUtil;
-import tech.lin2j.idea.plugin.uitl.UiUtil;
+import tech.lin2j.idea.plugin.action.CommandDialogAction;
+import tech.lin2j.idea.plugin.action.HostMoreOpsAction;
+import tech.lin2j.idea.plugin.action.OpenTerminalAction;
+import tech.lin2j.idea.plugin.action.UploadDialogAction;
 
-import javax.swing.AbstractAction;
 import javax.swing.JButton;
-import javax.swing.JMenuItem;
 import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.event.CellEditorListener;
@@ -41,9 +19,6 @@ import javax.swing.table.TableCellEditor;
 import javax.swing.table.TableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.IOException;
 import java.util.EventObject;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -74,10 +49,10 @@ public class TableActionUi extends JBLabel implements TableCellRenderer, TableCe
 
         this.project = project;
 
-        uploadBtn.addActionListener(new UploadActionListener());
-        commandBtn.addActionListener(new ExecuteActionListener());
-        terminalBtn.addActionListener(new TerminalActionListener());
-        moreBtn.addActionListener(new MoreActionListener());
+        uploadBtn.addActionListener(new UploadDialogAction(sshId, project));
+        commandBtn.addActionListener(new CommandDialogAction(sshId, project));
+        terminalBtn.addActionListener(new OpenTerminalAction(sshId, project));
+        moreBtn.addActionListener(new HostMoreOpsAction(sshId, project, moreBtn));
     }
 
     @Override
@@ -133,111 +108,6 @@ public class TableActionUi extends JBLabel implements TableCellRenderer, TableCe
             uiMap.put(location, ui);
         }
         return ui;
-    }
-
-    class UploadActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            UploadProfileDialog dialog = new UploadProfileDialog(project, ConfigHelper.getSshServerById(sshId));
-            ApplicationContext.getApplicationContext().addApplicationListener(dialog);
-            dialog.showAndGet();
-        }
-    }
-
-    class ExecuteActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            SelectCommandDialog ui = new SelectCommandDialog(project, sshId);
-            ApplicationContext.getApplicationContext().addApplicationListener(ui);
-            ui.showAndGet();
-        }
-    }
-
-    class TerminalActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            SshServer tmp = ConfigHelper.getSshServerById(sshId);
-
-            boolean needPassword = AuthType.needPassword(tmp.getAuthType());
-            SshServer server = UiUtil.requestPasswordIfNecessary(tmp);
-            if (needPassword && StringUtil.isEmpty(server.getPassword())) {
-                return;
-            }
-            SshStatus status = new SshStatus(false, null);
-            String title = String.format("Opening terminal %s:%s", server.getIp(), server.getPort());
-            ProgressManager.getInstance().run(new Task.Backgroundable(project, title) {
-                CloudTerminalRunner runner = null;
-                @Override
-                public void run(@NotNull ProgressIndicator indicator) {
-                    indicator.setIndeterminate(false);
-                    try {
-                        runner = TerminalRunnerUtil.createCloudTerminalRunner(project, server);
-                        status.setSuccess(true);
-                    } catch (RemoteSdkException ex) {
-                        status.setMessage("Error connecting server: " + ex.getMessage());
-                    } finally {
-                        indicator.setFraction(1);
-                    }
-                }
-
-                @Override
-                public void onFinished() {
-                    if(!status.isSuccess()) {
-                        Messages.showErrorDialog(status.getMessage(), "Error");
-                        return ;
-                    }
-                    TerminalView terminalView = TerminalView.getInstance(project);
-                    TerminalTabState tabState = new TerminalTabState();
-                    tabState.myTabName = server.getIp() + ":" + server.getPort();
-                    terminalView.createNewSession(runner, tabState);
-                }
-            });
-        }
-    }
-
-    class MoreActionListener implements ActionListener {
-
-        @Override
-        public void actionPerformed(ActionEvent e) {
-            JPopupMenu menu = new JPopupMenu();
-            menu.add(new JMenuItem(new AbstractAction("Properties") {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    SshServer server = ConfigHelper.getSshServerById(sshId);
-                    new HostUi(project, server).showAndGet();
-                }
-            }));
-
-            menu.add(new JMenuItem(new AbstractAction("SFTP (Beta)") {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    SshServer server = ConfigHelper.getSshServerById(sshId);
-                    try {
-                        SFTPVirtualFile SFTPVirtualFile = new SFTPVirtualFile(
-                                server.getIp(),
-                                project,
-                                new FTPConsole(project, server)
-                        );
-                        SFTPFileSystem.getInstance(project).openEditor(SFTPVirtualFile);
-                    } catch (IOException ex) {
-                        log.error(ex.getMessage(), e);
-                    }
-                }
-            }));
-
-            menu.add(new JMenuItem(new AbstractAction("Remove") {
-                @Override
-                public void actionPerformed(ActionEvent e) {
-                    SshServer server = ConfigHelper.getSshServerById(sshId);
-                    String specific = "Host: " + server.getIp() + ":" + server.getPort();
-                    if (UiUtil.deleteConfirm(specific)) {
-                        ConfigHelper.removeSshServer(sshId);
-                        ApplicationContext.getApplicationContext().publishEvent(new TableRefreshEvent());
-                    }
-                }
-            }));
-            menu.show(moreBtn, 0, moreBtn.getHeight());
-        }
     }
 
     @Override

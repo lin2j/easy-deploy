@@ -24,6 +24,9 @@ import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ui.dialog.PluginSettingsDialog;
+import tech.lin2j.idea.plugin.ui.table.ActionCellEditor;
+import tech.lin2j.idea.plugin.ui.table.ActionCellRenderer;
+import tech.lin2j.idea.plugin.ui.table.TableActionPane;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -179,7 +182,7 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
         if (e != null && e.getSshServers() != null) {
             sshServers = e.getSshServers();
         }
-        Object[][] data = new Object[sshServers.size()][5];
+        Object[][] data = new Object[sshServers.size()][6];
         for (int i = 0; i < sshServers.size(); i++) {
             SshServer sshServer = sshServers.get(i);
             data[i][0] = sshServer.getId();
@@ -187,6 +190,7 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
             data[i][2] = sshServer.getUsername();
             data[i][3] = sshServer.getTag();
             data[i][4] = sshServer.getDescription();
+            data[i][5] = sshServer.getId();
         }
         DefaultTableModel tableModel = new DefaultTableModel(data, COLUMNS) {
             @Override
@@ -202,8 +206,10 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
 
         TableActionUi tableActionUi = new TableActionUi(project);
         TableColumn actionColumn = hostTable.getColumn("Actions");
-        actionColumn.setCellRenderer(tableActionUi);
-        actionColumn.setCellEditor(tableActionUi);
+        actionColumn.setCellRenderer(new ActionCellRenderer(project));
+        actionColumn.setCellEditor(new ActionCellEditor(project));
+//        actionColumn.setCellRenderer(tableActionUi);
+//        actionColumn.setCellEditor(tableActionUi);
         actionColumn.setMinWidth(450);
         actionColumn.setMaxWidth(550);
     }

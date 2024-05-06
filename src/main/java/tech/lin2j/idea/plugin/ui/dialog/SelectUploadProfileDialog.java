@@ -5,11 +5,13 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.CollectionComboBoxModel;
 import com.intellij.ui.CollectionListModel;
 import com.intellij.ui.components.JBList;
+import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.FormBuilder;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.UploadProfile;
 import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.ui.render.UploadProfileColoredListCellRenderer;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -35,9 +37,9 @@ public class SelectUploadProfileDialog extends DialogWrapper {
         initUploadProfileJBList();
         root = FormBuilder.createFormBuilder()
                 .addLabeledComponent("Server", sshServerComboBox)
-                .addLabeledComponent("Upload Profile", profileList, true)
+                .addLabeledComponent("Upload profile", new JBScrollPane(profileList), true)
                 .getPanel();
-        root.setPreferredSize(new Dimension(500, 0));
+        root.setPreferredSize(new Dimension(500, 200));
         init();
     }
 
@@ -69,6 +71,7 @@ public class SelectUploadProfileDialog extends DialogWrapper {
 
     private void initUploadProfileJBList() {
         profileList = new JBList<>();
+        profileList.setCellRenderer(new UploadProfileColoredListCellRenderer());
         setProfiles();
     }
 

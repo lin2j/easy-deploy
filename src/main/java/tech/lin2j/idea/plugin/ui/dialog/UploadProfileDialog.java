@@ -149,7 +149,7 @@ public class UploadProfileDialog extends DialogWrapper implements ApplicationLis
 
     private void initActionButton() {
         actionButton = new JButton();
-        actionButton.setText(MessagesBundle.getText("dialog.upload.actions"));
+        actionButton.setText(MessagesBundle.getText("dialog.upload.actions") + " ▼");
         actionButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {

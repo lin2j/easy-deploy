@@ -24,6 +24,7 @@ public interface MyIcons {
     Icon TagDark = IconLoader.getIcon("/icons/tag_dark.svg", MyIcons.class);
 
     Icon SFTP = IconLoader.getIcon("/icons/sftp.svg", MyIcons.class);
+    Icon UploadProfile = IconLoader.getIcon("/icons/upload_profile.svg", MyIcons.class);
 
     interface Actions {
         Icon showHidden = load("/icons/actions/showHiddens.svg");
