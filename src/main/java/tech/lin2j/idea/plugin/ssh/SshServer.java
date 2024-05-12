@@ -30,6 +30,8 @@ public class SshServer implements Cloneable {
 
     private String description;
 
+    private Integer proxy;
+
     /**
      * authenticate with password or other ways
      *
@@ -135,6 +137,14 @@ public class SshServer implements Cloneable {
 
     public void setPemPrivateKey(String pemPrivateKey) {
         this.pemPrivateKey = pemPrivateKey;
+    }
+
+    public Integer getProxy() {
+        return proxy;
+    }
+
+    public void setProxy(Integer proxy) {
+        this.proxy = proxy;
     }
 
     @Override

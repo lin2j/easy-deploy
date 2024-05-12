@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.ui.table;
+package tech.lin2j.idea.plugin.ui.panel;
 
 import com.intellij.openapi.project.Project;
 import tech.lin2j.idea.plugin.action.CommandDialogAction;
@@ -16,7 +16,7 @@ import java.awt.GridLayout;
  * @author linjinjia
  * @date 2024/5/5 01:22
  */
-public class TableActionPane extends JPanel {
+public class HostActionPanel extends JPanel {
 
     private JButton uploadBtn;
     private JButton commandBtn;
@@ -26,7 +26,7 @@ public class TableActionPane extends JPanel {
     private final int sshId;
     private final Project project;
 
-    public TableActionPane(int sshId, Project project) {
+    public HostActionPanel(int sshId, Project project) {
         this.sshId = sshId;
         this.project = project;
         setLayout(new GridLayout(1, 4));

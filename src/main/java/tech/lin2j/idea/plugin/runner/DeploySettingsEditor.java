@@ -59,7 +59,7 @@ public class DeploySettingsEditor extends SettingsEditor<DeployRunConfiguration>
 
     private JPanel getDeployProfilePanel() {
         return ToolbarDecorator.createDecorator(deployProfileTable)
-                .setPreferredSize(new Dimension(0, 320))
+                .setPreferredSize(new Dimension(0, 200))
                 .setToolbarPosition(ActionToolbarPosition.TOP)
                 .setAddAction(e -> {
                     StringBuilder selectedProfile = new StringBuilder();

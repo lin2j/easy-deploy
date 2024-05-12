@@ -1,12 +1,11 @@
 package tech.lin2j.idea.plugin.ui.table;
 
 import com.intellij.openapi.project.Project;
+import tech.lin2j.idea.plugin.ui.panel.HostActionPanel;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JTable;
-import javax.swing.event.CellEditorListener;
 import javax.swing.table.TableCellEditor;
-import javax.swing.table.TableCellRenderer;
 import java.awt.Component;
 import java.util.EventObject;
 import java.util.Objects;
@@ -18,7 +17,7 @@ import java.util.Objects;
 public class ActionCellEditor extends AbstractCellEditor implements TableCellEditor {
     private final Project project;
 
-    private TableActionPane actionPane;
+    private HostActionPanel actionPane;
 
     public ActionCellEditor(Project project) {
         this.project = project;
@@ -28,7 +27,7 @@ public class ActionCellEditor extends AbstractCellEditor implements TableCellEdi
     public Component getTableCellEditorComponent(JTable table, Object value,
                                                  boolean isSelected, int row, int column) {
         int sshId = Integer.parseInt(Objects.toString(value));
-        actionPane = new TableActionPane(sshId, project);
+        actionPane = new HostActionPanel(sshId, project);
         return actionPane;
     }
 

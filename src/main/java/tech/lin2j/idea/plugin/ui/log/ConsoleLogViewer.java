@@ -33,32 +33,44 @@ public class ConsoleLogViewer implements ApplicationListener<CommandExecuteEvent
     private static final String TITLE = "Console Log";
 
     private final Project project;
-    private ConsoleViewImpl myConsoleView;
+    private ConsoleViewImpl console;
 
-    private JPanel mainPanel;
+    private JPanel root;
 
     public ConsoleLogViewer(Project project) {
         this.project = project;
+        initRoot();
     }
 
-    public void createUIComponents() {
-        this.myConsoleView = new ConsoleViewImpl(project, false);
+    public JPanel getRoot() {
+        return root;
+    }
+
+    public ConsoleView getConsoleView() {
+        return console;
+    }
+
+    private void initRoot() {
+        root = new JPanel(new BorderLayout());
+        initConsoleView();
+        root.add(console, BorderLayout.CENTER);
     }
 
     /**
      * Code to initialize the console window and its toolbar.
      */
-    private void layoutConsoleView() {
+    private void initConsoleView() {
+        this.console = new ConsoleViewImpl(project, false);
         //
-        final RunContentDescriptor descriptor = new RunContentDescriptor(myConsoleView, null, mainPanel, TITLE);
+        final RunContentDescriptor descriptor = new RunContentDescriptor(console, null, root, TITLE);
         Disposer.register(this, descriptor);
 
         // must call getComponent before createConsoleActions()
-        final JComponent consoleViewComponent = myConsoleView.getComponent();
+        final JComponent consoleViewComponent = console.getComponent();
 
         // action like 'Clean All'
         final DefaultActionGroup actionGroup = new DefaultActionGroup();
-        actionGroup.addAll(myConsoleView.createConsoleActions());
+        actionGroup.addAll(console.createConsoleActions());
 
         final ActionToolbar toolbar = ActionManager.getInstance().createActionToolbar(ID, actionGroup, false);
         toolbar.setTargetComponent(consoleViewComponent);
@@ -69,15 +81,6 @@ public class ConsoleLogViewer implements ApplicationListener<CommandExecuteEvent
 
         // Add a border to make things look nicer.
         consoleViewComponent.setBorder(BorderFactory.createEmptyBorder());
-    }
-
-    public JPanel getMainPanel() {
-        layoutConsoleView();
-        return mainPanel;
-    }
-
-    public ConsoleView getConsoleView() {
-        return myConsoleView;
     }
 
     @Override
@@ -122,7 +125,7 @@ public class ConsoleLogViewer implements ApplicationListener<CommandExecuteEvent
     private void print(String content) {
         String time = String.format("%tF %<tT", System.currentTimeMillis());
         String msg = String.format("%s [INFO] %s\n", time, content);
-        myConsoleView.print(msg, ConsoleViewContentType.NORMAL_OUTPUT);
+        console.print(msg, ConsoleViewContentType.NORMAL_OUTPUT);
     }
 
     @Override

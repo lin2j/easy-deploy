@@ -23,7 +23,7 @@ public class CommandExecuteView extends SimpleToolWindowPanel {
 
         JBSplitter splitter = new JBSplitter(false);
         splitter.setSplitterProportionKey("main.splitter.key");
-        splitter.setFirstComponent(consoleLogViewer.getMainPanel());
+        splitter.setFirstComponent(consoleLogViewer.getRoot());
         splitter.setProportion(0.3f);
         setContent(splitter);
     }

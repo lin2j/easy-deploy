@@ -23,10 +23,10 @@ import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.ui.dialog.HostSettingsDialog;
 import tech.lin2j.idea.plugin.ui.dialog.PluginSettingsDialog;
 import tech.lin2j.idea.plugin.ui.table.ActionCellEditor;
 import tech.lin2j.idea.plugin.ui.table.ActionCellRenderer;
-import tech.lin2j.idea.plugin.ui.table.TableActionPane;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -200,16 +200,13 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
         };
 
         hostTable.setModel(tableModel);
-        hostTable.getEmptyText().setText("No Data");
+        hostTable.getEmptyText().setText("No data");
         // hide ID column
         hostTable.removeColumn(hostTable.getColumn("ID"));
 
-        TableActionUi tableActionUi = new TableActionUi(project);
         TableColumn actionColumn = hostTable.getColumn("Actions");
         actionColumn.setCellRenderer(new ActionCellRenderer(project));
         actionColumn.setCellEditor(new ActionCellEditor(project));
-//        actionColumn.setCellRenderer(tableActionUi);
-//        actionColumn.setCellEditor(tableActionUi);
         actionColumn.setMinWidth(450);
         actionColumn.setMaxWidth(550);
     }
@@ -234,7 +231,8 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
 
         @Override
         public void actionPerformed(@NotNull AnActionEvent e) {
-            new HostUi(project, null).showAndGet();
+//            new HostUi(project, null).showAndGet();
+            new HostSettingsDialog(project, null).show();
         }
     }
 

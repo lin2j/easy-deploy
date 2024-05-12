@@ -1,6 +1,7 @@
 package tech.lin2j.idea.plugin.ui.table;
 
 import com.intellij.openapi.project.Project;
+import tech.lin2j.idea.plugin.ui.panel.HostActionPanel;
 
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -24,7 +25,7 @@ public class ActionCellRenderer extends DefaultTableCellRenderer {
                                                    boolean isSelected, boolean hasFocus, int row, int column) {
         Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
         int sshId = Integer.parseInt(Objects.toString(value));
-        TableActionPane actionPane = new TableActionPane(sshId, project);
+        HostActionPanel actionPane = new HostActionPanel(sshId, project);
         actionPane.setForeground(c.getForeground());
         actionPane.setBackground(c.getBackground());
         return actionPane;

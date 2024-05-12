@@ -51,7 +51,7 @@ public class FTPConsole {
 
         JBTabbedPane transferPane = new JBTabbedPane();
         transferPane.addTab("Transfer", MyIcons.Transfer, progressTable);
-        transferPane.addTab("Log" , AllIcons.Debugger.Console, logViewer.getMainPanel());
+        transferPane.addTab("Log" , AllIcons.Debugger.Console, logViewer.getRoot());
 
         mainPanel.setSecondComponent(transferPane);
 
