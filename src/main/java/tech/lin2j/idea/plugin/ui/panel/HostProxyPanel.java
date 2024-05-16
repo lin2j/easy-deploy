@@ -38,7 +38,7 @@ public class HostProxyPanel {
         root = FormBuilder.createFormBuilder()
                 .addComponent(noProxyRadio)
                 .addComponent(fromSettingsRadio)
-                .addLabeledComponent("    ",serverComboBox)
+                .addLabeledComponent("  ",serverComboBox)
                 .getPanel();
     }
 

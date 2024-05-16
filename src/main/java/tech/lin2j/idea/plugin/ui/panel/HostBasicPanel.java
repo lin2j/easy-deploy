@@ -48,10 +48,10 @@ public class HostBasicPanel {
     private JBRadioButton privateKeyRadio;
     private JPanel authTypeContainer;
     private JPanel testConnectContainer;
-    private JButton testButton;
 
     private final SshServer contentProvider;
     private final Project project;
+    private final JButton testButton;
 
     public HostBasicPanel(Project project, SshServer contentProvider, JButton testButton) {
         this.contentProvider = contentProvider;

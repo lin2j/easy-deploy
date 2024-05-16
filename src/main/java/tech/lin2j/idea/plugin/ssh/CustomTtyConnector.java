@@ -16,6 +16,7 @@ public interface CustomTtyConnector extends TtyConnector {
     /**
      * JSch, implementation of SSH2
      */
+    @Deprecated
     String JSCH = "JSch";
 
     /**

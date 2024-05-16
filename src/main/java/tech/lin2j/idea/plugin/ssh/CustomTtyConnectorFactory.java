@@ -1,11 +1,9 @@
 package tech.lin2j.idea.plugin.ssh;
 
-import com.jcraft.jsch.JSchException;
 import net.schmizz.sshj.SSHClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
-import tech.lin2j.idea.plugin.ssh.jsch.JSchTtyConnector;
 import tech.lin2j.idea.plugin.ssh.sshj.SshjTtyConnector;
 
 import java.io.IOException;
@@ -25,25 +23,15 @@ public class CustomTtyConnectorFactory {
      * @return tty connector
      */
     public static CustomTtyConnector getCustomTtyConnector(String type, SshServer server) throws RemoteSdkException {
-        switch (type) {
-            case CustomTtyConnector.JSCH:
-                try {
-                    SshConnection sshConnection = SshConnectionManager.makeJschConnection(server);
-                    return new JSchTtyConnector(sshConnection);
-                } catch (JSchException e) {
-                    LOG.error("Error connecting server: " + e.getMessage());
-                    throw new RemoteSdkException("Error connecting server: " + e.getMessage(), e);
-                }
-            case CustomTtyConnector.SSHJ:
-                try {
-                    SSHClient sshClient = SshConnectionManager.makeSshClient(server);
-                    return new SshjTtyConnector(sshClient);
-                } catch (IOException e) {
-                    LOG.error("Error connecting server: " + e.getMessage());
-                    throw new RemoteSdkException("Error connecting server: " + e.getMessage(), e);
-                }
-            default:
-                throw new IllegalArgumentException(type);
+        if (CustomTtyConnector.SSHJ.equals(type)) {
+            try {
+                SSHClient sshClient = SshConnectionManager.makeSshClient(server);
+                return new SshjTtyConnector(sshClient);
+            } catch (IOException e) {
+                LOG.error("Error connecting server: " + e.getMessage());
+                throw new RemoteSdkException("Error connecting server: " + e.getMessage(), e);
+            }
         }
+        throw new IllegalArgumentException(type);
     }
 }

@@ -57,9 +57,6 @@ public class DeployRunProfileState extends CommandLineState {
     @Override
     protected ProcessHandler startProcess() throws ExecutionException {
         NopProcessHandler process = new NopProcessHandler();
-        if (CollectionUtils.isEmpty(deployProfiles)) {
-            return process;
-        }
         Project project = getEnvironment().getProject();
         console = createConsole(executor);
         Task.Backgroundable task = new Task.Backgroundable(project, "Upload to Host", false) {

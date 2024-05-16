@@ -1,20 +1,19 @@
 package tech.lin2j.idea.plugin.ssh.sshj;
 
 import com.intellij.openapi.diagnostic.Logger;
-import com.intellij.openapi.util.text.StringUtil;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.xfer.TransferListener;
-import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
 import tech.lin2j.idea.plugin.ssh.SshConnection;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Deque;
 
 /**
  * @author linjinjia
@@ -24,11 +23,13 @@ public class SshjConnection implements SshConnection {
 
     private static final Logger log = Logger.getInstance(SshjConnection.class);
 
+    private final Deque<SSHClient> clients;
     private final SSHClient sshClient;
     private final SFTPClient sftpClient;
 
-    public SshjConnection(SSHClient sshClient) throws IOException {
-        this.sshClient = sshClient;
+    public SshjConnection(Deque<SSHClient> clients) throws IOException {
+        this.clients = clients;
+        this.sshClient = clients.getLast();
         this.sftpClient = sshClient.newSFTPClient();
     }
 
@@ -91,10 +92,13 @@ public class SshjConnection implements SshConnection {
 
     @Override
     public void close() {
-        if (sshClient != null && sshClient.isConnected()) {
-            try {
-                sshClient.close();
-            } catch (IOException ignored) {
+        if (clients != null) {
+            while (!clients.isEmpty()) {
+                try {
+                    clients.removeLast().close();
+                } catch (Exception ignored) {
+
+                }
             }
         }
     }
