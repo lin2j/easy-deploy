@@ -14,7 +14,7 @@ public class DeployRunConfigurationType extends ConfigurationTypeBase {
 
     DeployRunConfigurationType() {
         super(ID, "Easy Deploy", "Deploy service to remote server",
-                NotNullLazyValue.createValue(() -> MyIcons.Deploy));
+                NotNullLazyValue.createValue(() -> MyIcons.EasyDeploy));
         addFactory(new DeployConfigurationFactory(this));
     }
 

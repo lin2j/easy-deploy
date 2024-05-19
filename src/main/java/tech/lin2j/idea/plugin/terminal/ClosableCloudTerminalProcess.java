@@ -1,10 +1,7 @@
 package tech.lin2j.idea.plugin.terminal;
 
 import org.jetbrains.plugins.terminal.cloud.CloudTerminalProcess;
-import tech.lin2j.idea.plugin.ssh.sshj.SshjConnection;
-
-import java.io.InputStream;
-import java.io.OutputStream;
+import tech.lin2j.idea.plugin.ssh.CustomTtyConnector;
 
 /**
  * @author linjinjia
@@ -12,7 +9,18 @@ import java.io.OutputStream;
  */
 public class ClosableCloudTerminalProcess extends CloudTerminalProcess {
 
-    public ClosableCloudTerminalProcess(OutputStream terminalInput, InputStream terminalOutput) {
-        super(terminalInput, terminalOutput);
+    private final CustomTtyConnector connector;
+
+    public ClosableCloudTerminalProcess(CustomTtyConnector connector) {
+        super(connector.getOutputStream(), connector.getInputStream());
+        this.connector = connector;
+    }
+
+    @Override
+    public void destroy() {
+        super.destroy();
+        if (connector != null) {
+            connector.close();
+        }
     }
 }

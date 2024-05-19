@@ -10,8 +10,8 @@ import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.ssh.SshServer;
-import tech.lin2j.idea.plugin.ui.panel.HostBasicPanel;
-import tech.lin2j.idea.plugin.ui.panel.HostProxyPanel;
+import tech.lin2j.idea.plugin.ui.component.HostBasicPanel;
+import tech.lin2j.idea.plugin.ui.component.HostProxyPanel;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.*;

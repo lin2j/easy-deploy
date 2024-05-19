@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.ui.panel;
+package tech.lin2j.idea.plugin.ui.component;
 
 import com.intellij.openapi.project.Project;
 import tech.lin2j.idea.plugin.action.CommandDialogAction;

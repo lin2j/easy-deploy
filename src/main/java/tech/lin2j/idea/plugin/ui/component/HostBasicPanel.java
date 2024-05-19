@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.ui.panel;
+package tech.lin2j.idea.plugin.ui.component;
 
 import com.intellij.openapi.fileChooser.FileChooser;
 import com.intellij.openapi.fileChooser.FileChooserDescriptor;

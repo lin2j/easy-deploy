@@ -17,10 +17,10 @@ import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.UploadProfile;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ui.render.UploadProfileColoredListCellRenderer;
+import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
@@ -49,6 +49,7 @@ public class SelectUploadProfileDialog extends DialogWrapper {
         initUploadProfileJBList();
         initRoot();
 
+        setTitle(MessagesBundle.getText("dialog.profile.select.frame"));
         init();
     }
 
@@ -74,17 +75,18 @@ public class SelectUploadProfileDialog extends DialogWrapper {
     }
 
     private void initRoot() {
+        String serverTitle = MessagesBundle.getText("dialog.profile.select.server");
+        String profileTitle = MessagesBundle.getText("dialog.profile.select.profiles");
         JPanel profilePanel = FormBuilder.createFormBuilder()
-                .addLabeledComponent("Upload profile", new JScrollPane(profileList), true)
+                .addLabeledComponent(profileTitle, new JBScrollPane(profileList), true)
                 .getPanel();
 
         JPanel serverPanel = new JPanel(new GridBagLayout());
-        serverPanel.add(new JBLabel("Server"), new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
+        serverPanel.add(new JBLabel(serverTitle), new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL,
                 JBUI.emptyInsets(), 0, 0));
         serverPanel.add(serverContainer, new GridBagConstraints(0, 1, 1, 1, 1, 1, GridBagConstraints.WEST, GridBagConstraints.BOTH,
                 JBUI.insets(0, 1), 0, 0));
 
-//        OnePixelSplitter splitter = new OnePixelSplitter(false, 0.4f);
         JBSplitter splitter = new JBSplitter(false, 0.4f);
         splitter.setFirstComponent(serverPanel);
         splitter.setSecondComponent(profilePanel);

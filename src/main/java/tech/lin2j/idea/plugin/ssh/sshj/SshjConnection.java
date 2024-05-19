@@ -40,6 +40,10 @@ public class SshjConnection implements SshConnection {
         sftpClient.getFileTransfer().setTransferListener(transferListener);
     }
 
+    public SSHClient getSshClient() {
+        return sshClient;
+    }
+
     @Override
     public boolean isConnected() {
         return sshClient.isConnected();

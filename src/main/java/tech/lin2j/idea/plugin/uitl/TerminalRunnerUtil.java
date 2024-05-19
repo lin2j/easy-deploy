@@ -11,6 +11,7 @@ import tech.lin2j.idea.plugin.ssh.CustomTtyConnector;
 import tech.lin2j.idea.plugin.ssh.CustomTtyConnectorFactory;
 import tech.lin2j.idea.plugin.ssh.SshProcess;
 import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.terminal.ClosableCloudTerminalProcess;
 
 import java.awt.Dimension;
 import java.lang.reflect.Constructor;
@@ -50,8 +51,7 @@ public class TerminalRunnerUtil {
         String presentableName = server.getIp() + ":" + server.getPort();
         CustomTtyConnector ttyConnector = CustomTtyConnectorFactory.getCustomTtyConnector(CustomTtyConnector.SSHJ, server);
         ttyConnector.setName(presentableName);
-        SshProcess p = new SshProcess(ttyConnector);
-        CloudTerminalProcess cloudProcess = new CloudTerminalProcess(p.getOutputStream(), p.getInputStream());
+        ClosableCloudTerminalProcess cloudProcess = new ClosableCloudTerminalProcess(ttyConnector);
         TerminalListener.TtyResizeHandler handlerBoundLater = (w, h) -> getResizeHandler(ttyConnector).onTtyResizeRequest(w, h);
         return createCloudTerminalRunnerInstance(project, presentableName, cloudProcess, handlerBoundLater);
     }

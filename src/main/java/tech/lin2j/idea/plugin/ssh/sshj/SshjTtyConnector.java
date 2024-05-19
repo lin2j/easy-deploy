@@ -27,6 +27,7 @@ public class SshjTtyConnector implements CustomTtyConnector {
     public static final Logger log = LoggerFactory.getLogger(SshjTtyConnector.class);
 
     private String title;
+    private final SshjConnection connection;
     private final SSHClient sshClient;
     private Session.Shell shell;
     private InputStream inputStream;
@@ -36,8 +37,9 @@ public class SshjTtyConnector implements CustomTtyConnector {
     private Dimension pendingPixelSize;
     private final AtomicBoolean isInitiated = new AtomicBoolean(false);
 
-    public SshjTtyConnector(SSHClient sshClient) {
-        this.sshClient = sshClient;
+    public SshjTtyConnector(SshjConnection connection) {
+        this.connection = connection;
+        this.sshClient = connection.getSshClient();
         this.init(null);
     }
 
@@ -107,6 +109,7 @@ public class SshjTtyConnector implements CustomTtyConnector {
 
     @Override
     public void close() {
+        log.info("close ssh connection");
         if (shell != null) {
             try {
                 shell.close();
@@ -117,6 +120,8 @@ public class SshjTtyConnector implements CustomTtyConnector {
             inputStream = null;
             outputStream = null;
         }
+
+        connection.close();
     }
 
     @Override

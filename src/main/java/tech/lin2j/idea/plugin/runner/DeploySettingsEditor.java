@@ -2,6 +2,7 @@ package tech.lin2j.idea.plugin.runner;
 
 import com.intellij.openapi.actionSystem.ActionToolbarPosition;
 import com.intellij.openapi.options.SettingsEditor;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.table.JBTable;
@@ -14,6 +15,7 @@ import tech.lin2j.idea.plugin.domain.model.NoneCommand;
 import tech.lin2j.idea.plugin.domain.model.UploadProfile;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ui.dialog.SelectUploadProfileDialog;
+import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -68,6 +70,12 @@ public class DeploySettingsEditor extends SettingsEditor<DeployRunConfiguration>
                     if (StringUtil.isEmpty(selectedProfile)) {
                         return;
                     }
+                    if (deployProfiles.contains(selectedProfile.toString())) {
+                        String msg = MessagesBundle.getText("runner.editor.tip.profile-repeat");
+                        String title = MessagesBundle.getText("runner.editor.tip.title");
+                        Messages.showInfoMessage(msg, title);
+                        return;
+                    }
                     String msg = selectedProfile.toString();
                     deployProfiles.add(msg);
                     resetDeployProfileTable(Collections.singletonList(msg));
@@ -79,7 +87,12 @@ public class DeploySettingsEditor extends SettingsEditor<DeployRunConfiguration>
     }
 
     private void initDeployProfileTable() {
-        DefaultTableModel tableModel = new DefaultTableModel(new Object[0][5], COLUMNS);
+        DefaultTableModel tableModel = new DefaultTableModel(new Object[0][5], COLUMNS) {
+            @Override
+            public boolean isCellEditable(int row, int column) {
+                return false;
+            }
+        };
         deployProfileTable = new JBTable(tableModel);
         deployProfileTable.setModel(tableModel);
     }
@@ -109,7 +122,7 @@ public class DeploySettingsEditor extends SettingsEditor<DeployRunConfiguration>
                 if (cmdId == null) {
                     cmd = NoneCommand.INSTANCE;
                 } else {
-                    cmd = ConfigHelper.getCommandById(uploadProfile.getId());
+                    cmd = ConfigHelper.getCommandById(uploadProfile.getCommandId());
                     if (cmd == null) {
                         cmd = NoneCommand.INSTANCE;
                     }

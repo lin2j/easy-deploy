@@ -25,6 +25,7 @@ public interface MyIcons {
 
     Icon SFTP = IconLoader.getIcon("/icons/sftp.svg", MyIcons.class);
     Icon UploadProfile = IconLoader.getIcon("/icons/upload_profile.svg", MyIcons.class);
+    Icon EasyDeploy = IconLoader.getIcon("/icons/easy-deploy.svg", MyIcons.class);
 
     interface Actions {
         Icon showHidden = load("/icons/actions/showHiddens.svg");

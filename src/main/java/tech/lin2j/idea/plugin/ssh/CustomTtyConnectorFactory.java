@@ -1,9 +1,9 @@
 package tech.lin2j.idea.plugin.ssh;
 
-import net.schmizz.sshj.SSHClient;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
+import tech.lin2j.idea.plugin.ssh.sshj.SshjConnection;
 import tech.lin2j.idea.plugin.ssh.sshj.SshjTtyConnector;
 
 import java.io.IOException;
@@ -25,8 +25,8 @@ public class CustomTtyConnectorFactory {
     public static CustomTtyConnector getCustomTtyConnector(String type, SshServer server) throws RemoteSdkException {
         if (CustomTtyConnector.SSHJ.equals(type)) {
             try {
-                SSHClient sshClient = SshConnectionManager.makeSshClient(server);
-                return new SshjTtyConnector(sshClient);
+                SshjConnection connection = SshConnectionManager.makeSshjConnection(server);
+                return new SshjTtyConnector(connection);
             } catch (IOException e) {
                 LOG.error("Error connecting server: " + e.getMessage());
                 throw new RemoteSdkException("Error connecting server: " + e.getMessage(), e);

@@ -1,7 +1,7 @@
 package tech.lin2j.idea.plugin.ui.table;
 
 import com.intellij.openapi.project.Project;
-import tech.lin2j.idea.plugin.ui.panel.HostActionPanel;
+import tech.lin2j.idea.plugin.ui.component.HostActionPanel;
 
 import javax.swing.AbstractCellEditor;
 import javax.swing.JTable;
