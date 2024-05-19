@@ -12,6 +12,7 @@ import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
+import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -45,10 +46,12 @@ public class TestConnectionAction implements ActionListener {
             public void onFinished() {
                 String title = MessagesBundle.getText("dialog.panel.host.test-connect.title");
                 if (status.isSuccess()) {
-                    String tip = MessagesBundle.getText("dialog.panel.host.test-connect.tip");
-                    Messages.showMessageDialog(tip, title, Messages.getInformationIcon());
+                    SwingUtilities.invokeLater(() -> {
+                        String tip = MessagesBundle.getText("dialog.panel.host.test-connect.tip");
+                        Messages.showMessageDialog(tip, title, Messages.getInformationIcon());
+                    });
                 } else {
-                    Messages.showErrorDialog(status.getMessage(), title);
+                    SwingUtilities.invokeLater(() -> Messages.showErrorDialog(status.getMessage(), title));
                 }
             }
         });

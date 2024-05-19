@@ -11,8 +11,12 @@ import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.ButtonGroup;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -43,7 +47,7 @@ public class HostProxyPanel {
 
         root = new JPanel(new GridBagLayout());
         root.add(noProxyRadio, new GridBagConstraints(0, 0, 1, 1, 1, 0,
-                GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, JBUI.insetsTop(10), 0, 0));
+                GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, JBUI.insetsTop(5), 0, 0));
         root.add(proxyContainer, new GridBagConstraints(0, 1, 1, 1, 1, 0,
                 GridBagConstraints.WEST, GridBagConstraints.HORIZONTAL, JBUI.emptyInsets(), 0, 0));
     }
@@ -104,13 +108,15 @@ public class HostProxyPanel {
 
     private void initProxyDependencyContainer() {
         dependencyPanel = new HostDependencyPanel();
+        JBScrollPane scrollPane = new JBScrollPane(dependencyPanel);
+        scrollPane.setPreferredSize(new Dimension(0, 200));
 
         proxyContainer = new JPanel(new GridBagLayout());
         proxyContainer.add(fromSettingsRadio, new GridBagConstraints(0, 0, 1, 1, 1, 0,
                 GridBagConstraints.WEST, GridBagConstraints.NONE, JBUI.emptyInsets(), 0, 0));
         proxyContainer.add(serverComboBox, new GridBagConstraints(0, 1, 1, 1, 1, 0,
                 GridBagConstraints.WEST, GridBagConstraints.NONE, JBUI.insets(0, 20, 0, 0), 0, 0));
-        proxyContainer.add(new JBScrollPane(dependencyPanel), new GridBagConstraints(0, 2, 1, 1, 1, 1,
+        proxyContainer.add(scrollPane, new GridBagConstraints(0, 2, 1, 1, 1, 1,
                 GridBagConstraints.WEST, GridBagConstraints.BOTH, JBUI.insets(10, 20, 0, 0), 0, 0));
 
         refreshProxyChainPanel();

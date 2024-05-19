@@ -73,7 +73,7 @@ public class DeploySettingsEditor extends SettingsEditor<DeployRunConfiguration>
                     if (deployProfiles.contains(selectedProfile.toString())) {
                         String msg = MessagesBundle.getText("runner.editor.tip.profile-repeat");
                         String title = MessagesBundle.getText("runner.editor.tip.title");
-                        Messages.showInfoMessage(msg, title);
+                        Messages.showErrorDialog(msg, title);
                         return;
                     }
                     String msg = selectedProfile.toString();

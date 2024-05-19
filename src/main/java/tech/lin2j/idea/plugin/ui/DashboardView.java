@@ -16,9 +16,9 @@ import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.StatusText;
 import icons.MyIcons;
-import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.action.GithubAction;
+import tech.lin2j.idea.plugin.action.ServerSearchKeyAdapter;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
@@ -34,8 +34,6 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -106,7 +104,9 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
                 return;
             }
             List<SshServer> servers = ConfigHelper.sshServers();
-            servers = servers.stream().filter(s -> Objects.equals(tag, s.getTag())).collect(Collectors.toList());
+            servers = servers.stream()
+                    .filter(s -> Objects.equals(tag, s.getTag()))
+                    .collect(Collectors.toList());
             loadTableData(new TableRefreshEvent(servers));
         });
 
@@ -121,53 +121,20 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
     }
 
     private void initSearchTextField() {
-        searchInput = new SearchTextField();
+        searchInput = new SearchTextField() {
+            @Override
+            protected void onFieldCleared() {
+                loadTableData(null);
+            }
+        };
         String text = "IP | Name | Desc";
         StatusText emptyText = searchInput.getTextEditor().getEmptyText();
         emptyText.appendText(text, SimpleTextAttributes.GRAY_ATTRIBUTES);
         searchInput.setToolTipText("IP | Name | Desc");
-        searchInput.addKeyboardListener(new KeyAdapter() {
-            @Override
-            public void keyPressed(KeyEvent e) {
-                search(e);
-            }
-
-            @Override
-            public void keyReleased(KeyEvent e) {
-                search(e);
-            }
-
-            private void search(KeyEvent e) {
-                List<SshServer> searchResult = new ArrayList<>();
-                List<SshServer> serverInConfig = ConfigHelper.sshServers();
-                if (CollectionUtils.isEmpty(serverInConfig)) {
-                    return;
-                }
-
-                String keyword = searchInput.getText();
-                if (StringUtil.isEmpty(keyword)) {
-                    loadTableData(null);
-                    return;
-                }
-
-                for (SshServer server : serverInConfig) {
-                    if (server.getIp().contains(keyword)) {
-                        searchResult.add(server);
-                        continue;
-                    }
-                    if (server.getUsername().contains(keyword)) {
-                        searchResult.add(server);
-                        continue;
-                    }
-                    String desc = server.getDescription();
-                    if (StringUtil.isNotEmpty(desc) && desc.contains(keyword)) {
-                        searchResult.add(server);
-                    }
-                }
-
-                loadTableData(new TableRefreshEvent(searchResult));
-            }
-        });
+        searchInput.addKeyboardListener(new ServerSearchKeyAdapter(
+                searchInput,
+                searchResult -> loadTableData(new TableRefreshEvent(searchResult)))
+        );
     }
 
     private void initHostTable() {
@@ -231,7 +198,6 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
 
         @Override
         public void actionPerformed(@NotNull AnActionEvent e) {
-//            new HostUi(project, null).showAndGet();
             new HostSettingsDialog(project, null).show();
         }
     }

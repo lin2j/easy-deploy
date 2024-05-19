@@ -12,6 +12,7 @@ import tech.lin2j.idea.plugin.file.RemoteTableFile;
 import tech.lin2j.idea.plugin.file.TableFile;
 import tech.lin2j.idea.plugin.ssh.SshConnectionManager;
 import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.ssh.sshj.SshjConnection;
 import tech.lin2j.idea.plugin.ui.table.FileNameCellRenderer;
 import tech.lin2j.idea.plugin.ui.table.RemoteFileTableModel;
 
@@ -36,6 +37,7 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
 
     private JBLoadingPanel loadingPanel;
     private final SshServer server;
+    private SshjConnection connection;
     private SFTPClient sftpClient;
 
     public RemoteFileTableContainer(Project project, SshServer server) {
@@ -49,8 +51,13 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
     public void refreshFileList() {
         try {
             loadingPanel.startLoading();
-            if (sftpClient == null) {
-                this.sftpClient = SshConnectionManager.makeSshClient(server).newSFTPClient();
+            boolean createNewFtpClient = false;
+            if (connection == null || !connection.isConnected()) {
+                connection = SshConnectionManager.makeSshjConnection(server);
+                createNewFtpClient = true;
+            }
+            if (createNewFtpClient) {
+                this.sftpClient = connection.getSshClient().newSFTPClient();
             }
             FileAttributes atts = sftpClient.stat(getPath());
             if (atts == null || atts.getType() != FileMode.Type.DIRECTORY) {
@@ -143,5 +150,8 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
     @Override
     public void dispose() {
         // clean sftp resource
+        if (connection != null) {
+            connection.close();
+        }
     }
 }

@@ -25,6 +25,7 @@ public class FTPConsole {
 
     private final Project project;
     private final SshServer server;
+    private RemoteFileTableContainer remoteFileTableContainer;
 
     public FTPConsole(Project project, SshServer server) throws IOException {
         this.project = project;
@@ -38,6 +39,7 @@ public class FTPConsole {
 
         LocalFileTableContainer localContainer = new LocalFileTableContainer(project);
         RemoteFileTableContainer remoteContainer = new RemoteFileTableContainer(project, server);
+        remoteFileTableContainer = remoteContainer;
 
         JBSplitter fileWindows = new JBSplitter(false, "", 0.5f);
         fileWindows.setFirstComponent(localContainer);
@@ -65,4 +67,7 @@ public class FTPConsole {
         return root;
     }
 
+    public RemoteFileTableContainer getRemoteFileTableContainer() {
+        return remoteFileTableContainer;
+    }
 }

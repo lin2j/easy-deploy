@@ -33,7 +33,7 @@ public class SshjSshService implements ISshService {
             if (sshjConnection.isConnected()) {
                 status = true;
             }
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
             msg = e.getMessage();
         } finally {
@@ -48,7 +48,7 @@ public class SshjSshService implements ISshService {
         try {
             sshjConnection = SshConnectionManager.makeSshjConnection(sshServer);
             return sshjConnection.execute(command);
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
             return new SshStatus(false, e.getMessage());
         } finally {
@@ -65,7 +65,7 @@ public class SshjSshService implements ISshService {
             sshjConnection = SshConnectionManager.makeSshjConnection(sshServer);
             sshjConnection.download(remoteFile, localFile);
             status = true;
-        } catch (IOException e) {
+        } catch (Exception e) {
             log.error(e.getMessage(), e);
             msg = e.getMessage();
         } finally {

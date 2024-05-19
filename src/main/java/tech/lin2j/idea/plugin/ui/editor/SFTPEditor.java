@@ -20,15 +20,15 @@ import java.beans.PropertyChangeListener;
  * @date 2024/4/22 21:56
  */
 public class SFTPEditor extends UserDataHolderBase implements FileEditor {
-    private final SFTPVirtualFile SFTPVirtualFile;
+    private final SFTPVirtualFile sftpVirtualFile;
 
     public SFTPEditor(VirtualFile consoleVirtualFile) {
-        this.SFTPVirtualFile = (SFTPVirtualFile) consoleVirtualFile;
+        this.sftpVirtualFile = (SFTPVirtualFile) consoleVirtualFile;
     }
 
     @Override
     public @NotNull JComponent getComponent() {
-        return SFTPVirtualFile.getConsolePanel();
+        return sftpVirtualFile.getConsolePanel();
     }
 
     @Override
@@ -104,10 +104,11 @@ public class SFTPEditor extends UserDataHolderBase implements FileEditor {
 
     @Override
     public @Nullable VirtualFile getFile() {
-        return this.SFTPVirtualFile;
+        return this.sftpVirtualFile;
     }
 
     @Override
     public void dispose() {
+        sftpVirtualFile.close();
     }
 }

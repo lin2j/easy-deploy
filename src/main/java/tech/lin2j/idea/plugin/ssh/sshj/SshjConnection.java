@@ -97,6 +97,7 @@ public class SshjConnection implements SshConnection {
     @Override
     public void close() {
         if (clients != null) {
+            log.info("Close ssh connection, size: " + clients.size());
             while (!clients.isEmpty()) {
                 try {
                     clients.removeLast().close();

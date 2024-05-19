@@ -8,8 +8,8 @@ import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.file.fileTypes.SFTPFileType;
-import tech.lin2j.idea.plugin.ui.editor.SFTPFileSystem;
 import tech.lin2j.idea.plugin.ui.ftp.FTPConsole;
+import tech.lin2j.idea.plugin.ui.ftp.container.RemoteFileTableContainer;
 
 import javax.swing.JPanel;
 import java.io.IOException;
@@ -24,6 +24,7 @@ public class SFTPVirtualFile extends VirtualFile {
     private final String name;
     private final Project project;
     private final JPanel consolePanel;
+    private final RemoteFileTableContainer remoteFileTableContainer;
 
     @Override
     public @NotNull FileType getFileType() {
@@ -34,6 +35,7 @@ public class SFTPVirtualFile extends VirtualFile {
         this.project = project;
         this.name = name;
         this.consolePanel = console.createUi();
+        this.remoteFileTableContainer = console.getRemoteFileTableContainer();
     }
 
     public Project getProject() {
@@ -121,5 +123,9 @@ public class SFTPVirtualFile extends VirtualFile {
 
     public JPanel getConsolePanel() {
         return this.consolePanel;
+    }
+
+    public void close() {
+        remoteFileTableContainer.dispose();
     }
 }

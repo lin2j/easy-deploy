@@ -1,15 +1,15 @@
 package tech.lin2j.idea.plugin.ssh;
 
 import com.intellij.openapi.diagnostic.Logger;
-import net.schmizz.sshj.DefaultConfig;
 import net.schmizz.sshj.SSHClient;
-import net.schmizz.sshj.common.LoggerFactory;
 import net.schmizz.sshj.connection.channel.direct.DirectConnection;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.enums.AuthType;
+import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
 import tech.lin2j.idea.plugin.ssh.sshj.SshjConnection;
+import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import java.io.IOException;
 import java.util.Deque;
@@ -23,24 +23,7 @@ public class SshConnectionManager {
 
     private static final Logger log = Logger.getInstance(SshConnectionManager.class);
 
-    public static SSHClient makeSshClient(SshServer server) throws IOException {
-        DefaultConfig defaultConfig = new DefaultConfig();
-        defaultConfig.setLoggerFactory(LoggerFactory.DEFAULT);
-        SSHClient sshClient = new SSHClient();
-        sshClient.addHostKeyVerifier(new PromiscuousVerifier());
-        sshClient.setConnectTimeout(5000);
-        sshClient.connect(server.getIp(), server.getPort());
-        boolean needPemPrivateKey = AuthType.needPemPrivateKey(server.getAuthType());
-        if (needPemPrivateKey) {
-            KeyProvider keyProvider = sshClient.loadKeys(server.getPemPrivateKey());
-            sshClient.authPublickey(server.getUsername(), keyProvider);
-        } else {
-            sshClient.authPassword(server.getUsername(), server.getPassword());
-        }
-        return sshClient;
-    }
-
-    public static Deque<SSHClient> makeSshClients(SshServer server) throws IOException {
+    public static Deque<SSHClient> makeSshClients(SshServer server) throws RemoteSdkException, IOException {
         LinkedList<SshServer> hostChain = new LinkedList<>();
         hostChain.add(server);
         SshServer tmp = server;
@@ -52,41 +35,56 @@ public class SshConnectionManager {
                 proxyNotFound = true;
                 break;
             }
+
+            if (hostChain.contains(proxy)) {
+                String err = MessagesBundle.getText("ssh.connect.proxy.cycle");
+                throw new RemoteSdkException(err);
+            }
             hostChain.addFirst(proxy);
             tmp = proxy;
         }
         if (proxyNotFound) {
-            throw new RuntimeException("xxx");
+            throw new RemoteSdkException("Proxy host not found");
         }
 
         Deque<SSHClient> clients = new LinkedList<>();
-        for(SshServer host : hostChain) {
-            SSHClient client = new SSHClient();
-            client.addHostKeyVerifier(new PromiscuousVerifier());
-            client.setConnectTimeout(5000);
-            // jump
-            if (clients.size() == 0) {
-                client.connect(host.getIp(), host.getPort());
-            } else {
-                DirectConnection tunnel = clients.getLast().newDirectConnection(host.getIp(), host.getPort());
-                client.connectVia(tunnel);
-            }
-            // auth
-            boolean needPemPrivateKey = AuthType.needPemPrivateKey(host.getAuthType());
-            if (needPemPrivateKey) {
-                KeyProvider keyProvider = client.loadKeys(host.getPemPrivateKey());
-                client.authPublickey(host.getUsername(), keyProvider);
-            } else {
-                client.authPassword(host.getUsername(), host.getPassword());
-            }
+        SshServer errHost = null;
+        try {
+            for(SshServer host : hostChain) {
+                errHost = host;
+                SSHClient client = new SSHClient();
+                client.addHostKeyVerifier(new PromiscuousVerifier());
+                client.setConnectTimeout(5000);
+                // jump
+                if (clients.size() == 0) {
+                    client.connect(host.getIp(), host.getPort());
+                } else {
+                    DirectConnection tunnel = clients.getLast().newDirectConnection(host.getIp(), host.getPort());
+                    client.connectVia(tunnel);
+                }
+                // auth
+                boolean needPemPrivateKey = AuthType.needPemPrivateKey(host.getAuthType());
+                if (needPemPrivateKey) {
+                    KeyProvider keyProvider = client.loadKeys(host.getPemPrivateKey());
+                    client.authPublickey(host.getUsername(), keyProvider);
+                } else {
+                    client.authPassword(host.getUsername(), host.getPassword());
+                }
 
-            clients.addLast(client);
+                clients.addLast(client);
+            }
+        } catch (Exception e) {
+            String errMsg = e.getMessage();
+            if (errHost != null) {
+                errMsg += ": " + errHost.getIp();
+            }
+            throw new RemoteSdkException(errMsg);
         }
 
         return clients;
     }
 
-    public static SshjConnection makeSshjConnection(SshServer server) throws IOException {
+    public static SshjConnection makeSshjConnection(SshServer server) throws RemoteSdkException, IOException {
         return new SshjConnection(makeSshClients(server));
     }
 }
