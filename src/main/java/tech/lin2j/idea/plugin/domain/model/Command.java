@@ -87,7 +87,7 @@ public class Command {
             }
         }
         if (dir != null) {
-            newDir = dir.substring(0, Math.min(dir.length(), 20));
+            newDir = dir.substring(0, Math.min(dir.length(), 40));
             if (newDir.length() < dir.length()) {
                 newDir += "...";
             }

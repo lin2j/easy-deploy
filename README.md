@@ -40,7 +40,8 @@ If this plugin proves helpful to you, please consider showing your support by gi
 ## Server management
 
 You can use this plugin to add multiple servers and then execute commands, upload files, and deploy applications based 
-on these servers.
+on these servers. The server connections can even be established through jump hosts, and a proxy chain diagram is 
+provided.
 
 The login passwords for servers can be stored or left unstored. If not stored, a password input box will pop up when 
 needed.
@@ -92,6 +93,8 @@ and then execute the startup command in that directory. This is generally the se
 The deployment plan is essentially based on the upload configuration, where you select the commands to be executed after
 uploading.
 
+Alternatively, you can add a Run Configuration to execute a series of deployment settings after the build is complete.
+
 <img src="docs/media/Upload.gif" alt="upload">
 
 # Features
@@ -102,6 +105,9 @@ uploading.
 - [x] Deploy Services
 - [x] Open Terminal
 - [x] SSH Passwordless Login (Private Key Login)
+- [x] SSH Proxy Jump Host
+- [x] Run Configuration
+- [x] Internationalization
 - [ ] Configuration Import/Export
 - [x] Server Search
 - [x] SFTP Transfer Panel

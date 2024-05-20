@@ -13,7 +13,7 @@
     please give a star on this repo if it helped you.
     <br>
     <br>
-    Features:<br>
+    Core Features:<br>
     <ul>
         <li>Manage your servers</li>
         <li>Upload the file you want to deploy to the remote server</li>
@@ -22,6 +22,15 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.3.4</h2>
+    <ul>
+        <li>Added Run Configuration to help execute specified upload actions after the build. </li>
+        <li>Host proxy support, allowing setting up jump hosts for a host, but only from the currently saved host configurations. </li>
+        <li>Host proxy support includes displaying the proxy chain diagram. </li>
+        <li>Internationalization support, currently only English is available. </li>
+        <li>Some code refactoring, optimizing the display of some components. </li>
+    </ul>
+
     <h2>release 1.3.3</h2>
     <ul>
         <li>Optimize the display of the console interface by replacing buttons with icons. </li>
@@ -30,7 +39,6 @@
         <li>Add a plugin settings panel for tag management. </li>
         <li>Add an operation panel for SFTP, which is currently in the testing phase.</li>
     </ul>
-
 
     <h2>release 1.3.2</h2>
     <ul>
