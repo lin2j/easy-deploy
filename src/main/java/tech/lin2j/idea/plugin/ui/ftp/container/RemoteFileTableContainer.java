@@ -51,14 +51,11 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
     public void refreshFileList() {
         try {
             loadingPanel.startLoading();
-            boolean createNewFtpClient = false;
-            if (connection == null || !connection.isConnected()) {
-                connection = SshConnectionManager.makeSshjConnection(server);
-                createNewFtpClient = true;
+            ensureSfpClientIsAlive();
+            if (sftpClient == null) {
+                return;
             }
-            if (createNewFtpClient) {
-                this.sftpClient = connection.getSshClient().newSFTPClient();
-            }
+
             FileAttributes atts = sftpClient.stat(getPath());
             if (atts == null || atts.getType() != FileMode.Type.DIRECTORY) {
                 Messages.showErrorDialog("Specified path not found.", "Path");
@@ -90,6 +87,7 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
 
     @Override
     public SFTPClient getFTPClient() {
+        ensureSfpClientIsAlive();
         return sftpClient;
     }
 
@@ -113,6 +111,7 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
 
     @Override
     public void deleteFileAndDir(TableFile tf) {
+        ensureSfpClientIsAlive();
         if (sftpClient == null) {
             return;
         }
@@ -131,6 +130,10 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
 
     @Override
     public boolean createNewFolder(String path) throws IOException {
+        ensureSfpClientIsAlive();
+        if (sftpClient == null) {
+            return false;
+        }
         sftpClient.mkdirs(path);
         return true;
     }
@@ -152,6 +155,26 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
         // clean sftp resource
         if (connection != null) {
             connection.close();
+        }
+    }
+
+    @Override
+    public boolean isLocal() {
+        return false;
+    }
+
+    private void ensureSfpClientIsAlive() {
+        try {
+            boolean createNewFtpClient = false;
+            if (connection == null || !connection.isConnected()) {
+                connection = SshConnectionManager.makeSshjConnection(server);
+                createNewFtpClient = true;
+            }
+            if (createNewFtpClient) {
+                this.sftpClient = connection.getSshClient().newSFTPClient();
+            }
+        } catch (IOException ignored) {
+
         }
     }
 }

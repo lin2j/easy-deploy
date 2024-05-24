@@ -54,6 +54,16 @@ public class RemoteTableFile implements TableFile {
     }
 
     @Override
+    public String getCreated() {
+        return "";
+    }
+
+    @Override
+    public boolean readOnly() {
+        return false;
+    }
+
+    @Override
     public String getModified() {
         long time = remoteResourceInfo.getAttributes().getAtime() * 1000;
         return DateFormatUtils.format(time, "yyyy-MM-dd HH:mm:ss");
@@ -95,6 +105,12 @@ public class RemoteTableFile implements TableFile {
     public String getOwner() {
         int uid = remoteResourceInfo.getAttributes().getUID();
         return PosixUtil.getUser(server, uid);
+    }
+
+    @Override
+    public String getGroup() {
+        int uid = remoteResourceInfo.getAttributes().getUID();
+        return PosixUtil.getGroup(server, uid);
     }
 
     @Override

@@ -14,12 +14,21 @@ import tech.lin2j.idea.plugin.ui.ftp.container.RemoteFileTableContainer;
  * @date 2024/4/4 17:24
  */
 public class DownloadFileAndDirAction extends AnAction {
-    private final RemoteFileTableContainer container;
+    private RemoteFileTableContainer container;
 
     public DownloadFileAndDirAction(RemoteFileTableContainer container) {
         super("Download", "Download file and directory", AllIcons.Actions.Download);
         this.container = container;
     }
+
+    public DownloadFileAndDirAction(int count, RemoteFileTableContainer container) {
+        this(container);
+        if (count > 1) {
+            String text = "Download (" + count + " Selected)";
+            getTemplatePresentation().setText(text);
+        }
+    }
+
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {

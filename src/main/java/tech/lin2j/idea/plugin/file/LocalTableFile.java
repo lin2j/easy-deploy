@@ -3,6 +3,7 @@ package tech.lin2j.idea.plugin.file;
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeRegistry;
+import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.PathUtil;
@@ -12,6 +13,10 @@ import tech.lin2j.idea.plugin.uitl.FileUtil;
 import javax.swing.Icon;
 import java.awt.Panel;
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.Date;
 
 /**
  * @author linjinjia
@@ -21,9 +26,18 @@ public class LocalTableFile implements TableFile {
     private final File vf;
     private final FileType fileType;
 
+    private BasicFileAttributes basicFileAttributes;
+
     public LocalTableFile(File vf) {
         this.vf = vf;
         this.fileType = FileUtil.getFileType(getName());
+        if (SystemInfo.isWindows) {
+            try {
+                basicFileAttributes = Files.readAttributes(vf.toPath(), BasicFileAttributes.class);
+            } catch (Exception ignored) {
+
+            }
+        }
     }
 
     @Override
@@ -66,7 +80,25 @@ public class LocalTableFile implements TableFile {
 
     @Override
     public String getParent() {
-//        VirtualFile parent = vf.getParent();
         return PathUtil.getParentPath(vf.getPath());
+    }
+
+    @Override
+    public boolean isHidden() {
+        return vf.isHidden();
+    }
+
+    @Override
+    public String getCreated() {
+        if (basicFileAttributes != null) {
+            long ct = basicFileAttributes.creationTime().toMillis();
+            return DateFormatUtils.format(new Date(ct), "yyyy-MM-dd HH:mm:ss");
+        }
+        return "";
+    }
+
+    @Override
+    public boolean readOnly() {
+        return !vf.canWrite();
     }
 }

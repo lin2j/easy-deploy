@@ -14,6 +14,10 @@ import java.util.List;
  */
 public interface FileTableContainer {
 
+    default boolean isLocal() {
+        return true;
+    }
+
     JBTable getTable();
 
     List<TableFile> getFileList();

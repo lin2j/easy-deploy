@@ -18,10 +18,17 @@ import java.util.List;
 public class DeleteFileAndDirAction extends AnAction {
     private final FileTableContainer container;
 
-
     public DeleteFileAndDirAction(FileTableContainer container) {
         super("Delete", "Delete folder or file", AllIcons.Actions.Cancel);
         this.container = container;
+    }
+
+    public DeleteFileAndDirAction(int count, FileTableContainer container) {
+        this(container);
+        if (count > 1) {
+            String text = "Delete (" + count + " Selected)";
+            getTemplatePresentation().setText(text);
+        }
     }
 
     @Override

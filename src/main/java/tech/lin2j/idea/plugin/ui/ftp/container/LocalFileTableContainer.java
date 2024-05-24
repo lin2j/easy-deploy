@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
  * @author linjinjia
  * @date 2024/4/4 10:19
  */
-public class LocalFileTableContainer extends AbstractFileTableContainer implements FileTableContainer{
+public class LocalFileTableContainer extends AbstractFileTableContainer implements FileTableContainer {
 
     private static final int NAME_COLUMN = 0;
 

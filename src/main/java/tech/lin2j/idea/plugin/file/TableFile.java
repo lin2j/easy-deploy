@@ -18,6 +18,10 @@ public interface TableFile extends Comparable<TableFile> {
 
     String getType();
 
+    String getCreated();
+
+    boolean readOnly();
+
     String getModified();
 
     boolean isDirectory();
@@ -46,6 +50,10 @@ public interface TableFile extends Comparable<TableFile> {
     }
 
     default String getOwner() {
+        return "";
+    }
+
+    default String getGroup() {
         return "";
     }
 }

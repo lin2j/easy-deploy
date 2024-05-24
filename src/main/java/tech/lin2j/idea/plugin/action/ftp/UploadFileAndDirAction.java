@@ -15,11 +15,19 @@ import tech.lin2j.idea.plugin.ui.ftp.container.LocalFileTableContainer;
  */
 public class UploadFileAndDirAction extends AnAction {
 
-    private final LocalFileTableContainer localContainer;
+    private LocalFileTableContainer localContainer;
 
     public UploadFileAndDirAction(LocalFileTableContainer localContainer) {
         super("Upload", "Upload file and directory", AllIcons.Actions.Upload);
         this.localContainer = localContainer;
+    }
+
+    public UploadFileAndDirAction(int count, LocalFileTableContainer localContainer) {
+        this(localContainer);
+        if (count > 1) {
+            String text = "Upload (" + count + " Selected)";
+            getTemplatePresentation().setText(text);
+        }
     }
 
     @Override

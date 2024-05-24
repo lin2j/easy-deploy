@@ -22,6 +22,11 @@ public class PosixUtil {
      */
     private static final Map<String, String> USER_NAME_MAP = new ConcurrentHashMap<>();
 
+    /**
+     * key: ip_user, value: group
+     */
+    private static final Map<String, String> USER_GROUP_MAP = new ConcurrentHashMap<>();
+
     private static final ISshService sshClient = SshServiceFactory.getSshService();
 
     /**
@@ -45,6 +50,31 @@ public class PosixUtil {
             }
             USER_NAME_MAP.put(key, user);
             return user;
+        }
+        return "";
+    }
+
+    /**
+     * Get the user group of the specified server by UID
+     *
+     * @param server server id
+     * @param uid    user id
+     * @return user name
+     */
+    public static String getGroup(SshServer server, int uid) {
+        String key = server.getIp() + "_" + uid;
+        if (USER_GROUP_MAP.containsKey(key)) {
+            return USER_GROUP_MAP.get(key);
+        }
+
+        SshStatus status = sshClient.execute(server, "id -Gn " + uid);
+        if (status.isSuccess()) {
+            String group = status.getMessage();
+            if (StringUtil.isNotEmpty(group) && group.contains("no such user")) {
+                group = uid + "";
+            }
+            USER_GROUP_MAP.put(key, group);
+            return group;
         }
         return "";
     }

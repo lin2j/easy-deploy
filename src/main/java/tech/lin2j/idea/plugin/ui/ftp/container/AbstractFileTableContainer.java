@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.ui.ftp.container;
 
+import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
@@ -15,9 +16,12 @@ import com.intellij.ui.table.JBTable;
 import com.intellij.util.PathUtil;
 import com.intellij.util.ui.JBUI;
 import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.lang3.RandomUtils;
+import tech.lin2j.idea.plugin.action.SFTPTableMouseListener;
 import tech.lin2j.idea.plugin.action.ftp.CreateNewFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.DeleteFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.DownloadFileAndDirAction;
+import tech.lin2j.idea.plugin.action.ftp.FilePropertiesAction;
 import tech.lin2j.idea.plugin.action.ftp.GoToDesktopAction;
 import tech.lin2j.idea.plugin.action.ftp.GoToParentFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.HomeDirectoryAction;
@@ -27,6 +31,7 @@ import tech.lin2j.idea.plugin.action.ftp.RowDoubleClickAction;
 import tech.lin2j.idea.plugin.action.ftp.ShowHiddenFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.UploadFileAndDirAction;
 import tech.lin2j.idea.plugin.file.TableFile;
+import tech.lin2j.idea.plugin.ui.dialog.FilePropertiesDialog;
 
 import javax.swing.AbstractAction;
 import javax.swing.JPanel;
@@ -36,19 +41,27 @@ import javax.swing.table.TableModel;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 /**
  * @author linjinjia
  * @date 2024/4/10 22:20
  */
-public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel implements FileTableContainer {
+public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel implements FileTableContainer, Disposable {
 
     private final Project project;
     protected boolean showHiddenFileAndDir = false;
@@ -57,12 +70,22 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
     protected JBTextField filePath;
     private final boolean isLocalPanel;
     private final String actionPlace;
+    private final Long id;
+
+    /**
+     * At any time, a project can have at most one table in focus.
+     */
+    private static final Map<Project, Set<Long>> FOCUS_MAP = new ConcurrentHashMap<>();
 
     public AbstractFileTableContainer(boolean vertical, Project project, boolean isLocalPanel) {
         super(vertical);
         this.project = project;
         this.isLocalPanel = isLocalPanel;
         this.actionPlace = isLocalPanel ? "LocalFileContainer@bar" : "RemoteFileContainer@bar";
+        this.id = RandomUtils.nextLong();
+        if (!FOCUS_MAP.containsKey(project)) {
+            FOCUS_MAP.put(project, new HashSet<>());
+        }
     }
 
     protected void init() {
@@ -163,6 +186,11 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
         return project;
     }
 
+    @Override
+    public void dispose() {
+        FOCUS_MAP.get(project).remove(id);
+    }
+
     protected void addExtractAction(DefaultActionGroup actionGroup) {
 
     }
@@ -226,9 +254,23 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
 
     protected void initFileTable() {
         table = new JBTable(getTableModel());
-        table.getEmptyText().setText("No Data");
+        table.getEmptyText().setText("No data");
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+
+        table.addMouseListener(new SFTPTableMouseListener(this));
+        table.addKeyListener(new SpaceKeyListener());
+        table.addFocusListener(new FocusAdapter() {
+            @Override
+            public void focusGained(FocusEvent e) {
+                FOCUS_MAP.get(project).add(id);
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                FOCUS_MAP.get(project).remove(id);
+            }
+        });
 
         new RowDoubleClickAction(this).installOn(table);
         setContent(new JScrollPane(table));
@@ -243,4 +285,18 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
     }
 
     protected abstract TableModel getTableModel();
+
+    private class SpaceKeyListener extends KeyAdapter {
+        @Override
+        public void keyPressed(KeyEvent e) {
+            int[] rows = table.getSelectedRows();
+            if (!FOCUS_MAP.get(project).contains(id)
+                    || rows.length != 1
+                    || e.getKeyCode() != KeyEvent.VK_SPACE) {
+                return;
+            }
+
+            new FilePropertiesDialog(fileList.get(rows[0])).show();
+        }
+    }
 }
