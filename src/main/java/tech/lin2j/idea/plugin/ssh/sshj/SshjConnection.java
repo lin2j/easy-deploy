@@ -6,6 +6,7 @@ import net.schmizz.sshj.common.IOUtils;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.sftp.FileAttributes;
 import net.schmizz.sshj.sftp.SFTPClient;
+import net.schmizz.sshj.sftp.SFTPException;
 import net.schmizz.sshj.xfer.TransferListener;
 import tech.lin2j.idea.plugin.ssh.SshConnection;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
@@ -54,7 +55,12 @@ public class SshjConnection implements SshConnection {
         log.debug("Upload file from local to remote directory");
         File localFile = new File(local);
         if (localFile.exists() && localFile.canRead()) {
-            FileAttributes attr = sftpClient.stat(dest);
+            FileAttributes attr = null;
+            try {
+                attr = sftpClient.stat(dest);
+            } catch (SFTPException ignored) {
+                log.debug("no such remote file: " + dest);
+            }
             if (attr == null) {
                 // remote directory not exist
                 mkdirs(dest);

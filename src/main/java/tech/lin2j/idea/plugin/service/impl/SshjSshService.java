@@ -87,6 +87,7 @@ public class SshjSshService implements ISshService {
 
             File file = new File(localFile);
             if (file.isDirectory()) {
+                remoteDir = remoteDir + "/" + file.getName();
                 sshjConnection.mkdirs(remoteDir);
             }
 
