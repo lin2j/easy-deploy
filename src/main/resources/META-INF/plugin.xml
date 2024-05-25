@@ -22,6 +22,11 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.3.4.1</h2>
+    <ul>
+        <li>fix[#6]: remote directory not auto-created during upload</li>
+    </ul>
+
     <h2>release 1.3.4</h2>
     <ul>
         <li>Added Run Configuration to help execute specified upload actions after the build. </li>
