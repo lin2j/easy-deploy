@@ -5,6 +5,8 @@ import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurableGroup;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
+import tech.lin2j.idea.plugin.ui.settings.GeneralConfigurable;
+import tech.lin2j.idea.plugin.ui.settings.SFTPConfigurable;
 import tech.lin2j.idea.plugin.ui.settings.ServerTagConfigurable;
 
 import javax.swing.SwingUtilities;
@@ -17,7 +19,9 @@ import java.util.Collections;
 public class PluginSettingsDialog {
     public static Configurable[] createNewConfigurable(Project project) {
         return new Configurable[]{
-                new ServerTagConfigurable()
+//                new GeneralConfigurable(),
+                new ServerTagConfigurable(),
+                new SFTPConfigurable()
         };
     }
 
@@ -26,8 +30,8 @@ public class PluginSettingsDialog {
     }
 
     public static void show(Project project, Configurable[] configurable, int toSelect) {
+        CoolConfigurableGroup coolConfigurableGroup = new CoolConfigurableGroup(configurable);
         SwingUtilities.invokeLater(() -> {
-            CoolConfigurableGroup coolConfigurableGroup = new CoolConfigurableGroup(configurable);
             ShowSettingsUtilImpl.getDialog(
                     project,
                     Collections.singletonList(coolConfigurableGroup),

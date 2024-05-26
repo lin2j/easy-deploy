@@ -139,4 +139,8 @@ public class ConfigHelper {
                 .filter(p -> Objects.equals(p.getId(), profileId))
                 .findFirst().orElse(null);
     }
+
+    public static PluginSetting pluginSetting() {
+        return CONFIG_PERSISTENCE.getSetting();
+    }
 }

@@ -70,25 +70,21 @@ public class ServerTagConfigurable implements SearchableConfigurable, Configurab
     @Nullable
     @Override
     public JComponent createComponent() {
-        JPanel patternsPanel = new JPanel(new BorderLayout());
-        patternsPanel.setBorder(IdeBorderFactory.createTitledBorder("Server Tag:", false, JBUI.insetsTop(8)).setShowLine(false));
-        patternsPanel.add(ToolbarDecorator.createDecorator(tagList)
+        JPanel tagPanel = new JPanel(new BorderLayout());
+        tagPanel.setBorder(IdeBorderFactory.createTitledBorder("Server Tag:", false, JBUI.insetsTop(8)).setShowLine(false));
+        tagPanel.add(ToolbarDecorator.createDecorator(tagList)
                 .setToolbarPosition(ActionToolbarPosition.TOP)
                 .setAddAction(button -> addTag())
                 .setEditAction(button -> editSelectedTag())
                 .setRemoveAction(button -> removeTag())
                 .disableUpDownActions().createPanel(), BorderLayout.CENTER);
         return FormBuilder.createFormBuilder()
-                .addComponentFillVertically(patternsPanel, 0)
+                .addComponentFillVertically(tagPanel, 0)
                 .getPanel();
     }
 
-    protected void stopEditing() {
-
-    }
-
     protected void addTag() {
-        String tag = Messages.showInputDialog("new tag", "New Tag", TAG);
+        String tag = Messages.showInputDialog("New tag", "New Tag", TAG);
         if (StringUtil.isEmpty(tag)) {
             return;
         }

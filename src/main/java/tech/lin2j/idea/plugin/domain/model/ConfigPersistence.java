@@ -12,7 +12,6 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -32,6 +31,8 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
     private List<UploadProfile> uploadProfiles;
 
     private List<String> serverTags;
+
+    private PluginSetting setting;
 
     @Override
     public @Nullable ConfigPersistence getState() {
@@ -95,5 +96,16 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
 
     public void setServerTags(List<String> serverTags) {
         this.serverTags = serverTags;
+    }
+
+    public PluginSetting getSetting() {
+        if (setting == null) {
+            setting = new PluginSetting();
+        }
+        return setting;
+    }
+
+    public void setSetting(PluginSetting setting) {
+        this.setting = setting;
     }
 }

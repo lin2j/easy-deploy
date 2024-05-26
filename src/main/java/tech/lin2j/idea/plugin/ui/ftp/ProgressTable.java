@@ -7,6 +7,8 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.table.JBTable;
 import net.schmizz.sshj.sftp.SFTPClient;
 import net.schmizz.sshj.xfer.TransferListener;
+import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
+import tech.lin2j.idea.plugin.domain.model.PluginSetting;
 import tech.lin2j.idea.plugin.domain.model.event.FileTransferEvent;
 import tech.lin2j.idea.plugin.enums.TransferState;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
@@ -115,6 +117,7 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
         FileTableContainer sourceContainer = isUpload ? localContainer : remoteContainer;
         FileTableContainer targetContainer = isUpload ? remoteContainer : localContainer;
         List<TableFile> sourceFiles = sourceContainer.getSelectedFiles();
+        PluginSetting pluginSetting = ConfigHelper.pluginSetting();
 
         try {
             for (TableFile tf : sourceFiles) {
@@ -131,6 +134,8 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
                     DirectoryInfo di = FileUtil.calcDirectorySize(local);
                     cell.setDirectoryInfo(di);
                     size = StringUtil.formatFileSize(di.getSize());
+
+                    progressBar.setColor(pluginSetting.getUploadProgressColor());
                 } else {
                     local = localContainer.getPath() + "/" + tf.getName();
                     remote = tf.getFilePath();
@@ -139,7 +144,7 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
                     cell.setDirectoryInfo(di);
                     size = StringUtil.formatFileSize(di.getSize());
 
-                    progressBar.setColor(ColorProgressBar.GREEN);
+                    progressBar.setColor(pluginSetting.getDownloadProgressColor());
                 }
                 tableModel.addRow(new Object[]{name, state, progressBar, size, local, remote});
                 rows++;
