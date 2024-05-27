@@ -135,7 +135,7 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
                     cell.setDirectoryInfo(di);
                     size = StringUtil.formatFileSize(di.getSize());
 
-                    progressBar.setColor(pluginSetting.getUploadProgressColor());
+                    progressBar.setColor(pluginSetting.uploadProgressColor());
                 } else {
                     local = localContainer.getPath() + "/" + tf.getName();
                     remote = tf.getFilePath();
@@ -144,7 +144,7 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
                     cell.setDirectoryInfo(di);
                     size = StringUtil.formatFileSize(di.getSize());
 
-                    progressBar.setColor(pluginSetting.getDownloadProgressColor());
+                    progressBar.setColor(pluginSetting.downloadProgressColor());
                 }
                 tableModel.addRow(new Object[]{name, state, progressBar, size, local, remote});
                 rows++;

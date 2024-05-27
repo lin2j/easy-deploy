@@ -58,13 +58,13 @@ public class ServerTagConfigurable implements SearchableConfigurable, Configurab
     @NotNull
     @Override
     public String getId() {
-        return "Server Tag";
+        return "ED-Host Tag";
     }
 
     @Nls(capitalization = Nls.Capitalization.Title)
     @Override
     public String getDisplayName() {
-        return "Server Tag";
+        return "Host Tag";
     }
 
     @Nullable

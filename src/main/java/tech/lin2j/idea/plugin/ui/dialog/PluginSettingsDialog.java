@@ -19,7 +19,7 @@ import java.util.Collections;
 public class PluginSettingsDialog {
     public static Configurable[] createNewConfigurable(Project project) {
         return new Configurable[]{
-//                new GeneralConfigurable(),
+                new GeneralConfigurable(),
                 new ServerTagConfigurable(),
                 new SFTPConfigurable()
         };

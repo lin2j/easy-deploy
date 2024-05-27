@@ -11,13 +11,17 @@ import java.awt.Color;
  * @date 2024/5/25 10:11
  */
 public class PluginSetting {
+    private static final int defaultHeartbeatInterval = 30;
+    private static final Color defaultUploadColor = ColorProgressBar.BLUE;
+    private static final Color defaultDownloadColor = ColorProgressBar.GREEN;
+
     // General
+    private boolean sshKeepalive;
+    private Integer heartbeatInterval;
 
     private boolean updateCheck;
 
     // SFTP //
-    private static final Color defaultUploadColor = ColorProgressBar.BLUE;
-    private static final Color defaultDownloadColor = ColorProgressBar.GREEN;
 
     private String uploadProgressColor;
 
@@ -33,26 +37,36 @@ public class PluginSetting {
         this.updateCheck = updateCheck;
     }
 
-    public Color getUploadProgressColor() {
+    public String getUploadProgressColor() {
         if (uploadProgressColor == null) {
             uploadProgressColor = ColorUtil.toHex(defaultUploadColor);
         }
-        return ColorUtil.fromHex(uploadProgressColor);
+        return uploadProgressColor;
     }
 
-    public void setUploadProgressColor(Color uploadProgressColor) {
-        this.uploadProgressColor = ColorUtil.toHex(uploadProgressColor);
+    public Color uploadProgressColor() {
+        String hex = getUploadProgressColor();
+        return ColorUtil.fromHex(hex);
     }
 
-    public Color getDownloadProgressColor() {
+    public void setUploadProgressColor(String uploadProgressColor) {
+        this.uploadProgressColor = uploadProgressColor;
+    }
+
+    public String getDownloadProgressColor() {
         if (downloadProgressColor == null) {
             downloadProgressColor = ColorUtil.toHex(defaultDownloadColor);
         }
-        return ColorUtil.fromHex(downloadProgressColor);
+        return downloadProgressColor;
     }
 
-    public void setDownloadProgressColor(Color downloadProgressColor) {
-        this.downloadProgressColor = ColorUtil.toHex(downloadProgressColor);
+    public Color downloadProgressColor() {
+        String hex = getDownloadProgressColor();
+        return ColorUtil.fromHex(hex);
+    }
+
+    public void setDownloadProgressColor(String downloadProgressColor) {
+        this.downloadProgressColor = downloadProgressColor;
     }
 
     public SFTPAction getDoubleClickAction() {
@@ -61,5 +75,24 @@ public class PluginSetting {
 
     public void setDoubleClickAction(SFTPAction doubleClickAction) {
         this.doubleClickAction = doubleClickAction;
+    }
+
+    public boolean isSshKeepalive() {
+        return sshKeepalive;
+    }
+
+    public void setSshKeepalive(boolean sshKeepalive) {
+        this.sshKeepalive = sshKeepalive;
+    }
+
+    public Integer getHeartbeatInterval() {
+        if (heartbeatInterval == null) {
+            heartbeatInterval = defaultHeartbeatInterval;
+        }
+        return heartbeatInterval;
+    }
+
+    public void setHeartbeatInterval(Integer heartbeatInterval) {
+        this.heartbeatInterval = heartbeatInterval;
     }
 }

@@ -6,6 +6,7 @@ import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.CollectionComboBoxModel;
 import com.intellij.ui.ColorPanel;
+import com.intellij.ui.ColorUtil;
 import com.intellij.ui.border.IdeaTitledBorder;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.JBUI;
@@ -20,6 +21,7 @@ import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Objects;
 
@@ -59,22 +61,29 @@ public class SFTPConfigurable implements SearchableConfigurable, Configurable.No
     @Override
     public void reset() {
         doubleClickAction.setSelectedItem(setting.getDoubleClickAction());
-        uploadColorPicker.setSelectedColor(setting.getUploadProgressColor());
-        downloadColorPicker.setSelectedColor(setting.getDownloadProgressColor());
+        uploadColorPicker.setSelectedColor(setting.uploadProgressColor());
+        downloadColorPicker.setSelectedColor(setting.downloadProgressColor());
     }
 
     @Override
     public boolean isModified() {
-        return !Objects.equals(uploadColorPicker.getSelectedColor(), setting.getUploadProgressColor())
-                || !Objects.equals(downloadColorPicker.getSelectedColor(), setting.getDownloadProgressColor())
+        return !Objects.equals(uploadColorPicker.getSelectedColor(), setting.uploadProgressColor())
+                || !Objects.equals(downloadColorPicker.getSelectedColor(), setting.downloadProgressColor())
                 || !Objects.equals(doubleClickAction.getSelectedItem(), setting.getDoubleClickAction());
     }
 
     @Override
     public void apply() throws ConfigurationException {
         setting.setDoubleClickAction((SFTPAction) doubleClickAction.getSelectedItem());
-        setting.setUploadProgressColor(uploadColorPicker.getSelectedColor());
-        setting.setDownloadProgressColor(downloadColorPicker.getSelectedColor());
+
+        Color upColor = uploadColorPicker.getSelectedColor();
+        if (upColor != null) {
+            setting.setUploadProgressColor(ColorUtil.toHex(upColor));
+        }
+        Color downColor = downloadColorPicker.getSelectedColor();
+        if (downColor != null) {
+            setting.setDownloadProgressColor(ColorUtil.toHex(downColor));
+        }
     }
 
     private JPanel mouseControl() {
@@ -99,12 +108,12 @@ public class SFTPConfigurable implements SearchableConfigurable, Configurable.No
 
         uploadColorPicker = new ColorPanel();
         uploadColorPicker.setSize(new Dimension(40, 0));
-        uploadColorPicker.setSelectedColor(setting.getUploadProgressColor());
+        uploadColorPicker.setSelectedColor(setting.uploadProgressColor());
         JPanel up = new JPanel(new BorderLayout());
         up.add(uploadColorPicker, BorderLayout.WEST);
 
         downloadColorPicker = new ColorPanel();
-        downloadColorPicker.setSelectedColor(setting.getDownloadProgressColor());
+        downloadColorPicker.setSelectedColor(setting.downloadProgressColor());
         JPanel down = new JPanel(new BorderLayout());
         down.add(downloadColorPicker, BorderLayout.WEST);
 

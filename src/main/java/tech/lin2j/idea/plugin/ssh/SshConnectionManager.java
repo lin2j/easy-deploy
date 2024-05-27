@@ -1,11 +1,14 @@
 package tech.lin2j.idea.plugin.ssh;
 
 import com.intellij.openapi.diagnostic.Logger;
+import net.schmizz.keepalive.KeepAliveProvider;
+import net.schmizz.sshj.DefaultConfig;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.DirectConnection;
 import net.schmizz.sshj.transport.verification.PromiscuousVerifier;
 import net.schmizz.sshj.userauth.keyprovider.KeyProvider;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
+import tech.lin2j.idea.plugin.domain.model.PluginSetting;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
 import tech.lin2j.idea.plugin.ssh.sshj.SshjConnection;
@@ -20,6 +23,8 @@ import java.util.LinkedList;
  * @date 2022/6/25 15:34
  */
 public class SshConnectionManager {
+
+    private static final PluginSetting setting = ConfigHelper.pluginSetting();
 
     private static final Logger log = Logger.getInstance(SshConnectionManager.class);
 
@@ -47,6 +52,9 @@ public class SshConnectionManager {
             throw new RemoteSdkException("Proxy host not found");
         }
 
+        DefaultConfig defaultConfig = new DefaultConfig();
+        defaultConfig.setKeepAliveProvider(KeepAliveProvider.HEARTBEAT);
+
         Deque<SSHClient> clients = new LinkedList<>();
         SshServer errHost = null;
         try {
@@ -69,6 +77,10 @@ public class SshConnectionManager {
                     client.authPublickey(host.getUsername(), keyProvider);
                 } else {
                     client.authPassword(host.getUsername(), host.getPassword());
+                }
+
+                if (setting.isSshKeepalive()) {
+                    client.getConnection().getKeepAlive().setKeepAliveInterval(setting.getHeartbeatInterval());
                 }
 
                 clients.addLast(client);
