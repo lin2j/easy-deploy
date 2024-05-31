@@ -9,7 +9,7 @@ import java.util.List;
  */
 public enum SFTPAction {
 
-    Transfer, Properties;
+    NONE, Transfer, Properties;
 
     public static List<SFTPAction> asList() {
         return Arrays.asList(SFTPAction.values());

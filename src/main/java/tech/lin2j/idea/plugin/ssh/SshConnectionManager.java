@@ -12,6 +12,7 @@ import tech.lin2j.idea.plugin.domain.model.PluginSetting;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
 import tech.lin2j.idea.plugin.ssh.sshj.SshjConnection;
+import tech.lin2j.idea.plugin.ssh.sshj.SshjLoggerFactory;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import java.io.IOException;
@@ -53,6 +54,7 @@ public class SshConnectionManager {
         }
 
         DefaultConfig defaultConfig = new DefaultConfig();
+        defaultConfig.setLoggerFactory(new SshjLoggerFactory(log));
         defaultConfig.setKeepAliveProvider(KeepAliveProvider.HEARTBEAT);
 
         Deque<SSHClient> clients = new LinkedList<>();
@@ -60,9 +62,12 @@ public class SshConnectionManager {
         try {
             for(SshServer host : hostChain) {
                 errHost = host;
-                SSHClient client = new SSHClient();
+                SSHClient client = new SSHClient(defaultConfig);
                 client.addHostKeyVerifier(new PromiscuousVerifier());
                 client.setConnectTimeout(5000);
+                if (setting.isSshKeepalive()) {
+                    client.getConnection().getKeepAlive().setKeepAliveInterval(setting.getHeartbeatInterval());
+                }
                 // jump
                 if (clients.size() == 0) {
                     client.connect(host.getIp(), host.getPort());
@@ -77,10 +82,6 @@ public class SshConnectionManager {
                     client.authPublickey(host.getUsername(), keyProvider);
                 } else {
                     client.authPassword(host.getUsername(), host.getPassword());
-                }
-
-                if (setting.isSshKeepalive()) {
-                    client.getConnection().getKeepAlive().setKeepAliveInterval(setting.getHeartbeatInterval());
                 }
 
                 clients.addLast(client);

@@ -79,11 +79,11 @@ public class FilePropertiesDialog extends DialogWrapper {
             formBuilder.addLabeledComponent("Group", new JBLabel(file.getGroup()));
             formBuilder.addLabeledComponent("Permission", new JBLabel(file.getAccess()));
         }
-
-        if (file instanceof LocalTableFile) {
-            formBuilder.addSeparator();
-            formBuilder.addLabeledComponent("Permission", localPermission());
-        }
+//
+//        if (file instanceof LocalTableFile) {
+//            formBuilder.addSeparator();
+//            formBuilder.addLabeledComponent("Permission", localPermission());
+//        }
 
         // BLANK
         formBuilder.addComponent(new JBLabel());

@@ -70,6 +70,9 @@ public class PluginSetting {
     }
 
     public SFTPAction getDoubleClickAction() {
+        if (doubleClickAction == null) {
+            doubleClickAction = SFTPAction.NONE;
+        }
         return doubleClickAction;
     }
 

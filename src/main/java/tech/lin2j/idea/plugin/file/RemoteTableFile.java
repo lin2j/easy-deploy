@@ -113,6 +113,10 @@ public class RemoteTableFile implements TableFile {
         return PosixUtil.getGroup(server, uid);
     }
 
+    public Set<FilePermission> getFilePermissions() {
+        return remoteResourceInfo.getAttributes().getPermissions();
+    }
+
     @Override
     public String toString() {
         return "FTPFile{" +
