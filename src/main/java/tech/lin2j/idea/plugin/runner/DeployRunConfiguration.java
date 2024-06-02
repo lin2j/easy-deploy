@@ -14,9 +14,11 @@ import com.intellij.util.xmlb.annotations.Tag;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tech.lin2j.idea.plugin.domain.model.DeployProfile;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * @author linjinjia
@@ -42,7 +44,6 @@ public class DeployRunConfiguration extends RunConfigurationBase<Element> {
         state.deployProfiles = this.deployProfiles;
         XmlSerializer.serializeObjectInto(state, element);
         super.writeExternal(element);
-
     }
 
     @Override
@@ -55,15 +56,20 @@ public class DeployRunConfiguration extends RunConfigurationBase<Element> {
         }
     }
 
-    public void setDeployProfiles(List<String> deployProfiles) {
-        this.deployProfiles = deployProfiles;
+    public void setDeployProfiles(List<DeployProfile> dps) {
+        if (dps == null) {
+            dps = new ArrayList<>();
+        }
+        this.deployProfiles = dps.stream().map(DeployProfile::toString).collect(Collectors.toList());
     }
 
-    public List<String> getDeployProfile() {
+    public List<DeployProfile> getDeployProfile() {
         if (this.deployProfiles == null) {
             deployProfiles = new ArrayList<>();
         }
-        return this.deployProfiles;
+        return deployProfiles.stream().map(DeployProfile::new)
+                .filter(dp -> dp.getUploadProfile() != null)
+                .collect(Collectors.toList());
     }
 
     @NotNull

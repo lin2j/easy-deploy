@@ -19,6 +19,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
 import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
+import tech.lin2j.idea.plugin.domain.model.DeployProfile;
 import tech.lin2j.idea.plugin.ssh.SshUploadTask;
 
 import java.time.LocalDateTime;
@@ -70,10 +71,12 @@ public class DeployRunProfileState extends CommandLineState {
                         continue;
                     }
                     try {
-                        String[] ss = profile.split("@");
-                        int sshId = Integer.parseInt(ss[0]);
-                        int profileId = Integer.parseInt(ss[1]);
-                        new SshUploadTask(console, sshId, profileId).run();
+                        DeployProfile deployProfile = new DeployProfile(profile);
+                        if (deployProfile.isActive()) {
+                            int sshId = deployProfile.getSshId();
+                            int profileId = deployProfile.getProfileId();
+                            new SshUploadTask(console, sshId, profileId).run();
+                        }
                     } catch (Exception e) {
                         console.print(e.getMessage() + "\n", ConsoleViewContentType.ERROR_OUTPUT);
                     }

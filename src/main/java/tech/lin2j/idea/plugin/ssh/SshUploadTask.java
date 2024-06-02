@@ -34,7 +34,7 @@ public class SshUploadTask implements Runnable{
 
     @Override
     public void run() {
-        UploadProfile profile = ConfigHelper.getOneUploadProfileByName(sshId, profileId);
+        UploadProfile profile = ConfigHelper.getOneUploadProfileById(sshId, profileId);
         if (profile == null) {
             return;
         }

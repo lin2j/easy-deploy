@@ -151,6 +151,7 @@
         <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.WordFileType" fieldName="INSTANCE" name="Word" extensions="doc;docx"/>
         <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.ExcelFileType" fieldName="INSTANCE" name="Excel" extensions="xlsx;xls"/>
         <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.PptFileType" fieldName="INSTANCE" name="PPT" extensions="ppt;pptx"/>
+        <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.LogFileType" fieldName="INSTANCE" name="Log" extensions="log"/>
     </extensions>
 
     <actions>

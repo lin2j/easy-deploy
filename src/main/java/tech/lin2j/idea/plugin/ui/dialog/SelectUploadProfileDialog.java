@@ -67,7 +67,7 @@ public class SelectUploadProfileDialog extends DialogWrapper {
             UploadProfile profile = profileList.getSelectedValue();
             if (profile != null && profile.getId() != null) {
                 int profileId = profile.getId();
-                selectedProfile.append(sshId).append("@").append(profileId);
+                selectedProfile.append("1@").append(sshId).append("@").append(profileId);
             }
         }
 

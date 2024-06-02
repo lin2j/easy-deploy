@@ -134,7 +134,7 @@ public class ConfigHelper {
         return CONFIG_PERSISTENCE.getServerTags();
     }
 
-    public static UploadProfile getOneUploadProfileByName(int sshId, int profileId) {
+    public static UploadProfile getOneUploadProfileById(int sshId, int profileId) {
         return getUploadProfileBySshId(sshId).stream()
                 .filter(p -> Objects.equals(p.getId(), profileId))
                 .findFirst().orElse(null);

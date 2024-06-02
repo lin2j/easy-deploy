@@ -48,5 +48,6 @@ public interface MyIcons {
         Icon PPT = load("/icons/fileTypes/ppt.svg");
         Icon PDF = load("/icons/fileTypes/pdf.svg");
         Icon EBook = load("/icons/fileTypes/ebook.svg");
+        Icon Log = load("/icons/fileTypes/log.svg");
     }
 }
