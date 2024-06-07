@@ -13,8 +13,6 @@ import javax.swing.JList;
  */
 public class UploadProfileColoredListCellRenderer extends ColoredListCellRenderer<UploadProfile> {
 
-    public static final String TEXT_PADDING = "    ";
-
     @Override
     protected void customizeCellRenderer(@NotNull JList<? extends UploadProfile> list, UploadProfile value,
                                          int index, boolean selected, boolean hasFocus) {

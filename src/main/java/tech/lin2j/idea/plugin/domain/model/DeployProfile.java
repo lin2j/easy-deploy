@@ -2,6 +2,8 @@ package tech.lin2j.idea.plugin.domain.model;
 
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
+import java.util.Objects;
+
 /**
  * @author linjinjia
  * @date 2024/6/2 18:03
@@ -94,5 +96,18 @@ public class DeployProfile {
 
     public void setCommand(Command command) {
         this.command = command;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DeployProfile that = (DeployProfile) o;
+        return Objects.equals(sshId, that.sshId) && Objects.equals(profileId, that.profileId);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(sshId, profileId);
     }
 }

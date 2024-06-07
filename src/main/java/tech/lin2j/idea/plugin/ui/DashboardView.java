@@ -204,7 +204,7 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
 
     private class SettingsAction extends AnAction {
         public SettingsAction() {
-            super("Plugins Settings", "Update plugin settings", MyIcons.Actions.Settings);
+            super("Plugin Settings", "Update plugin settings", MyIcons.Actions.Settings);
         }
 
         @Override

@@ -1,7 +1,10 @@
-package tech.lin2j.idea.plugin.ssh;
+package tech.lin2j.idea.plugin.factory;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tech.lin2j.idea.plugin.ssh.CustomTtyConnector;
+import tech.lin2j.idea.plugin.ssh.SshConnectionManager;
+import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.exception.RemoteSdkException;
 import tech.lin2j.idea.plugin.ssh.sshj.SshjConnection;
 import tech.lin2j.idea.plugin.ssh.sshj.SshjTtyConnector;
