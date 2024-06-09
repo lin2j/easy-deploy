@@ -17,7 +17,6 @@ import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.progress.util.ProgressIndicatorBase;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.util.text.StringUtil;
-import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.domain.model.DeployProfile;
 import tech.lin2j.idea.plugin.ssh.SshUploadTask;

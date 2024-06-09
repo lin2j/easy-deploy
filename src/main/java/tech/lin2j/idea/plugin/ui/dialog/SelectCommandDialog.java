@@ -13,6 +13,7 @@ import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tech.lin2j.idea.plugin.action.CopyCommandAction;
 import tech.lin2j.idea.plugin.domain.model.Command;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.CommandAddEvent;
@@ -38,6 +39,7 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
     private final JPanel root;
     private JBTextField showInput;
     private JBList<Command> commandList;
+    private Command selectedCommand;
 
     private final int sshId;
     private final Project project;
@@ -83,6 +85,7 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
             Command command = commandList.getSelectedValue();
             if (command != null) {
                 showInput.setText(command.toString());
+                selectedCommand = command;
             }
         });
     }
@@ -114,6 +117,7 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
                     }
                     new AddCommandDialog(project, cmd).showAndGet();
                 })
+                .addExtraAction(AnActionButton.fromAction(new CopyCommandAction(() -> selectedCommand)))
                 .addExtraAction(new RunCommandAction(this))
                 .createPanel();
     }

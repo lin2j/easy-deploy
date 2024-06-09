@@ -1,5 +1,7 @@
 package tech.lin2j.idea.plugin.ui.dialog;
 
+import com.google.gson.Gson;
+import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -9,6 +11,7 @@ import com.intellij.ui.SimpleTextAttributes;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.JBUI;
+import com.intellij.util.ui.TextTransferable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.domain.model.Command;
@@ -183,6 +186,18 @@ public class UploadProfileDialog extends DialogWrapper implements ApplicationLis
                             ConfigHelper.removeUploadProfile(profile);
                             reloadProfileBox();
                         }
+                    }
+                }));
+                menu.add(new JMenuItem(new AbstractAction(MessagesBundle.getText("dialog.upload.actions.copy")) {
+                    @Override
+                    public void actionPerformed(ActionEvent e) {
+                        UploadProfile profile = (UploadProfile) profileBox.getSelectedItem();
+                        if (profile == null) {
+                            return;
+                        }
+                        Gson gson = new Gson();
+                        String json = gson.toJson(profile);
+                        CopyPasteManager.getInstance().setContents(new TextTransferable(json));
                     }
                 }));
                 menu.show(actionButton, 0, actionButton.getHeight());

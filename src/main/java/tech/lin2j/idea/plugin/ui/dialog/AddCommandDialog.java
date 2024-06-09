@@ -1,5 +1,8 @@
 package tech.lin2j.idea.plugin.ui.dialog;
 
+import com.intellij.openapi.actionSystem.ActionManager;
+import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.fileTypes.FileTypes;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -12,17 +15,23 @@ import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.ui.SoftWrapsEditorCustomization;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
+import com.intellij.util.ui.JBUI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tech.lin2j.idea.plugin.action.CopyCommandAction;
+import tech.lin2j.idea.plugin.action.PasteCommandAction;
 import tech.lin2j.idea.plugin.domain.model.Command;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.CommandAddEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
+import tech.lin2j.idea.plugin.uitl.UiUtil;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.Dimension;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,7 +59,7 @@ public class AddCommandDialog extends DialogWrapper {
         setContent();
 
         root = FormBuilder.createFormBuilder()
-                .addLabeledComponent(MessagesBundle.getText("dialog.command.title"), titleInput)
+                .addLabeledComponent(MessagesBundle.getText("dialog.command.title"), titleRow())
                 .addLabeledComponent(MessagesBundle.getText("dialog.command.path"), pathInput)
                 .addLabeledComponent(MessagesBundle.getText("dialog.command.content"), commandEditor, true)
                 .getPanel();
@@ -94,10 +103,32 @@ public class AddCommandDialog extends DialogWrapper {
         super.doOKAction();
     }
 
+    private JComponent titleRow() {
+        DefaultActionGroup group = new DefaultActionGroup();
+        group.add(new CopyCommandAction(command));
+        group.add(new PasteCommandAction(this::setContent));
+
+        ActionToolbar toolbar = ActionManager.getInstance()
+                .createActionToolbar("AddDialoag@Toolbar", group, true);
+        toolbar.setTargetComponent(null);
+
+        final JPanel titlePanel = new JPanel(new GridBagLayout());
+        titlePanel.add(titleInput, new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL,
+                JBUI.emptyInsets(), 0, 0));
+        titlePanel.add(toolbar.getComponent(), new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL,
+                JBUI.emptyInsets(), 0, 0));
+
+        return titlePanel;
+    }
+
     private void setContent() {
-        titleInput.setText(command.getTitle());
-        pathInput.setText(command.getDir());
-        commandEditor.setText(command.getContent());
+        setContent(command);
+    }
+
+    private void setContent(Command cmd) {
+        titleInput.setText(cmd.getTitle());
+        pathInput.setText(cmd.getDir());
+        commandEditor.setText(cmd.getContent());
     }
 
     private void initInput() {
