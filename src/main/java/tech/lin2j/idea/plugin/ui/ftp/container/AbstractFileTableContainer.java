@@ -16,7 +16,6 @@ import com.intellij.ui.table.JBTable;
 import com.intellij.util.PathUtil;
 import com.intellij.util.ui.JBUI;
 import org.apache.commons.collections.CollectionUtils;
-import org.apache.commons.lang.math.RandomUtils;
 import tech.lin2j.idea.plugin.action.SFTPTableMouseListener;
 import tech.lin2j.idea.plugin.action.ftp.CreateNewFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.DeleteFileAndDirAction;
@@ -52,6 +51,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -81,7 +81,7 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
         this.project = project;
         this.isLocalPanel = isLocalPanel;
         this.actionPlace = isLocalPanel ? "LocalFileContainer@bar" : "RemoteFileContainer@bar";
-        this.id = RandomUtils.nextLong();
+        this.id = new Random().nextLong();
         if (!FOCUS_MAP.containsKey(project)) {
             FOCUS_MAP.put(project, new HashSet<>());
         }

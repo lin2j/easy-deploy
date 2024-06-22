@@ -4,6 +4,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.CollectionComboBoxModel;
+import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.components.JBRadioButton;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
@@ -88,7 +89,8 @@ public class HostProxyPanel {
     }
 
     private void initComboBox() {
-        List<SshServer> sshServers = ConfigHelper.sshServers();
+        List<SshServer> sshServers = new ArrayList<>(ConfigHelper.sshServers());
+        sshServers.add(0, SshServer.None);
         if (contentProvider != null && StringUtil.isNotEmpty(contentProvider.getIp())) {
             sshServers = sshServers.stream()
                     .filter(s -> !Objects.equals(s.getIp(), contentProvider.getIp()))
@@ -110,6 +112,7 @@ public class HostProxyPanel {
         dependencyPanel = new HostDependencyPanel();
         JBScrollPane scrollPane = new JBScrollPane(dependencyPanel);
         scrollPane.setPreferredSize(new Dimension(0, 200));
+        scrollPane.setBorder(IdeBorderFactory.createEmptyBorder(JBUI.emptyInsets()));
 
         proxyContainer = new JPanel(new GridBagLayout());
         proxyContainer.add(fromSettingsRadio, new GridBagConstraints(0, 0, 1, 1, 1, 0,

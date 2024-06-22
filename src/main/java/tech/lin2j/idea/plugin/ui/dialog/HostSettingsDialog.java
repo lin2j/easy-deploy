@@ -2,8 +2,7 @@ package tech.lin2j.idea.plugin.ui.dialog;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
-import com.intellij.ui.tabs.TabInfo;
-import com.intellij.ui.tabs.impl.JBTabsImpl;
+import com.intellij.ui.components.JBTabbedPane;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.action.TestConnectionAction;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
@@ -14,8 +13,10 @@ import tech.lin2j.idea.plugin.ui.component.HostBasicPanel;
 import tech.lin2j.idea.plugin.ui.component.HostProxyPanel;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 
 public class HostSettingsDialog extends DialogWrapper {
@@ -84,10 +85,11 @@ public class HostSettingsDialog extends DialogWrapper {
         String basicTab = MessagesBundle.getText("dialog.host.tab.basic");
         String proxyTab = MessagesBundle.getText("dialog.host.tab.proxy");
 
-        JBTabsImpl tabs = new JBTabsImpl(project);
-        tabs.addTab(new TabInfo(hostBasicPanel.createUI()).setText(basicTab));
-        tabs.addTab(new TabInfo(hostProxyPanel.createUI()).setText(proxyTab));
-        root.add(tabs.getComponent(), BorderLayout.CENTER);
+        JBTabbedPane tabs = new JBTabbedPane();
+        tabs.addTab(basicTab, hostBasicPanel.createUI());
+        tabs.addTab(proxyTab, hostProxyPanel.createUI());
+
+        root.add(tabs);
 
         return tabs;
     }

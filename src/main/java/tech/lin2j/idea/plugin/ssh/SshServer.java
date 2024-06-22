@@ -15,6 +15,9 @@ import java.util.Objects;
  */
 public class SshServer implements Cloneable {
 
+    public static final SshServer None = new SshServer();
+
+
     private Integer id;
 
     private String ip;
