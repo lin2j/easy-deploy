@@ -26,8 +26,8 @@ import java.util.stream.Collectors;
 public class HostProxyPanel {
 
     private final JPanel root;
-    private final SshServer contentProvider;
     private final Project project;
+    private SshServer contentProvider;
 
     private JBRadioButton noProxyRadio;
     private JBRadioButton fromSettingsRadio;
@@ -40,6 +40,10 @@ public class HostProxyPanel {
     public HostProxyPanel(Project project, SshServer contentProvider) {
         this.project = project;
         this.contentProvider = contentProvider;
+        if (contentProvider != null) {
+            // fix bug: proxy is still saved after cancellation
+            this.contentProvider = contentProvider.clone();
+        }
 
         initRadio();
         initComboBox();
