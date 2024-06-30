@@ -8,6 +8,7 @@ import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.file.TableFile;
 import tech.lin2j.idea.plugin.ui.dialog.FilesDeleteConfirmDialog;
 import tech.lin2j.idea.plugin.ui.ftp.container.FileTableContainer;
+import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import java.util.List;
 
@@ -16,10 +17,13 @@ import java.util.List;
  * @date 2024/4/4 17:11
  */
 public class DeleteFileAndDirAction extends AnAction {
+    private static final String text = MessagesBundle.getText("action.ftp.delete.text");
+    private static final String desc = MessagesBundle.getText("action.ftp.delete.description");
+
     private final FileTableContainer container;
 
     public DeleteFileAndDirAction(FileTableContainer container) {
-        super("Delete", "Delete folder or file", AllIcons.Actions.Cancel);
+        super(text, desc, AllIcons.Actions.Cancel);
         this.container = container;
     }
 
@@ -38,7 +42,7 @@ public class DeleteFileAndDirAction extends AnAction {
             return;
         }
 
-        boolean confirm = new FilesDeleteConfirmDialog(selectedFiles).showAndGet();
+        boolean confirm = new FilesDeleteConfirmDialog(selectedFiles, null).showAndGet();
         if (!confirm) {
             return;
         }

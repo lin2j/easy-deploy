@@ -19,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
+import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.Icon;
@@ -64,14 +65,15 @@ public class ServerTagConfigurable implements SearchableConfigurable, Configurab
     @Nls(capitalization = Nls.Capitalization.Title)
     @Override
     public String getDisplayName() {
-        return "Host Tag";
+        return MessagesBundle.getText("setting.item.host-tag");
     }
 
     @Nullable
     @Override
     public JComponent createComponent() {
         JPanel tagPanel = new JPanel(new BorderLayout());
-        tagPanel.setBorder(IdeBorderFactory.createTitledBorder("Server Tag:", false, JBUI.insetsTop(8)).setShowLine(false));
+        String title = MessagesBundle.getText("setting.host-tag.title");
+        tagPanel.setBorder(IdeBorderFactory.createTitledBorder(title, false, JBUI.insetsTop(8)).setShowLine(false));
         tagPanel.add(ToolbarDecorator.createDecorator(tagList)
                 .setToolbarPosition(ActionToolbarPosition.TOP)
                 .setAddAction(button -> addTag())
@@ -125,7 +127,7 @@ public class ServerTagConfigurable implements SearchableConfigurable, Configurab
     }
 
     @Override
-    public void apply() throws ConfigurationException {
+    public void apply() {
 
     }
 

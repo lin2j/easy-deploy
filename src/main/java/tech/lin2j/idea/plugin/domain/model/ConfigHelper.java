@@ -36,7 +36,7 @@ public class ConfigHelper {
     }
 
     public static int language() {
-        return 0;
+        return pluginSetting().getLanguage();
     }
 
     public static SshServer getSshServerById(int id) {

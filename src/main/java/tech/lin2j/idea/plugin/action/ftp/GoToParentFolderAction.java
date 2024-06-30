@@ -5,17 +5,21 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.ui.ftp.container.FileTableContainer;
+import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 /**
  * @author linjinjia
  * @date 2024/4/4 16:40
  */
 public class GoToParentFolderAction extends AnAction {
+    private static final String text = MessagesBundle.getText("action.ftp.parent.text");
+    private static final String desc = MessagesBundle.getText("action.ftp.parent.description");
+
 
     private final FileTableContainer container;
 
     public GoToParentFolderAction(FileTableContainer container) {
-        super("Parent Folder", "Go to parent folder", AllIcons.Actions.Rollback);
+        super(text, desc, AllIcons.Actions.Rollback);
         this.container = container;
     }
 

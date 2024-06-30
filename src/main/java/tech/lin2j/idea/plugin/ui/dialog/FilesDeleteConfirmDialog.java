@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.ui.dialog;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.CollectionListModel;
 import com.intellij.ui.components.JBList;
@@ -26,8 +27,8 @@ public class FilesDeleteConfirmDialog extends DialogWrapper {
     private final JPanel root;
     private JBList<TableFile> fileList;
 
-    public FilesDeleteConfirmDialog(List<TableFile> files) {
-        super(null);
+    public FilesDeleteConfirmDialog(List<TableFile> files, Project project) {
+        super(project);
 
         initFileList(files);
 

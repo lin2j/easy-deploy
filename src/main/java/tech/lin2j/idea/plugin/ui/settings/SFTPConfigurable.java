@@ -44,7 +44,7 @@ public class SFTPConfigurable implements SearchableConfigurable, Configurable.No
 
     @Override
     public String getDisplayName() {
-        return "SFTP";
+        return MessagesBundle.getText("setting.item.sftp");
     }
 
     @Override
@@ -73,7 +73,7 @@ public class SFTPConfigurable implements SearchableConfigurable, Configurable.No
     }
 
     @Override
-    public void apply() throws ConfigurationException {
+    public void apply() {
         setting.setDoubleClickAction((SFTPAction) doubleClickAction.getSelectedItem());
 
         Color upColor = uploadColorPicker.getSelectedColor();

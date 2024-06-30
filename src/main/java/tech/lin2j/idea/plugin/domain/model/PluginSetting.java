@@ -2,6 +2,7 @@ package tech.lin2j.idea.plugin.domain.model;
 
 import com.intellij.openapi.progress.util.ColorProgressBar;
 import com.intellij.ui.ColorUtil;
+import tech.lin2j.idea.plugin.enums.I18nType;
 import tech.lin2j.idea.plugin.enums.SFTPAction;
 
 import java.awt.Color;
@@ -16,6 +17,7 @@ public class PluginSetting {
     private static final Color defaultDownloadColor = ColorProgressBar.GREEN;
 
     // General
+    private Integer language;
     private boolean sshKeepalive;
     private Integer heartbeatInterval;
 
@@ -28,6 +30,17 @@ public class PluginSetting {
     private String downloadProgressColor;
 
     private SFTPAction doubleClickAction;
+
+    public Integer getLanguage() {
+        if (language == null) {
+            return I18nType.English.getType();
+        }
+        return language;
+    }
+
+    public void setLanguage(int language) {
+        this.language = language;
+    }
 
     public boolean isUpdateCheck() {
         return updateCheck;

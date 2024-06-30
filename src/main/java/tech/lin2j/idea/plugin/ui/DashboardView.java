@@ -18,6 +18,7 @@ import com.intellij.util.ui.StatusText;
 import icons.MyIcons;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.action.GithubAction;
+import tech.lin2j.idea.plugin.action.HomePageAction;
 import tech.lin2j.idea.plugin.action.ServerSearchKeyAdapter;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
@@ -27,6 +28,7 @@ import tech.lin2j.idea.plugin.ui.dialog.HostSettingsDialog;
 import tech.lin2j.idea.plugin.ui.dialog.PluginSettingsDialog;
 import tech.lin2j.idea.plugin.ui.table.ActionCellEditor;
 import tech.lin2j.idea.plugin.ui.table.ActionCellRenderer;
+import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -75,11 +77,12 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
         final JPanel northPanel = new JPanel(new GridBagLayout());
 
         DefaultActionGroup actionGroup = new DefaultActionGroup();
+        actionGroup.add(new HomePageAction());
         actionGroup.add(new GithubAction());
         actionGroup.addSeparator();
-        actionGroup.add(new SettingsAction());
-        actionGroup.add(new RefreshAction());
-        actionGroup.add(new AddHostAction());
+        actionGroup.add(new SettingsAction(MessagesBundle.getText("action.dashboard.plugin-setting.text")));
+        actionGroup.add(new RefreshAction(MessagesBundle.getText("action.dashboard.refresh.text")));
+        actionGroup.add(new AddHostAction(MessagesBundle.getText("action.dashboard.add-host.text")));
         ActionToolbar toolbar = ActionManager.getInstance()
                 .createActionToolbar("DashboardView@Toolbar", actionGroup, true);
         toolbar.setTargetComponent(this);
@@ -180,8 +183,8 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
 
     private class RefreshAction extends AnAction {
 
-        public RefreshAction() {
-            super("Refresh", "Refresh host table", MyIcons.Actions.Refresh);
+        public RefreshAction(String text) {
+            super(text, "Refresh host table", MyIcons.Actions.Refresh);
         }
 
         @Override
@@ -192,8 +195,8 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
     }
 
     private class AddHostAction extends AnAction {
-        public AddHostAction() {
-            super("Add Host", "Add new host profile", MyIcons.Actions.AddHost);
+        public AddHostAction(String text) {
+            super(text, "Add new host profile", MyIcons.Actions.AddHost);
         }
 
         @Override
@@ -203,8 +206,8 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
     }
 
     private class SettingsAction extends AnAction {
-        public SettingsAction() {
-            super("Plugin Settings", "Update plugin settings", MyIcons.Actions.Settings);
+        public SettingsAction(String text) {
+            super(text, "Update plugin settings", MyIcons.Actions.Settings);
         }
 
         @Override

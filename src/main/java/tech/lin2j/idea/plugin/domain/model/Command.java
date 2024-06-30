@@ -101,13 +101,14 @@ public class Command {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Command command = (Command) o;
-        return Objects.equals(title, command.title)
+        return Objects.equals(sshId, command.sshId)
+                && Objects.equals(title, command.title)
                 && Objects.equals(dir, command.dir)
                 && Objects.equals(content, command.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(title, dir, content);
+        return Objects.hash(sshId, title, dir, content);
     }
 }

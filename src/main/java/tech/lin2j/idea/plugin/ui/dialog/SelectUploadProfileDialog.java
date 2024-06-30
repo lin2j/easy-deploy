@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.ui.dialog;
 
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.ui.CollectionComboBoxModel;
@@ -41,8 +42,8 @@ public class SelectUploadProfileDialog extends DialogWrapper {
 
     private final StringBuilder selectedProfile;
 
-    public SelectUploadProfileDialog(StringBuilder selectedProfile) {
-        super(null);
+    public SelectUploadProfileDialog(StringBuilder selectedProfile, Project project) {
+        super(project);
         this.selectedProfile = selectedProfile;
 
         initServerContainer();

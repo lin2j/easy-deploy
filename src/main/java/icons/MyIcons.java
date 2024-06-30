@@ -34,6 +34,7 @@ public interface MyIcons {
         Icon Settings = IconLoader.getIcon("/icons/actions/my_settings.svg", MyIcons.class);
         Icon Refresh = IconLoader.getIcon("/icons/actions/my_refresh.svg", MyIcons.class);
         Icon Github = IconLoader.getIcon("/icons/actions/github.svg", MyIcons.class);
+        Icon HomePage = IconLoader.getIcon("/icons/actions/home-page.svg", MyIcons.class);
         Icon Copy = IconLoader.getIcon("/icons/actions/copy.svg", MyIcons.class);
         Icon Paste = IconLoader.getIcon("/icons/actions/paste.svg", MyIcons.class);
     }

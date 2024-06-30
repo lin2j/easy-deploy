@@ -6,17 +6,20 @@ import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.ui.ftp.container.FileTableContainer;
+import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 /**
  * @author linjinjia
  * @date 2024/4/4 16:19
  */
 public class HomeDirectoryAction extends AnAction {
+    private static final String text = MessagesBundle.getText("action.ftp.home.text");
+    private static final String desc = MessagesBundle.getText("action.ftp.home.description");
 
     private final FileTableContainer container;
 
     public HomeDirectoryAction(FileTableContainer container) {
-        super("Home Directory", "Go to user home directory", AllIcons.Nodes.HomeFolder);
+        super(text, desc, AllIcons.Nodes.HomeFolder);
         this.container = container;
     }
 

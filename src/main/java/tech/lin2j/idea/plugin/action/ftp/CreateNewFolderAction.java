@@ -9,6 +9,7 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import tech.lin2j.idea.plugin.ui.ftp.container.FileTableContainer;
+import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import java.io.IOException;
 
@@ -20,12 +21,14 @@ public class CreateNewFolderAction extends AnAction {
 
     public static final Logger log = LoggerFactory.getLogger(CreateNewFolderAction.class);
 
+    private static final String text = MessagesBundle.getText("action.ftp.new-folder.text");
+    private static final String desc = MessagesBundle.getText("action.ftp.new-folder.description");
 
     private final FileTableContainer container;
 
 
     public CreateNewFolderAction(FileTableContainer container) {
-        super("New Directory", "Create new folder", AllIcons.Actions.NewFolder);
+        super(text, desc, AllIcons.Actions.NewFolder);
         this.container = container;
     }
 

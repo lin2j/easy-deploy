@@ -67,7 +67,7 @@ public class DeploySettingsEditor extends SettingsEditor<DeployRunConfiguration>
                 .setToolbarPosition(ActionToolbarPosition.TOP)
                 .setAddAction(e -> {
                     StringBuilder selectedProfile = new StringBuilder();
-                    new SelectUploadProfileDialog(selectedProfile).showAndGet();
+                    new SelectUploadProfileDialog(selectedProfile, null).showAndGet();
                     if (StringUtil.isEmpty(selectedProfile)) {
                         return;
                     }

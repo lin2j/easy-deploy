@@ -8,16 +8,20 @@ import tech.lin2j.idea.plugin.domain.model.event.FileTransferEvent;
 import tech.lin2j.idea.plugin.enums.TransferEventType;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.ui.ftp.container.RemoteFileTableContainer;
+import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 /**
  * @author linjinjia
  * @date 2024/4/4 17:24
  */
 public class DownloadFileAndDirAction extends AnAction {
-    private RemoteFileTableContainer container;
+    private static final String text = MessagesBundle.getText("action.ftp.download.text");
+    private static final String desc = MessagesBundle.getText("action.ftp.download.description");
+
+    private final RemoteFileTableContainer container;
 
     public DownloadFileAndDirAction(RemoteFileTableContainer container) {
-        super("Download", "Download file and directory", AllIcons.Actions.Download);
+        super(text, desc, AllIcons.Actions.Download);
         this.container = container;
     }
 

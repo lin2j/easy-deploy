@@ -3,6 +3,8 @@ package tech.lin2j.idea.plugin.ui.settings;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
+import com.intellij.openapi.ui.ComboBox;
+import com.intellij.ui.CollectionComboBoxModel;
 import com.intellij.ui.border.IdeaTitledBorder;
 import com.intellij.ui.components.JBCheckBox;
 import com.intellij.util.ui.FormBuilder;
@@ -12,14 +14,15 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
 import tech.lin2j.idea.plugin.domain.model.PluginSetting;
+import tech.lin2j.idea.plugin.enums.I18nType;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
-import tech.lin2j.idea.plugin.uitl.PluginUtil;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JSpinner;
 import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
+import java.util.Arrays;
 import java.util.Objects;
 
 /**
@@ -30,7 +33,7 @@ public class GeneralConfigurable implements SearchableConfigurable, Configurable
 
     private final PluginSetting setting = ConfigHelper.pluginSetting();
 
-    private JBCheckBox updateCheck;
+    private ComboBox<I18nType> languageType;
     private JBCheckBox sshKeepalive;
     private JSpinner heartbeatInterval;
 
@@ -42,12 +45,13 @@ public class GeneralConfigurable implements SearchableConfigurable, Configurable
 
     @Override
     public String getDisplayName() {
-        return "General";
+        return MessagesBundle.getText("setting.item.general");
     }
 
     @Override
     public @Nullable JComponent createComponent() {
         JPanel panel = FormBuilder.createFormBuilder()
+                .addComponent(basic())
                 .addComponent(sshControl())
                 .getPanel();
 
@@ -59,15 +63,35 @@ public class GeneralConfigurable implements SearchableConfigurable, Configurable
 
     @Override
     public boolean isModified() {
+        I18nType selectedI18Type = languageType.getItemAt(languageType.getSelectedIndex());
         return !Objects.equals(sshKeepalive.isSelected(), setting.isSshKeepalive())
-                || !Objects.equals(heartbeatInterval.getValue(), setting.getHeartbeatInterval());
+                || !Objects.equals(heartbeatInterval.getValue(), setting.getHeartbeatInterval())
+                || !Objects.equals(selectedI18Type.getType(), setting.getLanguage());
+
     }
 
     @Override
-    public void apply() throws ConfigurationException {
-//        setting.setUpdateCheck(updateCheck.isSelected());
+    public void apply() {
+        I18nType selectedI18Type = languageType.getItemAt(languageType.getSelectedIndex());
         setting.setSshKeepalive(sshKeepalive.isSelected());
         setting.setHeartbeatInterval((int) heartbeatInterval.getValue());
+        setting.setLanguage(selectedI18Type.getType());
+    }
+
+    private JPanel basic() {
+        String title = MessagesBundle.getText("setting.general.basic.title");
+        String language = MessagesBundle.getText("setting.general.basic.language");
+
+        languageType = new ComboBox<>();
+        languageType.setModel(new CollectionComboBoxModel<>(Arrays.asList(I18nType.values())));
+        languageType.setSelectedItem(I18nType.getByType(setting.getLanguage()));
+
+        JPanel panel = FormBuilder.createFormBuilder()
+                .addLabeledComponent(language, languageType)
+                .getPanel();
+        panel.setBorder(new IdeaTitledBorder(title, 0, JBUI.emptyInsets()));
+
+        return panel;
     }
 
     private JPanel sshControl() {
@@ -77,9 +101,7 @@ public class GeneralConfigurable implements SearchableConfigurable, Configurable
 
         sshKeepalive = new JBCheckBox();
         sshKeepalive.setSelected(setting.isSshKeepalive());
-        sshKeepalive.addChangeListener(e -> {
-            heartbeatInterval.setEnabled(sshKeepalive.isSelected());
-        });
+        sshKeepalive.addChangeListener(e -> heartbeatInterval.setEnabled(sshKeepalive.isSelected()));
 
         int interval = setting.getHeartbeatInterval();
         heartbeatInterval = new JSpinner(new SpinnerNumberModel(interval, 10, 3600, 10));
@@ -92,26 +114,5 @@ public class GeneralConfigurable implements SearchableConfigurable, Configurable
         panel.setBorder(new IdeaTitledBorder(title, 0, JBUI.emptyInsets()));
 
         return panel;
-    }
-
-    private JPanel pluginInfo() {
-        updateCheck = new JBCheckBox("Update check");
-        updateCheck.setSelected(setting.isUpdateCheck());
-        JPanel versionPanel = FormBuilder.createFormBuilder()
-                .addLabeledComponent(PluginUtil.versionLabel(), updateCheck)
-                .getPanel();
-
-        JPanel iconPanel = new JPanel(new BorderLayout());
-        iconPanel.add(PluginUtil.pluginIconLabel(), BorderLayout.CENTER);
-
-        JPanel panel = FormBuilder.createFormBuilder()
-                .addComponent(iconPanel)
-                .addComponent(versionPanel)
-                .getPanel();
-
-        JPanel result = new JPanel(new BorderLayout());
-        result.add(panel, BorderLayout.NORTH);
-
-        return result;
     }
 }

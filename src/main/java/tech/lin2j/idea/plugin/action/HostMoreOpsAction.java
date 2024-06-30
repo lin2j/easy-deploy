@@ -11,6 +11,7 @@ import tech.lin2j.idea.plugin.ui.dialog.HostSettingsDialog;
 import tech.lin2j.idea.plugin.ui.editor.SFTPFileSystem;
 import tech.lin2j.idea.plugin.ui.editor.SFTPVirtualFile;
 import tech.lin2j.idea.plugin.ui.ftp.FTPConsole;
+import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
 
 import javax.swing.AbstractAction;
@@ -42,7 +43,8 @@ public class HostMoreOpsAction implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         JPopupMenu menu = new JPopupMenu();
-        menu.add(new JMenuItem(new AbstractAction("Properties") {
+        String propertiesText = MessagesBundle.getText("table.action.button.more.properties");
+        menu.add(new JMenuItem(new AbstractAction(propertiesText) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SshServer server = ConfigHelper.getSshServerById(sshId);
@@ -51,7 +53,8 @@ public class HostMoreOpsAction implements ActionListener {
             }
         }));
 
-        menu.add(new JMenuItem(new AbstractAction("SFTP (Beta)") {
+        String sftpText = MessagesBundle.getText("table.action.button.more.sftp");
+        menu.add(new JMenuItem(new AbstractAction(sftpText) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SshServer server = ConfigHelper.getSshServerById(sshId);
@@ -68,7 +71,8 @@ public class HostMoreOpsAction implements ActionListener {
             }
         }));
 
-        menu.add(new JMenuItem(new AbstractAction("Remove") {
+        String removeText = MessagesBundle.getText("table.action.button.more.remove");
+        menu.add(new JMenuItem(new AbstractAction(removeText) {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SshServer server = ConfigHelper.getSshServerById(sshId);

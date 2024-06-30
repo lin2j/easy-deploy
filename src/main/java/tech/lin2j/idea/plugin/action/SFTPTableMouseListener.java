@@ -16,6 +16,7 @@ import tech.lin2j.idea.plugin.action.ftp.UploadFileAndDirAction;
 import tech.lin2j.idea.plugin.ui.ftp.container.FileTableContainer;
 import tech.lin2j.idea.plugin.ui.ftp.container.LocalFileTableContainer;
 import tech.lin2j.idea.plugin.ui.ftp.container.RemoteFileTableContainer;
+import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.JPopupMenu;
 import java.awt.event.MouseAdapter;
@@ -57,7 +58,8 @@ public class SFTPTableMouseListener extends MouseAdapter {
         DefaultActionGroup actionGroup = new DefaultActionGroup();
 
         //  copy action
-        DefaultActionGroup copyActionGroup = new DefaultActionGroup("Copy", true);
+        String copy = MessagesBundle.getText("action.ftp.popup.copy");
+        DefaultActionGroup copyActionGroup = new DefaultActionGroup(copy, true);
         copyActionGroup.getTemplatePresentation().setIcon(AllIcons.Actions.Copy);
         copyActionGroup.add(new CopyFilePathAction(container));
         copyActionGroup.add(new CopyFileNameAction(container));
