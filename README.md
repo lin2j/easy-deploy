@@ -1,4 +1,4 @@
-<p align="center"><img src="docs/media/small-logo.svg" alt="Easy Deploy" width="100" height="100"></p>
+<p align="center"><img src="https://www.lin2j.tech/blog-image/easy-deploy/small-logo.svg" alt="Easy Deploy" width="200" height="200"></p>
 
 <h1 align="center">Easy Deploy</h1>
 
@@ -13,23 +13,20 @@
 
 [**简体中文**](README_zh_CN.md) 🐼
 
-Easy Deploy is a plugin I developed, drawing inspiration from the Alibaba Cloud Toolkit. Its purpose is to streamline 
-the process of deploying services during my development workflow.
+Easy Deploy is a plugin I developed, inspired by the Alibaba Cloud Toolkit, to facilitate my service deployment during 
+the development process. Compared to the Alibaba Cloud Toolkit, my plugin has significantly fewer features, as many of 
+the ACT functionalities are unnecessary for me and make it somewhat bloated.
 
-Compared to the Alibaba Cloud Toolkit, my plugin has significantly fewer features. The functionalities of ACT seemed a 
-bit excessive for my needs, so I chose to focus only on the aspects that matter most to me, primarily centered around 
-server management and deployment processes.
+Therefore, I focused only on developing the functionalities I care about: server management and the deployment process. 
+I named this plugin "Easy Deploy" in the hope that it will help developers simplify the deployment steps in their 
+development process. I will continually optimize it and enhance its features.
 
-I named this plugin Easy Deploy because its functionalities are indeed straightforward. While it may have limited 
-capabilities, I plan to continuously optimize it and add new features to enhance its completeness.
-
-This marks my first venture into developing an IntelliJ IDEA plugin. Throughout the development process, I encountered 
-numerous challenges, which I addressed through extensive research and learning. In the future, I intend to document my 
-experiences in developing this plugin to share insights with fellow developers.
+This is also the first Idea plugin I have developed. Many issues were resolved gradually through extensive searching, 
+especially those related to Swing, a technology I haven't used in years. Additionally, the encapsulation by IntelliJ 
+and the varying UI across different versions posed some challenges. Therefore, if you choose to download and use it now,
+please feel free to submit issues to me.
 
 👉👉 [Find in plugin marketplace](https://plugins.jetbrains.com/plugin/19432-easy-deploy)
-
-🪐🪐 [My Blog](https://www.lin2j.tech)
 
 # Support
 
@@ -37,80 +34,16 @@ If this plugin proves helpful to you, please consider showing your support by gi
 
 # Features
 
-## Server management
-
-You can use this plugin to add multiple servers and then execute commands, upload files, and deploy applications based 
-on these servers. The server connections can even be established through jump hosts, and a proxy chain diagram is 
-provided.
-
-The login passwords for servers can be stored or left unstored. If not stored, a password input box will pop up when 
-needed.
-
-The password storage for servers is implemented through IDEA's own password storage mechanism, so you don't need to 
-worry about leakage due to plaintext storage.
-
-After adding a server, you can directly establish an SSH connection through the terminal button. This feature is 
-implemented by CloudTerminalRunner, allowing even the Community Edition of IntelliJ IDEA to use this functionality.
-
-In fact, there is already a well-implemented AbstractTerminalRunner in the com.intellij.modules.ultimate module under 
-the remote-run plugin. However, the Community Edition cannot use this plugin.
-
-After consideration, I decided to try to use the APIs of the Community Edition as much as possible to accommodate users 
-of the Community Edition.
-
-<img src="docs/media/Add-Server.gif" alt="add server">
-
-## Command management
-
-You can add some backup commands for a specific server and execute them directly. The commands for each server are 
-isolated, which helps with command management.
-
-When adding commands, you need to use an absolute path to specify the directory where the command will be executed on 
-the remote server.
-
-Currently, only simple commands can be executed. For overly complex commands, it is recommended to write them as scripts
-and then execute the script on the server. This is the approach I usually take when deploying services.
-
-If you use commands like `tail -f` that do not return all information at once, it will cause the current thread to block
-because the stream being read has not received a termination signal.
-
-<img src="docs/media/Command.gif" alt="command">
-
-## File upload
-
-You can use the upload button on the panel to upload local files. Currently, downloading files from the server is not 
-supported. In the future, I hope to make it similar to Xftp software, allowing free file transfer between the server 
-and the local machine.
-
-I combine the locally selected files and remote directories as an upload configuration to manage. This way, you don't 
-need to repeat the selection of local files and remote directories the next time you use it.
-
-## Deployment
-
-For deployment, we can only use some simple methods. First, upload the program files to the specified remote directory, 
-and then execute the startup command in that directory. This is generally the sequence I follow for deploying services.
-
-The deployment plan is essentially based on the upload configuration, where you select the commands to be executed after
-uploading.
-
-Alternatively, you can add a Run Configuration to execute a series of deployment settings after the build is complete.
-
-<img src="docs/media/Upload.gif" alt="upload">
-
-# Features
-
-- [x] Add/Edit/Remove Server Information
-- [x] Add/Edit/Remove Commands
-- [x] Upload Files or Directories with Filtering Support
-- [x] Deploy Services
-- [x] Open Terminal
-- [x] SSH Passwordless Login (Private Key Login)
-- [x] SSH Proxy Jump Host
-- [x] Run Configuration
-- [x] Internationalization
-- [ ] Configuration Import/Export
-- [x] Server Search
-- [x] SFTP Transfer Panel
+- [x] Add/Edit/Remove/Search server information
+- [x] Add/Edit/Remove commands
+- [x] Upload files or directories with filtering support
+- [x] Deploy services
+- [x] Open terminal
+- [x] SSH password-free login (private key login)
+- [x] SSH Jump Host
+- [x] Run/Debug Configuration
+- [x] Internationalization support
+- [x] SFTP transfer panel
 - [x] Plugin Settings
  
 # Contact me 🐾
