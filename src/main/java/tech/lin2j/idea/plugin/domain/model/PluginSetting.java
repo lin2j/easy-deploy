@@ -17,7 +17,7 @@ public class PluginSetting {
     private static final Color defaultDownloadColor = ColorProgressBar.GREEN;
 
     // General
-    private Integer language;
+    private Integer i18nType;
     private boolean sshKeepalive;
     private Integer heartbeatInterval;
 
@@ -31,16 +31,6 @@ public class PluginSetting {
 
     private SFTPAction doubleClickAction;
 
-    public Integer getLanguage() {
-        if (language == null) {
-            return I18nType.English.getType();
-        }
-        return language;
-    }
-
-    public void setLanguage(int language) {
-        this.language = language;
-    }
 
     public boolean isUpdateCheck() {
         return updateCheck;
@@ -99,6 +89,17 @@ public class PluginSetting {
 
     public void setSshKeepalive(boolean sshKeepalive) {
         this.sshKeepalive = sshKeepalive;
+    }
+
+    public Integer getI18nType() {
+        if (i18nType == null) {
+            i18nType = I18nType.English.getType();
+        }
+        return i18nType;
+    }
+
+    public void setI18nType(Integer i18nType) {
+        this.i18nType = i18nType;
     }
 
     public Integer getHeartbeatInterval() {

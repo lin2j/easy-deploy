@@ -37,6 +37,7 @@ public interface MyIcons {
         Icon HomePage = IconLoader.getIcon("/icons/actions/home-page.svg", MyIcons.class);
         Icon Copy = IconLoader.getIcon("/icons/actions/copy.svg", MyIcons.class);
         Icon Paste = IconLoader.getIcon("/icons/actions/paste.svg", MyIcons.class);
+        Icon Add = IconLoader.getIcon("/icons/actions/my-add.svg", MyIcons.class);
     }
 
     interface FileType {

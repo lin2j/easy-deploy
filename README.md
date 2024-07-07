@@ -1,7 +1,5 @@
 <p align="center"><img src="https://www.lin2j.tech/blog-image/easy-deploy/small-logo.svg" alt="Easy Deploy" width="200" height="200"></p>
 
-<h1 align="center">Easy Deploy</h1>
-
 <p align="center">Convenient Intellij Platform Plugin for Deploying and Upgrading Services during Development</p>
 
 <div align="center">

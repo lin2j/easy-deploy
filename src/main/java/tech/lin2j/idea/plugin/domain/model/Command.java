@@ -21,6 +21,10 @@ public class Command {
     public Command() {
     }
 
+    public Command(Integer sshId) {
+        this.sshId = sshId;
+    }
+
     public Command(Integer id, Integer sshId, String title, String dir, String content) {
         super();
         this.id = id;

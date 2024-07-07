@@ -11,12 +11,16 @@ import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.ui.AnActionButton;
+import com.intellij.ui.BalloonImpl;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.JBUI;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tech.lin2j.idea.plugin.action.AddCommandAction;
+import tech.lin2j.idea.plugin.action.CopyCommandAction;
 import tech.lin2j.idea.plugin.action.CopyUploadProfileAction;
 import tech.lin2j.idea.plugin.action.PasteUploadProfileAction;
 import tech.lin2j.idea.plugin.domain.model.Command;
@@ -33,9 +37,11 @@ import tech.lin2j.idea.plugin.uitl.UiUtil;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;
+import java.awt.Button;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.awt.Label;
 import java.util.Objects;
 
 /**
@@ -146,12 +152,18 @@ public class AddUploadProfileDialog extends DialogWrapper {
         commandBox.addItem(NoneCommand.INSTANCE);
         ConfigHelper.getCommandsBySshId(sshId).forEach(cmd -> commandBox.addItem(cmd));
 
-        GridBagLayout layout = new GridBagLayout();
-        GridBagConstraints gbc = new GridBagConstraints();
-        gbc.fill = GridBagConstraints.HORIZONTAL;
-        gbc.weightx = 1.0;
-        commandBoxContainer = new JPanel(layout);
-        commandBoxContainer.add(commandBox, gbc);
+        // Add command button
+        DefaultActionGroup group = new DefaultActionGroup();
+        group.add(new AddCommandAction(project, sshId, newCmd -> commandBox.addItem(newCmd)));
+        ActionToolbar toolbar = ActionManager.getInstance()
+                .createActionToolbar("AddUploadProfile@AddCommand", group, true);
+        toolbar.setTargetComponent(null);
+
+        commandBoxContainer = new JPanel(new GridBagLayout());
+        commandBoxContainer.add(commandBox, new GridBagConstraints(0, 0, 1, 1, 1, 0, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL,
+                JBUI.emptyInsets(), 0, 0));
+        commandBoxContainer.add(toolbar.getComponent(), new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL,
+                JBUI.emptyInsets(), 0, 0));
     }
 
     private JPanel nameRow() {

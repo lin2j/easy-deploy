@@ -1,7 +1,6 @@
 package tech.lin2j.idea.plugin.ui.settings;
 
 import com.intellij.openapi.options.Configurable;
-import com.intellij.openapi.options.ConfigurationException;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.ui.CollectionComboBoxModel;
@@ -33,7 +32,7 @@ public class GeneralConfigurable implements SearchableConfigurable, Configurable
 
     private final PluginSetting setting = ConfigHelper.pluginSetting();
 
-    private ComboBox<I18nType> languageType;
+    private ComboBox<I18nType> languageTypes;
     private JBCheckBox sshKeepalive;
     private JSpinner heartbeatInterval;
 
@@ -63,31 +62,31 @@ public class GeneralConfigurable implements SearchableConfigurable, Configurable
 
     @Override
     public boolean isModified() {
-        I18nType selectedI18Type = languageType.getItemAt(languageType.getSelectedIndex());
+        I18nType selectedI18Type = languageTypes.getItemAt(languageTypes.getSelectedIndex());
         return !Objects.equals(sshKeepalive.isSelected(), setting.isSshKeepalive())
                 || !Objects.equals(heartbeatInterval.getValue(), setting.getHeartbeatInterval())
-                || !Objects.equals(selectedI18Type.getType(), setting.getLanguage());
+                || !Objects.equals(selectedI18Type.getType(), setting.getI18nType());
 
     }
 
     @Override
     public void apply() {
-        I18nType selectedI18Type = languageType.getItemAt(languageType.getSelectedIndex());
+        I18nType selectedI18Type = languageTypes.getItemAt(languageTypes.getSelectedIndex());
         setting.setSshKeepalive(sshKeepalive.isSelected());
         setting.setHeartbeatInterval((int) heartbeatInterval.getValue());
-        setting.setLanguage(selectedI18Type.getType());
+        setting.setI18nType(selectedI18Type.getType());
     }
 
     private JPanel basic() {
         String title = MessagesBundle.getText("setting.general.basic.title");
         String language = MessagesBundle.getText("setting.general.basic.language");
 
-        languageType = new ComboBox<>();
-        languageType.setModel(new CollectionComboBoxModel<>(Arrays.asList(I18nType.values())));
-        languageType.setSelectedItem(I18nType.getByType(setting.getLanguage()));
+        languageTypes = new ComboBox<>();
+        languageTypes.setModel(new CollectionComboBoxModel<>(Arrays.asList(I18nType.values())));
+        languageTypes.setSelectedItem(I18nType.getByType(setting.getI18nType()));
 
         JPanel panel = FormBuilder.createFormBuilder()
-                .addLabeledComponent(language, languageType)
+                .addLabeledComponent(language, languageTypes)
                 .getPanel();
         panel.setBorder(new IdeaTitledBorder(title, 0, JBUI.emptyInsets()));
 
