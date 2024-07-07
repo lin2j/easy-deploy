@@ -18,10 +18,19 @@
         <li>Manage your servers</li>
         <li>Upload the file you want to deploy to the remote server</li>
         <li>Storage your command and execute it</li>
+        <li>SFTP panel</li>
+        <li>Plugin Settings</li>
     <ul>
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.3.6</h2>
+    <ul>
+        <li>I18n Support: Chinese</li>
+        <li>Quickly add a command in the upload configuration</li>
+        <li>Fix some known bugs</li>
+    </ul>
+
     <h2>release 1.3.5</h2>
     <ul>
         <li>Plugin settings for SSH and SFTP</li>
