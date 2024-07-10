@@ -29,6 +29,7 @@ public class SshjTtyConnector implements CustomTtyConnector {
     private String title;
     private final SshjConnection connection;
     private final SSHClient sshClient;
+    private final String workingDirectory;
     private Session.Shell shell;
     private InputStream inputStream;
     private InputStreamReader inputStreamReader;
@@ -37,9 +38,10 @@ public class SshjTtyConnector implements CustomTtyConnector {
     private Dimension pendingPixelSize;
     private final AtomicBoolean isInitiated = new AtomicBoolean(false);
 
-    public SshjTtyConnector(SshjConnection connection) {
+    public SshjTtyConnector(SshjConnection connection, String workingDirectory) {
         this.connection = connection;
         this.sshClient = connection.getSshClient();
+        this.workingDirectory = workingDirectory;
         this.init(null);
     }
 
@@ -57,6 +59,10 @@ public class SshjTtyConnector implements CustomTtyConnector {
             outputStream = shell.getOutputStream();
             inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             resizeImmediately();
+            if (workingDirectory != null) {
+                outputStream.write(("cd " + workingDirectory + "\n").getBytes(StandardCharsets.UTF_8));
+                outputStream.flush();
+            }
             return true;
         } catch (IOException e) {
             log.error(e.getMessage(), e);

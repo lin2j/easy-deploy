@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.terminal.TerminalTabState;
 import org.jetbrains.plugins.terminal.TerminalView;
 import org.jetbrains.plugins.terminal.cloud.CloudTerminalRunner;
@@ -29,10 +30,12 @@ public class OpenTerminalAction implements ActionListener {
 
     private final int sshId;
     private final Project project;
+    private final String workingDirectory;
 
-    public OpenTerminalAction(int sshId, Project project) {
+    public OpenTerminalAction(int sshId, Project project, @Nullable String workingDirectory) {
         this.sshId = sshId;
         this.project = project;
+        this.workingDirectory = workingDirectory;
     }
 
     @Override
@@ -52,7 +55,7 @@ public class OpenTerminalAction implements ActionListener {
             public void run(@NotNull ProgressIndicator indicator) {
                 indicator.setIndeterminate(false);
                 try {
-                    runner = TerminalRunnerUtil.createCloudTerminalRunner(project, server);
+                    runner = TerminalRunnerUtil.createCloudTerminalRunner(project, server, workingDirectory);
                     status.setSuccess(true);
                 } catch (RemoteSdkException ex) {
                     status.setMessage("Error connecting server: " + ex.getMessage());

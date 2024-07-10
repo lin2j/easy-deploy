@@ -61,7 +61,7 @@ public class HostActionPanel extends JPanel {
 
         uploadBtn.addActionListener(new UploadDialogAction(sshId, project));
         commandBtn.addActionListener(new CommandDialogAction(sshId, project));
-        terminalBtn.addActionListener(new OpenTerminalAction(sshId, project));
+        terminalBtn.addActionListener(new OpenTerminalAction(sshId, project, null));
         moreActionBtn.addActionListener(new HostMoreOpsAction(sshId, project, moreActionBtn));
     }
 

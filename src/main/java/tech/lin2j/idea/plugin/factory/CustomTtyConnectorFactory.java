@@ -25,11 +25,13 @@ public class CustomTtyConnectorFactory {
      * @param server server information
      * @return tty connector
      */
-    public static CustomTtyConnector getCustomTtyConnector(String type, SshServer server) throws RemoteSdkException {
+    public static CustomTtyConnector getCustomTtyConnector(String type,
+                                                           SshServer server,
+                                                           String workingDirectory) throws RemoteSdkException {
         if (CustomTtyConnector.SSHJ.equals(type)) {
             try {
                 SshjConnection connection = SshConnectionManager.makeSshjConnection(server);
-                return new SshjTtyConnector(connection);
+                return new SshjTtyConnector(connection, workingDirectory);
             } catch (IOException e) {
                 LOG.error("Error connecting server: " + e.getMessage());
                 throw new RemoteSdkException("Error connecting server: " + e.getMessage(), e);

@@ -46,9 +46,10 @@ public class TerminalRunnerUtil {
      * @return CloudTerminalRunner
      */
     public static CloudTerminalRunner createCloudTerminalRunner(@NotNull Project project,
-                                                                    SshServer server) {
+                                                                SshServer server,
+                                                                String workingDirectory) {
         String presentableName = server.getIp() + ":" + server.getPort();
-        CustomTtyConnector ttyConnector = CustomTtyConnectorFactory.getCustomTtyConnector(CustomTtyConnector.SSHJ, server);
+        CustomTtyConnector ttyConnector = CustomTtyConnectorFactory.getCustomTtyConnector(CustomTtyConnector.SSHJ, server, workingDirectory);
         ttyConnector.setName(presentableName);
         ClosableCloudTerminalProcess cloudProcess = new ClosableCloudTerminalProcess(ttyConnector);
         TerminalListener.TtyResizeHandler handlerBoundLater = (w, h) -> getResizeHandler(ttyConnector).onTtyResizeRequest(w, h);

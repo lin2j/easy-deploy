@@ -46,6 +46,10 @@ public class RemoteFileTableContainer extends AbstractFileTableContainer impleme
         init();
     }
 
+    public Integer getSshId() {
+        return server.getId();
+    }
+
     @Override
     public void refreshFileList() {
         try {

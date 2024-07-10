@@ -11,6 +11,7 @@ import tech.lin2j.idea.plugin.action.ftp.CreateNewFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.DeleteFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.DownloadFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.FilePropertiesAction;
+import tech.lin2j.idea.plugin.action.ftp.OpenPathInTerminalAction;
 import tech.lin2j.idea.plugin.action.ftp.RefreshFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.UploadFileAndDirAction;
 import tech.lin2j.idea.plugin.ui.ftp.container.FileTableContainer;
@@ -86,6 +87,11 @@ public class SFTPTableMouseListener extends MouseAdapter {
         actionGroup.addAll(fileActionGroup);
         actionGroup.addSeparator();
         actionGroup.addAll(commonActionGroup);
+
+        if (container.isLocal()) {
+        } else {
+            actionGroup.add(new OpenPathInTerminalAction((RemoteFileTableContainer) container));
+        }
 
         JPopupMenu component = ActionManager.getInstance().createActionPopupMenu("right", actionGroup).getComponent();
         component.show(e.getComponent(), e.getX(), e.getY());
