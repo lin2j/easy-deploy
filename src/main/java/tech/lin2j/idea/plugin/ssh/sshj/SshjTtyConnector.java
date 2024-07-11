@@ -60,7 +60,8 @@ public class SshjTtyConnector implements CustomTtyConnector {
             inputStreamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8);
             resizeImmediately();
             if (workingDirectory != null) {
-                outputStream.write(("cd " + workingDirectory + "\n").getBytes(StandardCharsets.UTF_8));
+                String wd = escapePath(workingDirectory);
+                outputStream.write(("cd " + wd + "\n").getBytes(StandardCharsets.UTF_8));
                 outputStream.flush();
             }
             return true;
@@ -181,4 +182,15 @@ public class SshjTtyConnector implements CustomTtyConnector {
         return inputStreamReader.ready();
     }
 
+    private String escapePath(String path) {
+        StringBuilder escapedPath = new StringBuilder();
+        for (char c : path.toCharArray()) {
+            if (c == ' ' || c == ';' || c == '`' || c == '\\') {
+                escapedPath.append('\\').append(c);
+            } else {
+                escapedPath.append(c);
+            }
+        }
+        return escapedPath.toString();
+    }
 }
