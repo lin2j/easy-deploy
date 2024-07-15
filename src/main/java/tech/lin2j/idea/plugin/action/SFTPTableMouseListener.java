@@ -89,8 +89,13 @@ public class SFTPTableMouseListener extends MouseAdapter {
         actionGroup.addAll(commonActionGroup);
 
         if (container.isLocal()) {
+            actionGroup.addSeparator();
+            actionGroup.add(new OpenFilePathAction(container));
         } else {
-            actionGroup.add(new OpenPathInTerminalAction((RemoteFileTableContainer) container));
+            if (container instanceof RemoteFileTableContainer) {
+                actionGroup.addSeparator();
+                actionGroup.add(new OpenPathInTerminalAction((RemoteFileTableContainer) container));
+            }
         }
 
         JPopupMenu component = ActionManager.getInstance().createActionPopupMenu("right", actionGroup).getComponent();

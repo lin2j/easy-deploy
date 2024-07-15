@@ -4,6 +4,7 @@ import com.intellij.ide.highlighter.ArchiveFileType;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.fileTypes.UnknownFileType;
+import com.intellij.openapi.util.SystemInfo;
 import tech.lin2j.idea.plugin.file.DirectoryInfo;
 import tech.lin2j.idea.plugin.file.PluginFileTypeRegistry;
 import tech.lin2j.idea.plugin.file.fileTypes.SpecifiedArchiveFileType;
@@ -74,9 +75,8 @@ public class FileUtil {
      * @param filepath absolute file path,
      *                 represent file or directory
      * @return array of strings naming the file and directories in the directory
-     * @throws IOException IOException
      */
-    public static String[] findAllFiles(String filepath) throws IOException {
+    public static String[] findAllFiles(String filepath) {
         return null;
     }
 
@@ -133,5 +133,13 @@ public class FileUtil {
         int index = filename.lastIndexOf('.');
         if (index < 0) return "";
         return filename.substring(index + 1);
+    }
+
+    public static void openDir(String targetPath) throws IOException{
+        if (SystemInfo.isMac) {
+            Runtime.getRuntime().exec("open " + targetPath);
+        } else if (SystemInfo.isWindows) {
+            Runtime.getRuntime().exec("cmd /c start " + targetPath);
+        }
     }
 }

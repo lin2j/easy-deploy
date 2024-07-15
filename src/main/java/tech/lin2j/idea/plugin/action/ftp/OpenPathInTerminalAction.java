@@ -29,9 +29,9 @@ public class OpenPathInTerminalAction extends AnAction {
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        String workingDirectory = null;
+        String workingDirectory = tableContainer.getPath();
         List<TableFile> files = tableContainer.getSelectedFiles();
-        if (files != null && files.get(0).isDirectory()) {
+        if (files != null && files.size() > 0 && files.get(0).isDirectory()) {
             workingDirectory = files.get(0).getFilePath();
         }
         Integer sshId = tableContainer.getSshId();
