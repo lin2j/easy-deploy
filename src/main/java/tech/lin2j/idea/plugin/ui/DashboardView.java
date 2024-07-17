@@ -17,6 +17,8 @@ import com.intellij.util.ui.JBUI;
 import com.intellij.util.ui.StatusText;
 import icons.MyIcons;
 import org.jetbrains.annotations.NotNull;
+import tech.lin2j.idea.plugin.action.ConfigExportAction;
+import tech.lin2j.idea.plugin.action.ConfigImportAction;
 import tech.lin2j.idea.plugin.action.GithubAction;
 import tech.lin2j.idea.plugin.action.HomePageAction;
 import tech.lin2j.idea.plugin.action.ServerSearchKeyAdapter;
@@ -77,6 +79,8 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
         final JPanel northPanel = new JPanel(new GridBagLayout());
 
         DefaultActionGroup actionGroup = new DefaultActionGroup();
+//        actionGroup.add(new ConfigImportAction());
+//        actionGroup.add(new ConfigExportAction());
         actionGroup.add(new HomePageAction());
         actionGroup.add(new GithubAction());
         actionGroup.addSeparator();

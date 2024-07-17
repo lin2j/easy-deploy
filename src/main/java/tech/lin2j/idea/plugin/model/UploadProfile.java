@@ -7,7 +7,7 @@ import java.util.Objects;
  * @author linjinjia
  * @date 2022/5/24 15:57
  */
-public class UploadProfile {
+public class UploadProfile implements Cloneable{
 
     private Integer id;
 
@@ -94,6 +94,11 @@ public class UploadProfile {
     }
 
     @Override
+    public UploadProfile clone() throws CloneNotSupportedException {
+        return (UploadProfile) super.clone();
+    }
+
+    @Override
     public String toString() {
         return name;
     }
@@ -103,7 +108,8 @@ public class UploadProfile {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UploadProfile that = (UploadProfile) o;
-        return Objects.equals(name, that.name)
+        return Objects.equals(sshId, that.sshId)
+                && Objects.equals(name, that.name)
                 && Objects.equals(file, that.file)
                 && Objects.equals(location, that.location)
                 && Objects.equals(commandId, that.commandId);
@@ -111,6 +117,6 @@ public class UploadProfile {
 
     @Override
     public int hashCode() {
-        return Objects.hash(name, file, location, commandId, isSelected);
+        return Objects.hash(sshId, name, file, location, commandId, isSelected);
     }
 }

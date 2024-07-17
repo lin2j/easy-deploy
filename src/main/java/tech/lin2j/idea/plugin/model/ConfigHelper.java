@@ -134,6 +134,10 @@ public class ConfigHelper {
         return CONFIG_PERSISTENCE.getServerTags();
     }
 
+    public static void setSshServerTags(List<String> newTags) {
+        CONFIG_PERSISTENCE.setServerTags(newTags);
+    }
+
     public static UploadProfile getOneUploadProfileById(int sshId, int profileId) {
         return getUploadProfileBySshId(sshId).stream()
                 .filter(p -> Objects.equals(p.getId(), profileId))

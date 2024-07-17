@@ -6,7 +6,7 @@ import java.util.Objects;
  * @author linjinjia
  * @date 2022/4/27 14:01
  */
-public class Command {
+public class Command implements Cloneable{
 
     private Integer id;
 
@@ -78,6 +78,11 @@ public class Command {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    @Override
+    public Command clone() throws CloneNotSupportedException {
+        return (Command) super.clone();
     }
 
     @Override
