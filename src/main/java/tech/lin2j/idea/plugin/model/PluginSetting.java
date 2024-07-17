@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.domain.model;
+package tech.lin2j.idea.plugin.model;
 
 import com.intellij.openapi.progress.util.ColorProgressBar;
 import com.intellij.ui.ColorUtil;

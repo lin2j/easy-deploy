@@ -7,7 +7,7 @@ import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.util.ui.TextTransferable;
 import icons.MyIcons;
 import org.jetbrains.annotations.NotNull;
-import tech.lin2j.idea.plugin.domain.model.Command;
+import tech.lin2j.idea.plugin.model.Command;
 
 import java.util.function.Supplier;
 

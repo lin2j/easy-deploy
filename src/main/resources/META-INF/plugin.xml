@@ -184,7 +184,7 @@
                 canCloseContents="false"
                 icon="MyIcons.Deploy"
         />
-        <applicationService serviceImplementation="tech.lin2j.idea.plugin.domain.model.ConfigPersistence"/>
+        <applicationService serviceImplementation="tech.lin2j.idea.plugin.model.ConfigPersistence"/>
         <configurationType implementation="tech.lin2j.idea.plugin.runner.DeployRunConfigurationType"/>
     </extensions>
 </idea-plugin>

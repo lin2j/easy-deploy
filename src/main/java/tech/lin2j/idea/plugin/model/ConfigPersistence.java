@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.domain.model;
+package tech.lin2j.idea.plugin.model;
 
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;

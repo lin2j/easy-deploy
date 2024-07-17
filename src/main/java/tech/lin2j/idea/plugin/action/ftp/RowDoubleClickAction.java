@@ -1,9 +1,9 @@
 package tech.lin2j.idea.plugin.action.ftp;
 
 import com.intellij.ui.DoubleClickListener;
-import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
-import tech.lin2j.idea.plugin.domain.model.PluginSetting;
-import tech.lin2j.idea.plugin.domain.model.event.FileTransferEvent;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
+import tech.lin2j.idea.plugin.model.PluginSetting;
+import tech.lin2j.idea.plugin.model.event.FileTransferEvent;
 import tech.lin2j.idea.plugin.enums.SFTPAction;
 import tech.lin2j.idea.plugin.enums.TransferEventType;
 import tech.lin2j.idea.plugin.event.ApplicationContext;

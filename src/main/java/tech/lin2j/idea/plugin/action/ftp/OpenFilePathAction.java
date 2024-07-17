@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.action;
+package tech.lin2j.idea.plugin.action.ftp;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;

@@ -3,7 +3,7 @@ package tech.lin2j.idea.plugin.ui.render;
 import com.intellij.ui.ColoredListCellRenderer;
 import icons.MyIcons;
 import org.jetbrains.annotations.NotNull;
-import tech.lin2j.idea.plugin.domain.model.UploadProfile;
+import tech.lin2j.idea.plugin.model.UploadProfile;
 
 import javax.swing.JList;
 

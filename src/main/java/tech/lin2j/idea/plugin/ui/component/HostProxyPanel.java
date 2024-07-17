@@ -8,7 +8,7 @@ import com.intellij.ui.IdeBorderFactory;
 import com.intellij.ui.components.JBRadioButton;
 import com.intellij.ui.components.JBScrollPane;
 import com.intellij.util.ui.JBUI;
-import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 

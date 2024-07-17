@@ -5,7 +5,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.ColoredListCellRenderer;
 import com.intellij.ui.SimpleTextAttributes;
 import org.jetbrains.annotations.NotNull;
-import tech.lin2j.idea.plugin.domain.model.Command;
+import tech.lin2j.idea.plugin.model.Command;
 
 import javax.swing.JList;
 import java.util.Objects;

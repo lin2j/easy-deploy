@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.domain.model.event;
+package tech.lin2j.idea.plugin.model.event;
 
 import tech.lin2j.idea.plugin.event.ApplicationEvent;
 

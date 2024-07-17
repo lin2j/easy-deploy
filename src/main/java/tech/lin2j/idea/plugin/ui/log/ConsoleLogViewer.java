@@ -13,8 +13,8 @@ import com.intellij.openapi.util.Disposer;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
-import tech.lin2j.idea.plugin.domain.model.Command;
-import tech.lin2j.idea.plugin.domain.model.event.CommandExecuteEvent;
+import tech.lin2j.idea.plugin.model.Command;
+import tech.lin2j.idea.plugin.model.event.CommandExecuteEvent;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 

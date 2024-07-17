@@ -9,7 +9,7 @@ import com.intellij.openapi.ui.Messages;
 import icons.MyIcons;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
-import tech.lin2j.idea.plugin.domain.model.UploadProfile;
+import tech.lin2j.idea.plugin.model.UploadProfile;
 
 import javax.swing.SwingUtilities;
 import java.awt.datatransfer.DataFlavor;

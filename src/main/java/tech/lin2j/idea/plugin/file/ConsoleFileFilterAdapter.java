@@ -2,7 +2,7 @@ package tech.lin2j.idea.plugin.file;
 
 import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
-import tech.lin2j.idea.plugin.domain.model.event.CommandExecuteEvent;
+import tech.lin2j.idea.plugin.model.event.CommandExecuteEvent;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import javax.annotation.concurrent.NotThreadSafe;

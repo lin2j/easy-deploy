@@ -14,7 +14,7 @@ import com.intellij.util.xmlb.annotations.Tag;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tech.lin2j.idea.plugin.domain.model.DeployProfile;
+import tech.lin2j.idea.plugin.model.DeployProfile;
 
 import java.util.ArrayList;
 import java.util.List;

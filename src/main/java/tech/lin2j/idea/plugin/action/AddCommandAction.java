@@ -1,13 +1,12 @@
 package tech.lin2j.idea.plugin.action;
 
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import icons.MyIcons;
 import org.jetbrains.annotations.NotNull;
-import tech.lin2j.idea.plugin.domain.model.Command;
-import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
+import tech.lin2j.idea.plugin.model.Command;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.ui.dialog.AddCommandDialog;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 

@@ -21,7 +21,7 @@
 package tech.lin2j.idea.plugin.uitl;
 
 
-import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
 
 import java.util.Locale;
 import java.util.ResourceBundle;

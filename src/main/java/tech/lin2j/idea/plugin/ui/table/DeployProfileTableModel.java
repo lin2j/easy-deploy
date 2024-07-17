@@ -3,9 +3,9 @@ package tech.lin2j.idea.plugin.ui.table;
 import com.intellij.util.ui.ItemRemovable;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
-import tech.lin2j.idea.plugin.domain.model.Command;
-import tech.lin2j.idea.plugin.domain.model.DeployProfile;
-import tech.lin2j.idea.plugin.domain.model.UploadProfile;
+import tech.lin2j.idea.plugin.model.Command;
+import tech.lin2j.idea.plugin.model.DeployProfile;
+import tech.lin2j.idea.plugin.model.UploadProfile;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import javax.swing.event.TableModelListener;

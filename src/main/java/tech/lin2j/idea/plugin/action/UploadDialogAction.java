@@ -1,7 +1,7 @@
 package tech.lin2j.idea.plugin.action;
 
 import com.intellij.openapi.project.Project;
-import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.ui.dialog.UploadProfileDialog;
 

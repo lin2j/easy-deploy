@@ -10,7 +10,7 @@ import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.FormBuilder;
 import org.jetbrains.annotations.NotNull;
-import tech.lin2j.idea.plugin.domain.model.DeployProfile;
+import tech.lin2j.idea.plugin.model.DeployProfile;
 import tech.lin2j.idea.plugin.ui.dialog.SelectUploadProfileDialog;
 import tech.lin2j.idea.plugin.ui.table.DeployProfileTableModel;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;

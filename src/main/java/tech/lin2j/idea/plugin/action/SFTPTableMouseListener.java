@@ -11,6 +11,7 @@ import tech.lin2j.idea.plugin.action.ftp.CreateNewFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.DeleteFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.DownloadFileAndDirAction;
 import tech.lin2j.idea.plugin.action.ftp.FilePropertiesAction;
+import tech.lin2j.idea.plugin.action.ftp.OpenFilePathAction;
 import tech.lin2j.idea.plugin.action.ftp.OpenPathInTerminalAction;
 import tech.lin2j.idea.plugin.action.ftp.RefreshFolderAction;
 import tech.lin2j.idea.plugin.action.ftp.UploadFileAndDirAction;

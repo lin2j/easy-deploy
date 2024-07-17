@@ -1,8 +1,8 @@
 package tech.lin2j.idea.plugin.event.listener;
 
-import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
-import tech.lin2j.idea.plugin.domain.model.UploadProfile;
-import tech.lin2j.idea.plugin.domain.model.event.UploadProfileSelectedEvent;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
+import tech.lin2j.idea.plugin.model.UploadProfile;
+import tech.lin2j.idea.plugin.model.event.UploadProfileSelectedEvent;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 
 import java.util.Objects;

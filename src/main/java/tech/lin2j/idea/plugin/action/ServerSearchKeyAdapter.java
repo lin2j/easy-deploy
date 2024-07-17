@@ -3,8 +3,7 @@ package tech.lin2j.idea.plugin.action;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.SearchTextField;
 import org.apache.commons.collections.CollectionUtils;
-import tech.lin2j.idea.plugin.domain.model.ConfigHelper;
-import tech.lin2j.idea.plugin.domain.model.event.TableRefreshEvent;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import java.awt.event.KeyAdapter;

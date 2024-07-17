@@ -1,7 +1,7 @@
 package tech.lin2j.idea.plugin.file;
 
 import com.intellij.openapi.project.Project;
-import tech.lin2j.idea.plugin.domain.model.event.CommandExecuteEvent;
+import tech.lin2j.idea.plugin.model.event.CommandExecuteEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
