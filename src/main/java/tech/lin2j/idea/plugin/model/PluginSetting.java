@@ -4,6 +4,7 @@ import com.intellij.openapi.progress.util.ColorProgressBar;
 import com.intellij.ui.ColorUtil;
 import tech.lin2j.idea.plugin.enums.I18nType;
 import tech.lin2j.idea.plugin.enums.SFTPAction;
+import tech.lin2j.idea.plugin.uitl.ImportExportUtil;
 
 import java.awt.Color;
 
@@ -23,13 +24,16 @@ public class PluginSetting {
 
     private boolean updateCheck;
 
-    // SFTP //
+    // SFTP
 
     private String uploadProgressColor;
 
     private String downloadProgressColor;
 
     private SFTPAction doubleClickAction;
+
+    // Export & Import
+    private ExportOptions exportOptions;
 
 
     public boolean isUpdateCheck() {
@@ -111,5 +115,16 @@ public class PluginSetting {
 
     public void setHeartbeatInterval(Integer heartbeatInterval) {
         this.heartbeatInterval = heartbeatInterval;
+    }
+
+    public ExportOptions getExportOptions() {
+        if (exportOptions == null) {
+            exportOptions = ImportExportUtil.allExport();
+        }
+        return exportOptions;
+    }
+
+    public void setExportOptions(ExportOptions exportOptions) {
+        this.exportOptions = exportOptions;
     }
 }

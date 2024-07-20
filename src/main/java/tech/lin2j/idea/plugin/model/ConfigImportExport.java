@@ -10,11 +10,21 @@ import java.util.List;
  */
 public class ConfigImportExport {
 
+    private ExportOptions options;
+
     private String version;
 
     private List<String> serverTags;
 
     private List<HostInfo> hostInfos;
+
+    public ExportOptions getOptions() {
+        return options;
+    }
+
+    public void setOptions(ExportOptions options) {
+        this.options = options;
+    }
 
     public String getVersion() {
         return version;

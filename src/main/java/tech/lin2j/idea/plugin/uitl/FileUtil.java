@@ -5,6 +5,9 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.fileTypes.UnknownFileType;
 import com.intellij.openapi.util.SystemInfo;
+import com.intellij.openapi.vfs.LocalFileSystem;
+import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.util.SystemProperties;
 import tech.lin2j.idea.plugin.file.DirectoryInfo;
 import tech.lin2j.idea.plugin.file.PluginFileTypeRegistry;
 import tech.lin2j.idea.plugin.file.fileTypes.SpecifiedArchiveFileType;
@@ -141,5 +144,9 @@ public class FileUtil {
         } else if (SystemInfo.isWindows) {
             Runtime.getRuntime().exec("cmd /c start " + targetPath);
         }
+    }
+
+    public static VirtualFile getHome() {
+        return LocalFileSystem.getInstance().findFileByIoFile(new File(SystemProperties.getUserHome()));
     }
 }

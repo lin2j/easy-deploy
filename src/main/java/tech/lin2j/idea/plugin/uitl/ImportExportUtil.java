@@ -1,6 +1,5 @@
 package tech.lin2j.idea.plugin.uitl;
 
-import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.intellij.openapi.util.io.FileUtil;
 import org.apache.commons.collections.CollectionUtils;
@@ -15,10 +14,8 @@ import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * @author linjinjia
@@ -35,8 +32,9 @@ public class ImportExportUtil {
      * @param options The options specifying which fields to export.
      * @return A {@link ConfigImportExport} object containing the exported configuration data.
      */
-    public static ConfigImportExport exportBaseOnOptions(ExportOptions options) throws Exception{
+    public static ConfigImportExport exportBaseOnOptions(ExportOptions options) throws Exception {
         ConfigImportExport dto = new ConfigImportExport();
+        dto.setOptions(options);
         dto.setVersion(PluginUtil.version());
         if (options.isServerTags()) {
             dto.setServerTags(ConfigHelper.getServerTags());
@@ -78,13 +76,26 @@ public class ImportExportUtil {
         return dto;
     }
 
-    public static ConfigImportExport importConfig(ConfigImportExport newConfig) throws Exception{
+    /**
+     * Imports the provided configuration.
+     *
+     * @param newConfig The new configuration to be imported.
+     * @return A {@link ConfigImportExport} object containing the old configuration data.
+     * @throws Exception If an error occurs during the import process.
+     */
+    public static ConfigImportExport importConfig(ConfigImportExport newConfig) throws Exception {
         ConfigImportExport origin = exportBaseOnOptions(allExport());
+        ExportOptions options = newConfig.getOptions();
         // server tag
-        List<String> serverTags = newConfig.getServerTags();
-        Set<String> newTags = new HashSet<>(serverTags);
-        newTags.addAll(ConfigHelper.getServerTags());
-        ConfigHelper.setSshServerTags(new ArrayList<>(newTags));
+        if (options.isServerTags()) {
+            List<String> serverTags = ConfigHelper.getServerTags();
+            List<String> newServerTags = newConfig.getServerTags();
+            for (String nst : newServerTags) {
+                if (!serverTags.contains(nst)) {
+                    serverTags.add(nst);
+                }
+            }
+        }
 
         // server
         Map<Integer, Integer> commandIdMap = new HashMap<>();
@@ -97,7 +108,7 @@ public class ImportExportUtil {
             ConfigHelper.addSshServer(newSever);
             sshIdMap.put(oldSshId, newSshId);
             // command
-            if (CollectionUtils.isNotEmpty(hostInfo.getCommands())) {
+            if (options.isCommand() && CollectionUtils.isNotEmpty(hostInfo.getCommands())) {
                 hostInfo.getCommands().forEach(newCmd -> {
                     int oldCmdId = newCmd.getId();
                     int newCmdId = ConfigHelper.maxCommandId() + 1;
@@ -109,7 +120,7 @@ public class ImportExportUtil {
                 });
             }
             // upload profile
-            if (CollectionUtils.isNotEmpty(hostInfo.getUploadProfiles())) {
+            if (options.isUploadProfile() && CollectionUtils.isNotEmpty(hostInfo.getUploadProfiles())) {
                 hostInfo.getUploadProfiles().forEach(newProfile -> {
                     newProfile.setId(ConfigHelper.maxUploadProfileId() + 1);
                     newProfile.setSshId(newSshId);
@@ -125,7 +136,8 @@ public class ImportExportUtil {
         sshIdMap.forEach((oldId, newId) -> {
             SshServer newSshServer = ConfigHelper.getSshServerById(newId);
             if (newSshServer.getProxy() != null) {
-                newSshServer.setProxy(sshIdMap.get(oldId));
+                int oldProxyId = newSshServer.getProxy();
+                newSshServer.setProxy(sshIdMap.get(oldProxyId));
             }
         });
 
@@ -141,7 +153,10 @@ public class ImportExportUtil {
     }
 
     public static void exportConfigToJsonFile(ConfigImportExport data, String filepath) throws IOException {
-        String content = new GsonBuilder().create().toJson(data);
+        String content = new GsonBuilder()
+                .setPrettyPrinting()
+                .create()
+                .toJson(data);
         FileUtil.writeToFile(new File(filepath), content);
     }
 }

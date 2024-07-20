@@ -19,6 +19,7 @@ import icons.MyIcons;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.action.ConfigExportAction;
 import tech.lin2j.idea.plugin.action.ConfigImportAction;
+import tech.lin2j.idea.plugin.action.ExportAndImportAction;
 import tech.lin2j.idea.plugin.action.GithubAction;
 import tech.lin2j.idea.plugin.action.HomePageAction;
 import tech.lin2j.idea.plugin.action.ServerSearchKeyAdapter;
@@ -67,7 +68,6 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
     public void onApplicationEvent(TableRefreshEvent event) {
         if (event.isTagRefresh()) {
             refreshTagComboBox();
-            return;
         }
         loadTableData(event);
     }
@@ -79,11 +79,10 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
         final JPanel northPanel = new JPanel(new GridBagLayout());
 
         DefaultActionGroup actionGroup = new DefaultActionGroup();
-//        actionGroup.add(new ConfigImportAction());
-//        actionGroup.add(new ConfigExportAction());
         actionGroup.add(new HomePageAction());
         actionGroup.add(new GithubAction());
         actionGroup.addSeparator();
+        actionGroup.add(new ExportAndImportAction());
         actionGroup.add(new SettingsAction(MessagesBundle.getText("action.dashboard.plugin-setting.text")));
         actionGroup.add(new RefreshAction(MessagesBundle.getText("action.dashboard.refresh.text")));
         actionGroup.add(new AddHostAction(MessagesBundle.getText("action.dashboard.add-host.text")));

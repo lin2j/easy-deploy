@@ -38,6 +38,9 @@ public interface MyIcons {
         Icon Copy = IconLoader.getIcon("/icons/actions/copy.svg", MyIcons.class);
         Icon Paste = IconLoader.getIcon("/icons/actions/paste.svg", MyIcons.class);
         Icon Add = IconLoader.getIcon("/icons/actions/my-add.svg", MyIcons.class);
+        Icon ExportAndImport = IconLoader.getIcon("/icons/actions/export_import.svg", MyIcons.class);
+        Icon Export = IconLoader.getIcon("/icons/actions/my_export.svg", MyIcons.class);
+        Icon Import = IconLoader.getIcon("/icons/actions/my_import.svg", MyIcons.class);
     }
 
     interface FileType {
