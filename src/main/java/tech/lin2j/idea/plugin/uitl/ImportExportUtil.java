@@ -152,11 +152,13 @@ public class ImportExportUtil {
         return options;
     }
 
-    public static void exportConfigToJsonFile(ConfigImportExport data, String filepath) throws IOException {
+    public static void exportConfigToJsonFile(ConfigImportExport data,
+                                              String filepath,
+                                              String password) throws IOException {
         String content = new GsonBuilder()
                 .setPrettyPrinting()
                 .create()
                 .toJson(data);
-        FileUtil.writeToFile(new File(filepath), content);
+        EncryptionUtil.encryptContentIntoFile(content, filepath, password);
     }
 }

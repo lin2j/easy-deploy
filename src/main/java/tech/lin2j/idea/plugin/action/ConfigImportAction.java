@@ -9,18 +9,19 @@ import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.vfs.VirtualFile;
 import icons.MyIcons;
+import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.model.ConfigImportExport;
 import tech.lin2j.idea.plugin.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.ui.dialog.ImportConfigPreviewDialog;
+import tech.lin2j.idea.plugin.uitl.EncryptionUtil;
 import tech.lin2j.idea.plugin.uitl.FileUtil;
 import tech.lin2j.idea.plugin.uitl.ImportExportUtil;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.SwingUtilities;
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
 
 /**
  * @author linjinjia
@@ -35,26 +36,26 @@ public class ConfigImportAction extends AnAction {
         super(text, text, MyIcons.Actions.Import);
     }
 
-
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
+        String filepath = ConfigHelper.pluginSetting().getDefaultExportImportPath();
         FileChooserDescriptor descriptor = allButNoMultipleChoose();
-        VirtualFile virtualFile = FileChooser.chooseFile(descriptor, null, FileUtil.getHome());
+        VirtualFile virtualFile = FileChooser.chooseFile(descriptor, null, FileUtil.virtualFile(filepath));
         if (virtualFile == null) {
             return;
         }
 
-        try (
-                InputStreamReader reader = new InputStreamReader(virtualFile.getInputStream());
-                BufferedReader br = new BufferedReader(reader)
-        ) {
-            StringBuilder sb = new StringBuilder();
-            String line;
-            while ((line = br.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-            String content = sb.toString();
+        // request password
+        String title = MessagesBundle.getText("dialog.ie.password.title");
+        String tip = MessagesBundle.getText("dialog.ie.password.import.text");
+        String password = Messages.showPasswordDialog(tip, title);
+        if (StringUtils.isBlank(password)) {
+            SwingUtilities.invokeLater(() -> Messages.showWarningDialog("Password is blank", title));
+            return;
+        }
 
+        try {
+            String content = EncryptionUtil.decryptFileContent(virtualFile.getPath(), password);
             boolean isOk = new ImportConfigPreviewDialog(e.getProject(), content).showAndGet();
             if (!isOk) {
                 return;
@@ -69,7 +70,11 @@ public class ConfigImportAction extends AnAction {
 
         } catch (Exception ex) {
             log.error(ex);
-            SwingUtilities.invokeLater(() -> Messages.showErrorDialog("Import failed", "Import Error"));
+            StringBuilder err = new StringBuilder("Import failed");
+            if (ex.getMessage().contains("bad key")) {
+                err.append(": please check your password");
+            }
+            SwingUtilities.invokeLater(() -> Messages.showErrorDialog(err.toString(), "Import Error"));
         }
     }
 

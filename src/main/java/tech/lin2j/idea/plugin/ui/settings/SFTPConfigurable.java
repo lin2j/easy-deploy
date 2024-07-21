@@ -24,6 +24,8 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.util.Objects;
 
+import static tech.lin2j.idea.plugin.enums.Constant.DEFAULT_TOP_INSET;
+
 /**
  * @author linjinjia
  * @date 2024/5/26 15:25
@@ -50,7 +52,7 @@ public class SFTPConfigurable implements SearchableConfigurable, Configurable.No
     public @Nullable JComponent createComponent() {
         JPanel panel = FormBuilder.createFormBuilder()
                 .addComponent(mouseControl())
-                .addComponent(transferControl(), 10)
+                .addComponent(transferControl(), DEFAULT_TOP_INSET)
                 .getPanel();
         JPanel result = new JPanel(new BorderLayout());
         result.add(panel, BorderLayout.NORTH);

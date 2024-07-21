@@ -2,8 +2,10 @@ package tech.lin2j.idea.plugin.model;
 
 import com.intellij.openapi.progress.util.ColorProgressBar;
 import com.intellij.ui.ColorUtil;
+import org.apache.commons.lang.StringUtils;
 import tech.lin2j.idea.plugin.enums.I18nType;
 import tech.lin2j.idea.plugin.enums.SFTPAction;
+import tech.lin2j.idea.plugin.uitl.FileUtil;
 import tech.lin2j.idea.plugin.uitl.ImportExportUtil;
 
 import java.awt.Color;
@@ -33,6 +35,7 @@ public class PluginSetting {
     private SFTPAction doubleClickAction;
 
     // Export & Import
+    private String defaultExportImportPath;
     private ExportOptions exportOptions;
 
 
@@ -115,6 +118,17 @@ public class PluginSetting {
 
     public void setHeartbeatInterval(Integer heartbeatInterval) {
         this.heartbeatInterval = heartbeatInterval;
+    }
+
+    public String getDefaultExportImportPath() {
+        if (StringUtils.isBlank(defaultExportImportPath)) {
+            defaultExportImportPath = FileUtil.getHome().getPath();
+        }
+        return defaultExportImportPath;
+    }
+
+    public void setDefaultExportImportPath(String defaultExportImportPath) {
+        this.defaultExportImportPath = defaultExportImportPath;
     }
 
     public ExportOptions getExportOptions() {

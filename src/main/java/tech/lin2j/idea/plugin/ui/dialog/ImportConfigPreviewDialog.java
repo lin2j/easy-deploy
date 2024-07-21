@@ -33,6 +33,7 @@ public class ImportConfigPreviewDialog extends DialogWrapper {
         initEditor();
 
         setTitle("Import Configuration Preview");
+        setOKButtonText("Import");
         init();
     }
 

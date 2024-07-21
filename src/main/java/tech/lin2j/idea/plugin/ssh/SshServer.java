@@ -181,13 +181,14 @@ public class SshServer implements Cloneable {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         SshServer sshServer = (SshServer) o;
-        return Objects.equals(ip, sshServer.ip)
+        return Objects.equals(id, sshServer.id)
+                && Objects.equals(ip, sshServer.ip)
                 && Objects.equals(port, sshServer.port)
                 && Objects.equals(username, sshServer.username);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(ip, port, username);
+        return Objects.hash(id, ip, port, username);
     }
 }

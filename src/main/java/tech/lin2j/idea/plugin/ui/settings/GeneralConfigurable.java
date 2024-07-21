@@ -1,12 +1,15 @@
 package tech.lin2j.idea.plugin.ui.settings;
 
+import com.intellij.openapi.fileChooser.FileChooser;
+import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.options.Configurable;
 import com.intellij.openapi.options.SearchableConfigurable;
 import com.intellij.openapi.ui.ComboBox;
+import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.CollectionComboBoxModel;
 import com.intellij.ui.border.IdeaTitledBorder;
 import com.intellij.ui.components.JBCheckBox;
-import com.intellij.ui.components.JBLabel;
 import com.intellij.util.Consumer;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.JBUI;
@@ -17,6 +20,7 @@ import tech.lin2j.idea.plugin.enums.I18nType;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.model.ExportOptions;
 import tech.lin2j.idea.plugin.model.PluginSetting;
+import tech.lin2j.idea.plugin.uitl.FileUtil;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.JComponent;
@@ -27,6 +31,8 @@ import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.util.Arrays;
 import java.util.Objects;
+
+import static tech.lin2j.idea.plugin.enums.Constant.DEFAULT_TOP_INSET;
 
 /**
  * @author linjinjia
@@ -40,6 +46,7 @@ public class GeneralConfigurable implements SearchableConfigurable, Configurable
     private ComboBox<I18nType> languageTypes;
     private JBCheckBox sshKeepalive;
     private JSpinner heartbeatInterval;
+    private TextFieldWithBrowseButton defaultExportImportPath;
 
     @Override
     public @NotNull
@@ -57,8 +64,8 @@ public class GeneralConfigurable implements SearchableConfigurable, Configurable
     public @Nullable JComponent createComponent() {
         JPanel panel = FormBuilder.createFormBuilder()
                 .addComponent(basic())
-                .addComponent(sshControl())
-                .addComponent(export())
+                .addComponent(sshControl(), DEFAULT_TOP_INSET)
+                .addComponent(export(), DEFAULT_TOP_INSET)
                 .getPanel();
 
         JPanel result = new JPanel(new BorderLayout());
@@ -73,7 +80,8 @@ public class GeneralConfigurable implements SearchableConfigurable, Configurable
         return !Objects.equals(sshKeepalive.isSelected(), setting.isSshKeepalive())
                 || !Objects.equals(heartbeatInterval.getValue(), setting.getHeartbeatInterval())
                 || !Objects.equals(selectedI18Type.getType(), setting.getI18nType())
-                || !Objects.equals(exportOptions, setting.getExportOptions());
+                || !Objects.equals(exportOptions, setting.getExportOptions())
+                || !Objects.equals(defaultExportImportPath.getText(), setting.getDefaultExportImportPath());
 
     }
 
@@ -84,6 +92,7 @@ public class GeneralConfigurable implements SearchableConfigurable, Configurable
         setting.setHeartbeatInterval((int) heartbeatInterval.getValue());
         setting.setI18nType(selectedI18Type.getType());
         setting.setExportOptions(exportOptions);
+        setting.setDefaultExportImportPath(defaultExportImportPath.getText());
     }
 
     private JPanel basic() {
@@ -126,28 +135,49 @@ public class GeneralConfigurable implements SearchableConfigurable, Configurable
 
     private JPanel export() {
         String title = MessagesBundle.getText("setting.general.ie.title");
-        String rowTip = MessagesBundle.getText("setting.general.ie.export.options");
+        String defaultPathTip = MessagesBundle.getText("setting.general.ie.default.path");
+        String exportOptionsTip = MessagesBundle.getText("setting.general.ie.export.options");
         String serverTag = MessagesBundle.getText("setting.general.ie.export.options.server-tag");
         String command = MessagesBundle.getText("setting.general.ie.export.options.command");
         String uploadProfile = MessagesBundle.getText("setting.general.ie.export.options.upload-profile");
 
-        JPanel panel = new JPanel(new GridLayout(1, 4));
-        panel.add(new JBLabel(rowTip));
-        panel.add(new OptionCheckbox(serverTag, exportOptions.isServerTags(), exportOptions::setServerTags));
-        panel.add(new OptionCheckbox(command, exportOptions.isCommand(), exportOptions::setCommand));
-        panel.add(new OptionCheckbox(uploadProfile, exportOptions.isUploadProfile(), exportOptions::setUploadProfile));
-        panel.setBorder(new IdeaTitledBorder(title, 0, JBUI.emptyInsets()));
+        // default import & export path
+        defaultExportImportPath = new TextFieldWithBrowseButton();
+        defaultExportImportPath.setText(setting.getDefaultExportImportPath());
+        defaultExportImportPath.addActionListener(e -> {
+            FileChooserDescriptor descriptor = chooseSingleFolder();
+            VirtualFile selected = FileUtil.virtualFile(defaultExportImportPath.getText());
+            VirtualFile virtualFile = FileChooser.chooseFile(descriptor, defaultExportImportPath, null, selected);
+            if (virtualFile != null) {
+                defaultExportImportPath.setText(virtualFile.getPath());
+            }
+        });
 
-        return panel;
+        // export options checkbox
+        JPanel ecg = new JPanel(new GridLayout(1, 3));
+        ecg.add(new OptionCheckbox(serverTag, exportOptions.isServerTags(), exportOptions::setServerTags));
+        ecg.add(new OptionCheckbox(command, exportOptions.isCommand(), exportOptions::setCommand));
+        ecg.add(new OptionCheckbox(uploadProfile, exportOptions.isUploadProfile(), exportOptions::setUploadProfile));
+
+        JPanel result = FormBuilder.createFormBuilder()
+                .addLabeledComponent(defaultPathTip, defaultExportImportPath)
+                .addLabeledComponent(exportOptionsTip, ecg)
+                .getPanel();
+
+        result.setBorder(new IdeaTitledBorder(title, 0, JBUI.emptyInsets()));
+
+        return result;
+    }
+
+    public FileChooserDescriptor chooseSingleFolder() {
+        return new FileChooserDescriptor(false, true, false, false, false, false);
     }
 
     private static class OptionCheckbox extends JBCheckBox {
         OptionCheckbox(String title, boolean option, Consumer<Boolean> updater) {
             super(title);
             setSelected(option);
-            addActionListener(e -> {
-                updater.consume(isSelected());
-            });
+            addActionListener(e -> updater.consume(isSelected()));
         }
     }
 }
