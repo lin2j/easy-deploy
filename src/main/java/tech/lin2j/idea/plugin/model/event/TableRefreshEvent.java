@@ -24,6 +24,11 @@ public class TableRefreshEvent extends ApplicationEvent {
         super(new Object());
     }
 
+    public TableRefreshEvent(boolean tagRefresh) {
+        super(new Object());
+        this.tagRefresh = tagRefresh;
+    }
+
     public List<SshServer> getSshServers() {
         return sshServers;
     }

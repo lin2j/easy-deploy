@@ -18,13 +18,17 @@ public class ConfigHelper {
     private static final ConfigPersistence CONFIG_PERSISTENCE =
             ApplicationManager.getApplication().getService(ConfigPersistence.class);
 
-    private static final Map<Integer, SshServer> SSH_SERVER_MAP;
+    private static Map<Integer, SshServer> SSH_SERVER_MAP;
 
     private static Map<Integer, List<Command>> COMMAND_MAP;
 
     private static Map<Integer, List<UploadProfile>> UPLOAD_PROFILE_MAP;
 
     static {
+        refreshConfig();
+    }
+
+    public static void refreshConfig() {
         SSH_SERVER_MAP = CONFIG_PERSISTENCE.getSshServers().stream()
                 .collect(Collectors.toMap(SshServer::getId, s -> s, (s1, s2) -> s1));
 
@@ -33,6 +37,15 @@ public class ConfigHelper {
 
         UPLOAD_PROFILE_MAP = CONFIG_PERSISTENCE.getUploadProfiles().stream()
                 .collect(Collectors.groupingBy(UploadProfile::getSshId));
+    }
+
+    public static void cleanConfig() {
+        CONFIG_PERSISTENCE.setSshServers(null);
+        CONFIG_PERSISTENCE.setCommands(null);
+        CONFIG_PERSISTENCE.setUploadProfiles(null);
+        CONFIG_PERSISTENCE.setServerTags(null);
+
+        refreshConfig();
     }
 
     public static int language() {

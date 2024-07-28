@@ -135,8 +135,7 @@ public class ServerTagConfigurable implements SearchableConfigurable, Configurab
     }
 
     public void sendTagRefreshEvent() {
-        TableRefreshEvent event = new TableRefreshEvent();
-        event.setTagRefresh(true);
+        TableRefreshEvent event = new TableRefreshEvent(true);
         ApplicationContext.getApplicationContext().publishEvent(event);
     }
 }

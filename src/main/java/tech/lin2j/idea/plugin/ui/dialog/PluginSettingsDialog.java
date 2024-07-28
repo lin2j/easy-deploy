@@ -31,13 +31,13 @@ public class PluginSettingsDialog {
 
     public static void show(Project project, Configurable[] configurable, int toSelect) {
         CoolConfigurableGroup coolConfigurableGroup = new CoolConfigurableGroup(configurable);
-        SwingUtilities.invokeLater(() -> {
+//        SwingUtilities.invokeLater(() -> {
             ShowSettingsUtilImpl.getDialog(
                     project,
                     Collections.singletonList(coolConfigurableGroup),
                     configurable[toSelect]
             ).show();
-        });
+//        });
     }
 
 

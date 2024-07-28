@@ -28,6 +28,7 @@ public class ExportAndImportAction extends ActionGroup {
         return new AnAction[]{
                 new ConfigImportAction(),
                 new ConfigExportAction(),
+                new CleanConfigAction(),
         };
     }
 }
