@@ -29,7 +29,6 @@ public class DeployRunConfigurationOptions extends RunConfigurationOptions {
 
     /**
      * profile: sshId@uploadProfileName
-     * @param profile
      */
     public void addDeployProfile(String profile) {
         deployProfile.getValue(this).add(profile);

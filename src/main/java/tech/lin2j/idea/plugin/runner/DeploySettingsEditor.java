@@ -7,6 +7,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.BooleanTableCellEditor;
 import com.intellij.ui.BooleanTableCellRenderer;
 import com.intellij.ui.ToolbarDecorator;
+import com.intellij.ui.components.JBCheckBox;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.ui.FormBuilder;
 import org.jetbrains.annotations.NotNull;
@@ -30,7 +31,9 @@ public class DeploySettingsEditor extends SettingsEditor<DeployRunConfiguration>
 
     private final JPanel myPanel;
     private final JBTable deployProfileTable = new JBTable();
+    private final JBCheckBox parallelExecCheckBox = new JBCheckBox();
     private List<DeployProfile> deployProfiles = new ArrayList<>();
+    private Boolean parallelExec = Boolean.FALSE;
 
     private DeployProfileTableModel deployProfileTableModel;
 
@@ -38,7 +41,8 @@ public class DeploySettingsEditor extends SettingsEditor<DeployRunConfiguration>
         refreshDeployProfileTable();
 
         myPanel = FormBuilder.createFormBuilder()
-                .addLabeledComponent("Deploy profile", getDeployProfilePanel(), true)
+                .addLabeledComponent("Deploy profile: ", getDeployProfilePanel(), true)
+                .addLabeledComponent("Allow Parallel upload: ", parallelExecCheckBox)
                 .getPanel();
     }
 
@@ -51,14 +55,17 @@ public class DeploySettingsEditor extends SettingsEditor<DeployRunConfiguration>
     @Override
     protected void resetEditorFrom(DeployRunConfiguration deployRunConfiguration) {
         this.deployProfiles = deployRunConfiguration.getDeployProfile();
-        if (this.deployProfiles.size() > 0) {
+        this.parallelExec = deployRunConfiguration.getParallelExec();
+        if (!this.deployProfiles.isEmpty()) {
             refreshDeployProfileTable();
         }
+        refreshParallelExecCheckBox();
     }
 
     @Override
     protected void applyEditorTo(@NotNull DeployRunConfiguration deployRunConfiguration) {
         deployRunConfiguration.setDeployProfiles(deployProfiles);
+        deployRunConfiguration.setParallelExec(parallelExec);
     }
 
     private JPanel getDeployProfilePanel() {
@@ -105,6 +112,11 @@ public class DeploySettingsEditor extends SettingsEditor<DeployRunConfiguration>
         activeColumn.setCellEditor(new BooleanTableCellEditor());
         activeColumn.setMinWidth(50);
         activeColumn.setMaxWidth(50);
+    }
+
+    private void refreshParallelExecCheckBox() {
+        parallelExecCheckBox.setSelected(parallelExec);
+        parallelExecCheckBox.addActionListener(e -> parallelExec = parallelExecCheckBox.isSelected());
     }
 
 }

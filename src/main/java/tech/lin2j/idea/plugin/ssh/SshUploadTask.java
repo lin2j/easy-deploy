@@ -6,6 +6,7 @@ import com.intellij.util.PathUtil;
 import net.schmizz.sshj.xfer.TransferListener;
 import tech.lin2j.idea.plugin.model.Command;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
+import tech.lin2j.idea.plugin.model.DeployProfile;
 import tech.lin2j.idea.plugin.model.UploadProfile;
 import tech.lin2j.idea.plugin.factory.SshServiceFactory;
 import tech.lin2j.idea.plugin.file.ConsoleTransferListener;
@@ -14,6 +15,7 @@ import tech.lin2j.idea.plugin.file.FileFilter;
 import tech.lin2j.idea.plugin.service.ISshService;
 
 import java.io.File;
+import java.util.Objects;
 
 /**
  * @author linjinjia
@@ -26,6 +28,23 @@ public class SshUploadTask implements Runnable{
     private final int profileId;
     private final ConsoleView console;
 
+    private UploadProfile profile;
+    private SshServer server;
+    private String taskName;
+
+    public SshUploadTask(ConsoleView console, DeployProfile deployProfile) {
+        this.sshId = deployProfile.getSshId();
+        this.profileId = deployProfile.getProfileId();
+        this.console = console;
+
+        this.server = getServer();
+        this.profile = getProfile();
+        Objects.requireNonNull(server);
+        Objects.requireNonNull(deployProfile);
+
+        this.taskName = String.format("%s - %s", server.getIp(), profile.getName());
+    }
+
     public SshUploadTask(ConsoleView console, int sshId, int profileId) {
         this.console = console;
         this.sshId = sshId;
@@ -34,11 +53,11 @@ public class SshUploadTask implements Runnable{
 
     @Override
     public void run() {
-        UploadProfile profile = ConfigHelper.getOneUploadProfileById(sshId, profileId);
+        UploadProfile profile = getProfile();
         if (profile == null) {
             return;
         }
-        SshServer server = ConfigHelper.getSshServerById(sshId);
+        SshServer server = getServer();
 
         String localFile = profile.getFile();
         String remoteTargetDir = profile.getLocation();
@@ -87,4 +106,21 @@ public class SshUploadTask implements Runnable{
         console.print(err + "\n", ConsoleViewContentType.ERROR_OUTPUT);
     }
 
+    public UploadProfile getProfile() {
+        if (profile == null) {
+            profile = ConfigHelper.getOneUploadProfileById(sshId, profileId);
+        }
+        return profile;
+    }
+
+    public SshServer getServer() {
+        if (server == null) {
+            server = ConfigHelper.getSshServerById(sshId);
+        }
+        return server;
+    }
+
+    public String getTaskName() {
+        return taskName;
+    }
 }

@@ -1,7 +1,6 @@
 package tech.lin2j.idea.plugin.uitl;
 
 import com.google.gson.GsonBuilder;
-import com.intellij.openapi.util.io.FileUtil;
 import org.apache.commons.collections.CollectionUtils;
 import tech.lin2j.idea.plugin.model.Command;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
@@ -10,7 +9,6 @@ import tech.lin2j.idea.plugin.model.ExportOptions;
 import tech.lin2j.idea.plugin.model.UploadProfile;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
-import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;

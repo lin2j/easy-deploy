@@ -27,6 +27,7 @@ import java.util.stream.Collectors;
 public class DeployRunConfiguration extends RunConfigurationBase<Element> {
 
     private List<String> deployProfiles;
+    private Boolean parallelExec;
 
     protected DeployRunConfiguration(Project project,
                                      ConfigurationFactory factory,
@@ -42,6 +43,7 @@ public class DeployRunConfiguration extends RunConfigurationBase<Element> {
         }
         ConfigurationState state = new ConfigurationState();
         state.deployProfiles = this.deployProfiles;
+        state.parallelExec = this.parallelExec;
         XmlSerializer.serializeObjectInto(state, element);
         super.writeExternal(element);
     }
@@ -51,8 +53,12 @@ public class DeployRunConfiguration extends RunConfigurationBase<Element> {
         super.readExternal(element);
         ConfigurationState state = XmlSerializer.deserialize(element, ConfigurationState.class);
         this.deployProfiles = state.deployProfiles;
+        this.parallelExec = state.parallelExec;
         if (this.deployProfiles == null) {
             this.deployProfiles = new ArrayList<>();
+        }
+        if (this.parallelExec == null) {
+            this.parallelExec = Boolean.FALSE;
         }
     }
 
@@ -72,6 +78,14 @@ public class DeployRunConfiguration extends RunConfigurationBase<Element> {
                 .collect(Collectors.toList());
     }
 
+    public Boolean getParallelExec() {
+        return parallelExec;
+    }
+
+    public void setParallelExec(Boolean parallelExec) {
+        this.parallelExec = parallelExec;
+    }
+
     @NotNull
     @Override
     public SettingsEditor<? extends RunConfiguration> getConfigurationEditor() {
@@ -82,11 +96,17 @@ public class DeployRunConfiguration extends RunConfigurationBase<Element> {
     @Override
     public RunProfileState getState(@NotNull Executor executor,
                                     @NotNull ExecutionEnvironment environment) {
-        return new DeployRunProfileState(executor, environment, deployProfiles);
+        boolean isParallelExec = this.parallelExec != null && this.parallelExec;
+
+        return isParallelExec
+                ? new ParallelDeployRunProfileState(executor, environment, deployProfiles)
+                : new DeployRunProfileState(executor, environment, deployProfiles);
     }
 
     public static class ConfigurationState {
         @Tag("deploy-profiles")
         private List<String> deployProfiles;
+        @Tag("parallelExec")
+        private Boolean parallelExec;
     }
 }
