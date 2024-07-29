@@ -36,11 +36,10 @@ public class SshUploadTask implements Runnable{
         this.sshId = deployProfile.getSshId();
         this.profileId = deployProfile.getProfileId();
         this.console = console;
-
         this.server = getServer();
         this.profile = getProfile();
         Objects.requireNonNull(server);
-        Objects.requireNonNull(deployProfile);
+        Objects.requireNonNull(profile);
 
         this.taskName = String.format("%s - %s", server.getIp(), profile.getName());
     }

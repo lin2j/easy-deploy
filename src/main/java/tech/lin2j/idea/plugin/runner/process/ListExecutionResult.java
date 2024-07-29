@@ -7,56 +7,44 @@ import com.intellij.execution.runners.ExecutionEnvironment;
 import com.intellij.execution.runners.RunContentBuilder;
 import com.intellij.execution.ui.ExecutionConsole;
 import com.intellij.execution.ui.RunContentDescriptor;
+import com.intellij.execution.ui.RunContentManager;
 import com.intellij.openapi.actionSystem.AnAction;
+import com.intellij.openapi.project.Project;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.Content;
 import com.intellij.ui.content.ContentFactory;
+import com.intellij.ui.content.ContentManager;
 import com.intellij.util.ReflectionUtil;
 import org.jetbrains.annotations.NotNull;
 
-import javax.swing.Icon;
+import javax.swing.*;
 import java.lang.reflect.Field;
 
 /**
- *
- * @author linjinjia 
+ * @author linjinjia
  * @date 2024/7/28 20:59
  */
 public class ListExecutionResult implements ExecutionResult {
     private final ListProcessHandler processHandler;
 
-    public ListExecutionResult(ListProcessHandler processHandler, ExecutionEnvironment environment) {
+    private final ExecutionEnvironment environment;
+    private final Executor executor;
+
+    private final UploadProcessHandler firstProcessHandler;
+
+    public ListExecutionResult(@NotNull ListProcessHandler processHandler, ExecutionEnvironment environment) {
+        this.environment = environment;
+        this.executor = environment.getExecutor();
         this.processHandler = processHandler;
+        this.firstProcessHandler = processHandler.getProcessHandlers().get(0);
 
-        ToolWindowManager windowManager = ToolWindowManager.getInstance(environment.getProject());
-        ToolWindow runWindow = windowManager.getToolWindow("Run");
-
-        int size = processHandler.getProcessHandlers().size();
-        for (int i = 1; i < size; i++) {
-            UploadProcessHandler h = processHandler.getProcessHandlers().get(i);
-
-            RunContentDescriptor descriptor = new RunContentBuilder(h.getExecutionResult(), environment)
-                    .showRunContent(null);
-            descriptor.setSelectContentWhenAdded(false);
-            try {
-                // RunTab's title
-                Field field = ReflectionUtil.getDeclaredField(descriptor.getClass(), "myDisplayName");
-                if (field != null) {
-                    field.set(descriptor, h.getName());
-                }
-            } catch (IllegalAccessException e) {
-                throw new RuntimeException(e);
-            }
-
-            runWindow.getContentManager().addContent(createNewContent(descriptor, environment.getExecutor()));
-        }
-
+        showRunnerTab();
     }
 
     @Override
     public ExecutionConsole getExecutionConsole() {
-         return processHandler.getProcessHandlers().get(0).getConsole();
+        return firstProcessHandler.getConsole();
     }
 
     @NotNull
@@ -70,7 +58,38 @@ public class ListExecutionResult implements ExecutionResult {
         return processHandler;
     }
 
-    private static Content createNewContent(RunContentDescriptor descriptor, Executor executor) {
+    private void showRunnerTab() {
+        Project project = environment.getProject();
+        ToolWindowManager windowManager = ToolWindowManager.getInstance(project);
+        ToolWindow runWindow = windowManager.getToolWindow("Run");
+        ContentManager contentManager = runWindow.getContentManager();
+
+        Field displayField = ReflectionUtil.getDeclaredField(RunContentDescriptor.class, "myDisplayName");
+        int size = processHandler.getProcessHandlers().size();
+        for (int i = 1; i < size; i++) {
+            UploadProcessHandler h = processHandler.getProcessHandlers().get(i);
+
+            RunContentDescriptor descriptor = new RunContentBuilder(h.getExecutionResult(), environment)
+                    .showRunContent(null);
+            descriptor.setSelectContentWhenAdded(false);
+            Content content = contentManager.findContent(h.getName());
+
+            if (content != null) {
+                RunContentDescriptor oldDescriptor = content.getUserData(RunContentDescriptor.DESCRIPTOR_KEY);
+                assert oldDescriptor != null;
+                setDescriptorFieldValue(displayField, descriptor, h.getName());
+                RunContentManager.getInstance(project).showRunContent(executor, descriptor, oldDescriptor);
+            } else {
+                Content newContent = createNewContent(descriptor);
+                newContent.putUserData(RunContentDescriptor.DESCRIPTOR_KEY, descriptor);
+                newContent.setDisplayName(h.getName());
+                descriptor.setAttachedContent(newContent);
+                contentManager.addContent(newContent);
+            }
+        }
+    }
+
+    private Content createNewContent(RunContentDescriptor descriptor) {
         String processDisplayName = descriptor.getDisplayName();
         Content content =
                 ContentFactory.SERVICE.getInstance().createContent(descriptor.getComponent(), processDisplayName, true);
@@ -78,5 +97,16 @@ public class ListExecutionResult implements ExecutionResult {
         Icon icon = descriptor.getIcon();
         content.setIcon(icon == null ? executor.getToolWindowIcon() : icon);
         return content;
+    }
+
+    private void setDescriptorFieldValue(Field field, RunContentDescriptor descriptor, Object value) {
+        if (field == null) {
+            return;
+        }
+        try {
+            field.set(descriptor, value);
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

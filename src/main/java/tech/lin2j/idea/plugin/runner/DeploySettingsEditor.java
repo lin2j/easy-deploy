@@ -42,7 +42,7 @@ public class DeploySettingsEditor extends SettingsEditor<DeployRunConfiguration>
 
         myPanel = FormBuilder.createFormBuilder()
                 .addLabeledComponent("Deploy profile: ", getDeployProfilePanel(), true)
-                .addLabeledComponent("Allow Parallel upload: ", parallelExecCheckBox)
+                .addLabeledComponent("Allow parallel upload: ", parallelExecCheckBox)
                 .getPanel();
     }
 

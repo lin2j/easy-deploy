@@ -79,6 +79,9 @@ public class DeployRunConfiguration extends RunConfigurationBase<Element> {
     }
 
     public Boolean getParallelExec() {
+        if (parallelExec == null) {
+            parallelExec = false;
+        }
         return parallelExec;
     }
 

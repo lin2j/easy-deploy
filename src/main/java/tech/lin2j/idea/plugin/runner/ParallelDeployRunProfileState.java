@@ -15,10 +15,12 @@ import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.progress.util.ProgressIndicatorBase;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.util.Key;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.wm.ToolWindow;
 import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.content.ContentManager;
+import com.intellij.ui.content.ContentManagerAdapter;
 import com.intellij.ui.content.ContentManagerEvent;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.model.DeployProfile;
@@ -109,7 +111,7 @@ public class ParallelDeployRunProfileState extends CommandLineState {
         processHandler.setName(uploadTask.getTaskName());
 
         // execute
-        Task.Backgroundable task  = new BackgroundUploadTask(uploadTask, console, processHandler);
+        Task.Backgroundable task = new BackgroundUploadTask(uploadTask, console, processHandler);
         ProgressManager.getInstance().runProcessWithProgressAsynchronously(task, new ProgressIndicatorBase());
 
         // attach
@@ -138,18 +140,11 @@ public class ParallelDeployRunProfileState extends CommandLineState {
         ToolWindowManager windowManager = ToolWindowManager.getInstance(this.environment.getProject());
         ToolWindow runWindow = windowManager.getToolWindow("Run");
         if (runWindow != null) {
-            UploadProcessHandler firstProcessHandler = processHandler.getProcessHandlers().get(0);
-            final ContentManager contentManager = runWindow.getContentManager();
+            UploadProcessHandler first = processHandler.getProcessHandlers().get(0);
+            ContentManager contentManager = runWindow.getContentManager();
             if (this.environment.getRunnerAndConfigurationSettings() != null) {
-                final String name = this.environment.getRunnerAndConfigurationSettings().getName();
-                contentManager.addContentManagerListener(new ContentManagerAdapter() {
-                    public void contentAdded(@NotNull ContentManagerEvent event) {
-                        if (event.getContent().getDisplayName().equals(name)) {
-                            event.getContent().setDisplayName(firstProcessHandler.getName());
-                            contentManager.removeContentManagerListener(this);
-                        }
-                    }
-                });
+                String name = this.environment.getRunnerAndConfigurationSettings().getName();
+                contentManager.addContentManagerListener(new RunTabTitleListener(first, name, contentManager));
             }
         }
     }
@@ -184,4 +179,37 @@ public class ParallelDeployRunProfileState extends CommandLineState {
         }
     }
 
+    /**
+     * listen for the configuration name and replace it with the name of the process handler
+     */
+    private static class RunTabTitleListener extends ContentManagerAdapter {
+        private final UploadProcessHandler processHandler;
+        private final String configurationName;
+        private final ContentManager contentManager;
+
+        public RunTabTitleListener(UploadProcessHandler processHandler,
+                                   String configurationName,
+                                   ContentManager contentManager) {
+            this.processHandler = processHandler;
+            this.configurationName = configurationName;
+            this.contentManager = contentManager;
+        }
+
+        @Override
+        public void selectionChanged(@NotNull ContentManagerEvent event) {
+            setTabTitle(event);
+        }
+
+        @Override
+        public void contentAdded(@NotNull ContentManagerEvent event) {
+            setTabTitle(event);
+        }
+
+        private void setTabTitle(ContentManagerEvent event) {
+            if (event.getContent().getDisplayName().equals(configurationName)) {
+                event.getContent().setDisplayName(processHandler.getName());
+                contentManager.removeContentManagerListener(this);
+            }
+        }
+    }
 }
