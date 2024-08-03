@@ -85,6 +85,10 @@ public class AddCommandDialog extends DialogWrapper {
             );
             return;
         }
+        title = StringUtil.trim(title);
+        dir = StringUtil.trim(dir);
+        cmdStr = StringUtil.trim(cmdStr);
+
         // update config if command is exist
         Integer cmdId = command.getId();
         Integer sshId = command.getSshId();

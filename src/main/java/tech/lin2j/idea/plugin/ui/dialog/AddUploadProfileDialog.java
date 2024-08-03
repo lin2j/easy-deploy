@@ -9,6 +9,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.ComboBox;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.TextFieldWithBrowseButton;
+import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.ui.components.JBLabel;
@@ -102,22 +103,22 @@ public class AddUploadProfileDialog extends DialogWrapper {
         // update config if profile is exist
         Integer sshId = profile.getSshId();
         if (profile.getId() != null) {
-            profile.setName(name);
             profile.setSshId(sshId);
-            profile.setFile(file);
-            profile.setExclude(exclude);
-            profile.setLocation(location);
+            profile.setName(trim(name));
+            profile.setFile(trim(file));
+            profile.setExclude(trim(exclude));
+            profile.setLocation(trim(location));
             profile.setCommandId(command == NoneCommand.INSTANCE ? null : command.getId());
             profile.setSelected(true);
             ApplicationContext.getApplicationContext().publishEvent(new UploadProfileSelectedEvent(profile));
         } else {
             UploadProfile newProfile = new UploadProfile();
             newProfile.setId(ConfigHelper.maxUploadProfileId() + 1);
-            newProfile.setName(name);
+            newProfile.setName(trim(name));
             newProfile.setSshId(sshId);
-            newProfile.setFile(file);
-            newProfile.setExclude(exclude);
-            newProfile.setLocation(location);
+            newProfile.setFile(trim(file));
+            newProfile.setExclude(trim(exclude));
+            newProfile.setLocation(trim(location));
             newProfile.setCommandId(command == NoneCommand.INSTANCE ? null : command.getId());
             newProfile.setSelected(true);
 
@@ -219,6 +220,13 @@ public class AddUploadProfileDialog extends DialogWrapper {
             result = LocalFileSystem.getInstance().findFileByPath(dir);
         }
         return result;
+    }
+
+    private String trim(String s) {
+        if (StringUtil.isNotEmpty(s)) {
+            return s.trim();
+        }
+        return s;
     }
 
     private FileChooserDescriptor allButNoMultipleChoose() {
