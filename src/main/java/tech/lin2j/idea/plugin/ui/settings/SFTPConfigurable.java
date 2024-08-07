@@ -17,8 +17,7 @@ import tech.lin2j.idea.plugin.model.PluginSetting;
 import tech.lin2j.idea.plugin.enums.SFTPAction;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
+import javax.swing.*;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -37,6 +36,8 @@ public class SFTPConfigurable implements SearchableConfigurable, Configurable.No
     private ColorPanel uploadColorPicker;
     private ColorPanel downloadColorPicker;
 
+    private JSpinner historyPathSize;
+
     @Override
     public @NotNull
     @NonNls String getId() {
@@ -53,6 +54,7 @@ public class SFTPConfigurable implements SearchableConfigurable, Configurable.No
         JPanel panel = FormBuilder.createFormBuilder()
                 .addComponent(mouseControl())
                 .addComponent(transferControl(), DEFAULT_TOP_INSET)
+                .addComponent(panelControl(), DEFAULT_TOP_INSET)
                 .getPanel();
         JPanel result = new JPanel(new BorderLayout());
         result.add(panel, BorderLayout.NORTH);
@@ -70,7 +72,8 @@ public class SFTPConfigurable implements SearchableConfigurable, Configurable.No
     public boolean isModified() {
         return !Objects.equals(uploadColorPicker.getSelectedColor(), setting.uploadProgressColor())
                 || !Objects.equals(downloadColorPicker.getSelectedColor(), setting.downloadProgressColor())
-                || !Objects.equals(doubleClickAction.getSelectedItem(), setting.getDoubleClickAction());
+                || !Objects.equals(doubleClickAction.getSelectedItem(), setting.getDoubleClickAction())
+                || !Objects.equals(historyPathSize.getValue(), setting.getHistoryPathSize());
     }
 
     @Override
@@ -85,6 +88,7 @@ public class SFTPConfigurable implements SearchableConfigurable, Configurable.No
         if (downColor != null) {
             setting.setDownloadProgressColor(ColorUtil.toHex(downColor));
         }
+        setting.setHistoryPathSize((int) historyPathSize.getValue());
     }
 
     private JPanel mouseControl() {
@@ -124,6 +128,19 @@ public class SFTPConfigurable implements SearchableConfigurable, Configurable.No
                 .getPanel();
         panel.setBorder(new IdeaTitledBorder(title, 0, JBUI.emptyInsets()));
 
+        return panel;
+    }
+
+    private JPanel panelControl() {
+        String title = MessagesBundle.getText("setting.sftp.panel.title");
+        String historySize = MessagesBundle.getText("setting.sftp.panel.history-path-size");
+
+        int pathSize = setting.getHistoryPathSize();
+        historyPathSize = new JSpinner(new SpinnerNumberModel(pathSize, 5, 15, 1));
+        JPanel panel = FormBuilder.createFormBuilder()
+                .addLabeledComponent(historySize, historyPathSize)
+                .getPanel();
+        panel.setBorder(new IdeaTitledBorder(title, 0, JBUI.emptyInsets()));
         return panel;
     }
 }

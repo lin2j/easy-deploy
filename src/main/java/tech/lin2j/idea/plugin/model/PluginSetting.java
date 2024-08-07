@@ -34,6 +34,8 @@ public class PluginSetting {
 
     private SFTPAction doubleClickAction;
 
+    private Integer historyPathSize;
+
     // Export & Import
     private String defaultExportImportPath;
     private ExportOptions exportOptions;
@@ -140,5 +142,16 @@ public class PluginSetting {
 
     public void setExportOptions(ExportOptions exportOptions) {
         this.exportOptions = exportOptions;
+    }
+
+    public Integer getHistoryPathSize() {
+        if (historyPathSize == null) {
+            historyPathSize = 10;
+        }
+        return historyPathSize;
+    }
+
+    public void setHistoryPathSize(Integer historyPathSize) {
+        this.historyPathSize = historyPathSize;
     }
 }

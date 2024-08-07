@@ -11,48 +11,25 @@ import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.CollectionComboBoxModel;
-import com.intellij.ui.components.JBTextField;
+import com.intellij.ui.TextFieldWithStoredHistory;
 import com.intellij.ui.table.JBTable;
 import com.intellij.util.PathUtil;
 import com.intellij.util.ui.JBUI;
 import org.apache.commons.collections.CollectionUtils;
+import tech.lin2j.idea.plugin.action.EnterKeyAdapter;
 import tech.lin2j.idea.plugin.action.SFTPTableMouseListener;
-import tech.lin2j.idea.plugin.action.ftp.CreateNewFolderAction;
-import tech.lin2j.idea.plugin.action.ftp.DeleteFileAndDirAction;
-import tech.lin2j.idea.plugin.action.ftp.DownloadFileAndDirAction;
-import tech.lin2j.idea.plugin.action.ftp.GoToDesktopAction;
-import tech.lin2j.idea.plugin.action.ftp.GoToParentFolderAction;
-import tech.lin2j.idea.plugin.action.ftp.HomeDirectoryAction;
-import tech.lin2j.idea.plugin.action.ftp.ProjectPathAction;
-import tech.lin2j.idea.plugin.action.ftp.RefreshFolderAction;
-import tech.lin2j.idea.plugin.action.ftp.RowDoubleClickAction;
-import tech.lin2j.idea.plugin.action.ftp.ShowHiddenFileAndDirAction;
-import tech.lin2j.idea.plugin.action.ftp.UploadFileAndDirAction;
+import tech.lin2j.idea.plugin.action.ftp.*;
 import tech.lin2j.idea.plugin.file.TableFile;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.ui.dialog.FilePropertiesDialog;
 
-import javax.swing.AbstractAction;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.table.TableModel;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Random;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -66,7 +43,7 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
     protected boolean showHiddenFileAndDir = false;
     protected JBTable table;
     protected List<TableFile> fileList;
-    protected JBTextField filePath;
+    protected TextFieldWithStoredHistory filePath;
     private final boolean isLocalPanel;
     private final String actionPlace;
     private final Long id;
@@ -88,14 +65,20 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
     }
 
     protected void init() {
-        filePath = new JBTextField();
+        String storedKey = "ED-SFTP-PATH-" + (isLocalPanel ? "Local" : "Remote");
+        filePath = new TextFieldWithStoredHistory(storedKey);
         filePath.setText(getHomePath());
-        filePath.setColumns(1);
-        filePath.setAction(new AbstractAction() {
+        filePath.setHistorySize(ConfigHelper.pluginSetting().getHistoryPathSize());
+        filePath.setMinimumAndPreferredWidth(1);
+        filePath.addKeyboardListener(new EnterKeyAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
+            protected void doAction(KeyEvent e) {
                 setPath(filePath.getText());
+                filePath.addCurrentTextToHistory();
             }
+        });
+        filePath.addItemListener(e -> {
+            setPath(filePath.getText());
         });
 
         initToolBar();
@@ -137,6 +120,7 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
         return showHiddenFileAndDir;
     }
 
+    @Override
     public String getPath() {
         String path = filePath.getText();
         if (StringUtil.isEmpty(path)) {
@@ -279,7 +263,9 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
     }
 
     protected boolean showFile(TableFile tf) {
-        if (showHiddenFileAndDir) return true;
+        if (showHiddenFileAndDir) {
+            return true;
+        }
         return !tf.isHidden();
     }
 
