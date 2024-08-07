@@ -77,9 +77,7 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
                 filePath.addCurrentTextToHistory();
             }
         });
-        filePath.addItemListener(e -> {
-            setPath(filePath.getText());
-        });
+        filePath.addItemListener(e -> setPath(filePath.getText()));
 
         initToolBar();
         initFileTable();

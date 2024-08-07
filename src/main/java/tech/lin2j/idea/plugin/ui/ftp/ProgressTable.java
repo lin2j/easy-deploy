@@ -86,9 +86,7 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
         transferTaskThread.start();
     }
 
-    @Override
-    protected void finalize() throws Throwable {
-        super.finalize();
+    public void dispose() {
         // stop thread
         transferTaskThread.interrupt();
     }

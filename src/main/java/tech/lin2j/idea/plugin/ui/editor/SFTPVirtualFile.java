@@ -25,6 +25,7 @@ public class SFTPVirtualFile extends VirtualFile {
     private final Project project;
     private final JPanel consolePanel;
     private final RemoteFileTableContainer remoteFileTableContainer;
+    private final FTPConsole ftpConsole;;
 
     @Override
     public @NotNull FileType getFileType() {
@@ -34,6 +35,7 @@ public class SFTPVirtualFile extends VirtualFile {
     public SFTPVirtualFile(String name, Project project, FTPConsole console) {
         this.project = project;
         this.name = name;
+        this.ftpConsole = console;
         this.consolePanel = console.createUi();
         this.remoteFileTableContainer = console.getRemoteFileTableContainer();
     }
@@ -127,5 +129,6 @@ public class SFTPVirtualFile extends VirtualFile {
 
     public void close() {
         remoteFileTableContainer.dispose();
+        ftpConsole.getProgressTable().dispose();
     }
 }

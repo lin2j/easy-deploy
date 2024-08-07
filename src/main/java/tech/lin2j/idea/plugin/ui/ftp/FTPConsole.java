@@ -26,6 +26,7 @@ public class FTPConsole {
     private final Project project;
     private final SshServer server;
     private RemoteFileTableContainer remoteFileTableContainer;
+    private ProgressTable progressTable;
 
     public FTPConsole(Project project, SshServer server) throws IOException {
         this.project = project;
@@ -49,7 +50,7 @@ public class FTPConsole {
         mainPanel.setFirstComponent(fileWindows);
 
         ConsoleLogViewer logViewer = new ConsoleLogViewer(project);
-        ProgressTable progressTable = new ProgressTable(localContainer, remoteContainer, logViewer.getConsoleView());
+        progressTable = new ProgressTable(localContainer, remoteContainer, logViewer.getConsoleView());
 
         JBTabbedPane transferPane = new JBTabbedPane();
         transferPane.addTab("Transfer", MyIcons.Transfer, progressTable);
@@ -69,5 +70,9 @@ public class FTPConsole {
 
     public RemoteFileTableContainer getRemoteFileTableContainer() {
         return remoteFileTableContainer;
+    }
+
+    public ProgressTable getProgressTable() {
+        return progressTable;
     }
 }
