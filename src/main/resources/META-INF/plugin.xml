@@ -163,8 +163,6 @@
         <projectService serviceImplementation="tech.lin2j.idea.plugin.ui.editor.SFTPFileSystem"/>
         <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.DmgFileType" fieldName="INSTANCE" name="Disk Image" extensions="dmg"/>
         <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.ConfigFileType" fieldName="INSTANCE" name="Config" extensions="cfg;config;ini;"/>
-        <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.CFileType" fieldName="INSTANCE" name="C" extensions="c"/>
-        <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.CppFileType" fieldName="INSTANCE" name="C++" extensions="cpp"/>
         <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.PdfFileType" fieldName="INSTANCE" name="PDF" extensions="pdf"/>
         <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.WordFileType" fieldName="INSTANCE" name="Word" extensions="doc;docx"/>
         <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.ExcelFileType" fieldName="INSTANCE" name="Excel" extensions="xlsx;xls"/>
