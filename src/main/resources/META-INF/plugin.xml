@@ -172,6 +172,11 @@
         <fileType implementationClass="tech.lin2j.idea.plugin.file.fileTypes.LogFileType" fieldName="INSTANCE" name="Log" extensions="log"/>
     </extensions>
 
+    <applicationListeners>
+        <listener class="tech.lin2j.idea.plugin.model.PluginConfigInitializer"
+                  topic="com.intellij.ide.AppLifecycleListener"/>
+    </applicationListeners>
+
     <actions>
         <!-- Add your actions here -->
     </actions>
@@ -179,7 +184,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow
                 factoryClass="tech.lin2j.idea.plugin.factory.DeployConsoleToolWindowFactory"
-                id="Deploy"
+                id="Easy Deploy"
                 anchor="bottom"
                 canCloseContents="false"
                 icon="MyIcons.Deploy"

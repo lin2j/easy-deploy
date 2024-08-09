@@ -1,6 +1,7 @@
 package tech.lin2j.idea.plugin.model;
 
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import java.util.ArrayList;
@@ -14,9 +15,9 @@ import java.util.stream.Collectors;
  * @date 2022/4/25 17:27
  */
 public class ConfigHelper {
+    private static final Logger log = Logger.getInstance(ConfigHelper.class);
 
-    private static final ConfigPersistence CONFIG_PERSISTENCE =
-            ApplicationManager.getApplication().getService(ConfigPersistence.class);
+    private static volatile ConfigPersistence CONFIG_PERSISTENCE = null;
 
     private static Map<Integer, SshServer> SSH_SERVER_MAP;
 
@@ -24,8 +25,17 @@ public class ConfigHelper {
 
     private static Map<Integer, List<UploadProfile>> UPLOAD_PROFILE_MAP;
 
-    static {
-        refreshConfig();
+    public static void ensureConfigLoadInMemory() {
+        if (CONFIG_PERSISTENCE == null) {
+            synchronized (ConfigHelper.class) {
+                if (CONFIG_PERSISTENCE == null) {
+                    log.info("Easy Deploy first time load configuration");
+                    CONFIG_PERSISTENCE = ApplicationManager.getApplication().getService(ConfigPersistence.class);
+                    refreshConfig();
+                    log.info("Easy Deploy first time load configuration finished");
+                }
+            }
+        }
     }
 
     public static void refreshConfig() {
