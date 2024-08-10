@@ -91,7 +91,7 @@ public class ConsoleLogViewer implements ApplicationListener<CommandExecuteEvent
 
         boolean showMessageUi = clear || (append && firstMsg);
         if (showMessageUi) {
-            ToolWindow deployToolWindow = ToolWindowManager.getInstance(event.getProject()).getToolWindow("Deploy");
+            ToolWindow deployToolWindow = ToolWindowManager.getInstance(event.getProject()).getToolWindow("Easy Deploy");
             deployToolWindow.activate(null);
             Content messages = deployToolWindow.getContentManager().findContent("Console");
             deployToolWindow.getContentManager().setSelectedContent(messages);
@@ -116,7 +116,8 @@ public class ConsoleLogViewer implements ApplicationListener<CommandExecuteEvent
         String title = String.format("Executing command on %s:%s", server.getIp(), server.getPort());
         print(title);
         if (cmd != null) {
-            print(String.format("User custom command: {%s}",cmd.generateCmdLine()));
+            print("User custom command:");
+            print(cmd.logString());
         }
         print(event.getExecResult());
         print("finished");

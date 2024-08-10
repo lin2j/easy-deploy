@@ -35,8 +35,19 @@ public class Command implements Cloneable{
     }
 
     public String generateCmdLine() {
-        return "cd " + dir + "; " +
-                String.join("; ", content.split("\n"));
+        return "cd " + dir + "; " + content;
+    }
+
+    public String logString() {
+        StringBuilder buf = new StringBuilder();
+        buf.append("cd ").append(dir).append(";\n");
+        if (content != null) {
+            String[] line = content.split("\n");
+            for (String s : line) {
+                buf.append(s).append("\n");
+            }
+        }
+        return buf.toString();
     }
 
     public Integer getSshId() {

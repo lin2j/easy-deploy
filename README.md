@@ -52,7 +52,3 @@ If you have any suggestions or encounter bugs, feel free to raise issues or cont
 promptly as possible.
 
 📮📮 linjinjia047@163.com
-
-# License
-
-[**MIT**](LICENSE).

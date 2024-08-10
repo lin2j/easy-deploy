@@ -19,6 +19,7 @@ import tech.lin2j.idea.plugin.ui.ftp.container.FileTableContainer;
 import tech.lin2j.idea.plugin.ui.table.ProgressCell;
 import tech.lin2j.idea.plugin.uitl.FTPUtil;
 import tech.lin2j.idea.plugin.uitl.FileUtil;
+import tech.lin2j.idea.plugin.uitl.UiUtil;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -173,6 +174,7 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
         outputTable.setModel(tableModel);
         outputTable.setFocusable(false);
         outputTable.setRowHeight(30);
+        UiUtil.hideTableLine(outputTable);
 
         TableColumn progressColum = outputTable.getColumnModel().getColumn(PROGRESS_COL);
         progressColum.setMinWidth(150);

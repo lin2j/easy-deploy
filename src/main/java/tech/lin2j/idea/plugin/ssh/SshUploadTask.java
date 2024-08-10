@@ -91,7 +91,8 @@ public class SshUploadTask implements Runnable{
             error("Execute command failed: " + execStatus.getMessage() + "\n");
             return;
         }
-        println("Command completed: {" + cmdLine + "}");
+        println("Command completed:");
+        println(cmd.logString());
         println(execStatus.getMessage());
     }
 

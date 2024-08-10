@@ -22,6 +22,7 @@ import tech.lin2j.idea.plugin.action.ftp.*;
 import tech.lin2j.idea.plugin.file.TableFile;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.ui.dialog.FilePropertiesDialog;
+import tech.lin2j.idea.plugin.uitl.UiUtil;
 
 import javax.swing.*;
 import javax.swing.table.TableModel;
@@ -238,6 +239,7 @@ public abstract class AbstractFileTableContainer extends SimpleToolWindowPanel i
         table.getEmptyText().setText("No data");
         table.setRowSelectionAllowed(true);
         table.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
+        UiUtil.hideTableLine(table);
 
         table.addMouseListener(new SFTPTableMouseListener(this));
         table.addKeyListener(new SpaceKeyListener());

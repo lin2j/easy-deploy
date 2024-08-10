@@ -2,6 +2,7 @@ package tech.lin2j.idea.plugin.uitl;
 
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
+import com.intellij.ui.table.JBTable;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
@@ -74,5 +75,10 @@ public class UiUtil {
     public static int screenWidth() {
         Toolkit toolkit = Toolkit.getDefaultToolkit();
         return toolkit.getScreenSize().width;
+    }
+
+    public static void hideTableLine(JBTable table) {
+        table.setShowHorizontalLines(false);
+        table.setShowVerticalLines(false);
     }
 }
