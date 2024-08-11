@@ -72,7 +72,8 @@ public class DeployProfileTableModel extends AbstractTableModel implements ItemR
             } case 4: { // upload location
                 return up.getLocation();
             } case 5: { // command title
-                return cmd.getTitle();
+                String flag = cmd.getSharable() ? "*" : "";
+                return flag + cmd.getTitle();
             } default: {
                 throw new IllegalArgumentException();
             }

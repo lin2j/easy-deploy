@@ -6,7 +6,7 @@ import java.util.Objects;
  * @author linjinjia
  * @date 2022/4/27 14:01
  */
-public class Command implements Cloneable{
+public class Command implements Cloneable {
 
     private Integer id;
 
@@ -18,6 +18,8 @@ public class Command implements Cloneable{
 
     private String content;
 
+    private Boolean sharable;
+
     public Command() {
     }
 
@@ -25,13 +27,15 @@ public class Command implements Cloneable{
         this.sshId = sshId;
     }
 
-    public Command(Integer id, Integer sshId, String title, String dir, String content) {
+    public Command(Integer id, Integer sshId, String title,
+                   String dir, String content, Boolean sharable) {
         super();
         this.id = id;
         this.sshId = sshId;
         this.title = title;
         this.dir = dir;
         this.content = content;
+        this.sharable = sharable;
     }
 
     public String generateCmdLine() {
@@ -89,6 +93,17 @@ public class Command implements Cloneable{
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Boolean getSharable() {
+        if (sharable == null) {
+            sharable = false;
+        }
+        return sharable;
+    }
+
+    public void setSharable(Boolean sharable) {
+        this.sharable = sharable;
     }
 
     @Override

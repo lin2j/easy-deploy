@@ -228,7 +228,7 @@ public class UploadProfileDialog extends DialogWrapper implements ApplicationLis
     private void reloadProfileBox() {
         profileBox.removeAllItems();
         List<UploadProfile> profiles = ConfigHelper.getUploadProfileBySshId(server.getId());
-        if (profiles.size() > 0) {
+        if (!profiles.isEmpty()) {
             int i = 0;
             boolean hasSelected = false;
             for (UploadProfile profile : profiles) {

@@ -12,6 +12,7 @@ import com.intellij.openapi.ui.TextFieldWithBrowseButton;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VirtualFile;
+import com.intellij.ui.CollectionComboBoxModel;
 import com.intellij.ui.components.JBLabel;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
@@ -24,6 +25,7 @@ import tech.lin2j.idea.plugin.action.PasteUploadProfileAction;
 import tech.lin2j.idea.plugin.model.Command;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.model.NoneCommand;
+import tech.lin2j.idea.plugin.model.SeparatorCommand;
 import tech.lin2j.idea.plugin.model.UploadProfile;
 import tech.lin2j.idea.plugin.model.event.UploadProfileAddEvent;
 import tech.lin2j.idea.plugin.model.event.UploadProfileSelectedEvent;
@@ -38,6 +40,8 @@ import javax.swing.JPanel;
 import java.awt.Dimension;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -108,7 +112,7 @@ public class AddUploadProfileDialog extends DialogWrapper {
             profile.setFile(trim(file));
             profile.setExclude(trim(exclude));
             profile.setLocation(trim(location));
-            profile.setCommandId(command == NoneCommand.INSTANCE ? null : command.getId());
+            profile.setCommandId(getCommandId(command));
             profile.setSelected(true);
             ApplicationContext.getApplicationContext().publishEvent(new UploadProfileSelectedEvent(profile));
         } else {
@@ -119,7 +123,7 @@ public class AddUploadProfileDialog extends DialogWrapper {
             newProfile.setFile(trim(file));
             newProfile.setExclude(trim(exclude));
             newProfile.setLocation(trim(location));
-            newProfile.setCommandId(command == NoneCommand.INSTANCE ? null : command.getId());
+            newProfile.setCommandId(getCommandId(command));
             newProfile.setSelected(true);
 
             ConfigHelper.addUploadProfile(newProfile);
@@ -143,10 +147,15 @@ public class AddUploadProfileDialog extends DialogWrapper {
 
     private void initCommandBox() {
         Integer sshId = profile.getSshId();
-        commandBox = new ComboBox<>();
+
+        List<Command> data = new ArrayList<>();
+        data.add(NoneCommand.INSTANCE);
+        data.addAll(ConfigHelper.getCommandsBySshId(sshId));
+        data.add(SeparatorCommand.INSTANCE);
+        data.addAll(ConfigHelper.getSharableCommands(sshId));
+
+        commandBox = new ComboBox<>(new CollectionComboBoxModel<>(data));
         commandBox.setRenderer(new CommandColoredListCellRenderer());
-        commandBox.addItem(NoneCommand.INSTANCE);
-        ConfigHelper.getCommandsBySshId(sshId).forEach(cmd -> commandBox.addItem(cmd));
 
         // Add command button
         DefaultActionGroup group = new DefaultActionGroup();
@@ -206,6 +215,9 @@ public class AddUploadProfileDialog extends DialogWrapper {
         locationInput.setText(up.getLocation());
         for (int i = 0; i < commandBox.getItemCount(); i++) {
             Command command = commandBox.getItemAt(i);
+            if (command instanceof SeparatorCommand) {
+                continue;
+            }
             if (Objects.equals(command.getId(), up.getCommandId())) {
                 commandBox.setSelectedIndex(i);
             }
@@ -229,7 +241,15 @@ public class AddUploadProfileDialog extends DialogWrapper {
         return s;
     }
 
+    private Integer getCommandId(Command cmd) {
+       if (cmd instanceof NoneCommand || cmd instanceof SeparatorCommand) {
+           return null;
+       }
+       return cmd == null ? null : cmd.getId();
+    }
+
     private FileChooserDescriptor allButNoMultipleChoose() {
         return new FileChooserDescriptor(true, true, true, true, true, false);
     }
+
 }

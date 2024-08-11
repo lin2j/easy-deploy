@@ -2,6 +2,7 @@ package tech.lin2j.idea.plugin.ui.dialog;
 
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.fileTypes.FileTypes;
 import com.intellij.openapi.project.Project;
@@ -13,9 +14,11 @@ import com.intellij.ui.EditorCustomization;
 import com.intellij.ui.EditorTextField;
 import com.intellij.ui.EditorTextFieldProvider;
 import com.intellij.ui.SoftWrapsEditorCustomization;
+import com.intellij.ui.ToggleActionButton;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.JBUI;
+import icons.MyIcons;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.action.CopyCommandAction;
@@ -26,6 +29,7 @@ import tech.lin2j.idea.plugin.model.event.CommandAddEvent;
 import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.Dimension;
@@ -44,6 +48,9 @@ public class AddCommandDialog extends DialogWrapper {
     private JBTextField titleInput;
     private JBTextField pathInput;
     private EditorTextField commandEditor;
+    private boolean shareCommand;
+    private ToggleActionButton shareToggleButton;
+    private boolean shareBtnInitialized;
 
     private final Project project;
     private final Command command;
@@ -97,9 +104,10 @@ public class AddCommandDialog extends DialogWrapper {
             command.setTitle(title);
             command.setDir(dir);
             command.setContent(cmdStr);
+            command.setSharable(shareCommand);
         } else {
-            int id = ConfigHelper.maxCommandId() + 1;
-            Command cmd = new Command(id, sshId, title, dir, cmdStr);
+            cmdId = ConfigHelper.maxCommandId() + 1;
+            Command cmd = new Command(cmdId, sshId, title, dir, cmdStr, shareCommand);
             ConfigHelper.addCommand(cmd);
         }
         ApplicationContext.getApplicationContext().publishEvent(new CommandAddEvent());
@@ -107,9 +115,28 @@ public class AddCommandDialog extends DialogWrapper {
     }
 
     private JComponent titleRow() {
+        if (!shareBtnInitialized) {
+            Icon icon = shareCommand ? MyIcons.Actions.Shared : MyIcons.Actions.Share;
+            shareToggleButton = new ToggleActionButton("Sharable Command", icon) {
+                @Override
+                public boolean isSelected(AnActionEvent e) {
+                    Icon icon = shareCommand ? MyIcons.Actions.Shared : MyIcons.Actions.Share;
+                    e.getPresentation().setIcon(icon);
+                    return shareCommand;
+                }
+
+                @Override
+                public void setSelected(AnActionEvent e, boolean b) {
+                    shareCommand = b;
+                }
+            };
+            shareBtnInitialized = true;
+        }
+
         DefaultActionGroup group = new DefaultActionGroup();
         group.add(new CopyCommandAction(command));
         group.add(new PasteCommandAction(this::setContent));
+        group.add(shareToggleButton);
 
         ActionToolbar toolbar = ActionManager.getInstance()
                 .createActionToolbar("AddDialoag@Toolbar", group, true);
@@ -132,6 +159,7 @@ public class AddCommandDialog extends DialogWrapper {
         titleInput.setText(cmd.getTitle());
         pathInput.setText(cmd.getDir());
         commandEditor.setText(cmd.getContent());
+        shareCommand = cmd.getSharable();
     }
 
     private void initInput() {

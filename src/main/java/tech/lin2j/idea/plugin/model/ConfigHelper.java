@@ -106,6 +106,13 @@ public class ConfigHelper {
         return COMMAND_MAP.getOrDefault(sshId, new ArrayList<>());
     }
 
+    public static List<Command> getSharableCommands(Integer excludeSshId) {
+        return CONFIG_PERSISTENCE.getCommands().stream()
+                .filter(Command::getSharable)
+                .filter(cmd -> !Objects.equals(cmd.getSshId(), excludeSshId))
+                .collect(Collectors.toList());
+    }
+
     public static void addCommand(Command command) {
         CONFIG_PERSISTENCE.getCommands().add(command);
         COMMAND_MAP = CONFIG_PERSISTENCE.getCommands().stream()

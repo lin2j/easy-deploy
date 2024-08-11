@@ -42,6 +42,8 @@ public interface MyIcons {
         Icon Export = IconLoader.getIcon("/icons/actions/my_export.svg", MyIcons.class);
         Icon Import = IconLoader.getIcon("/icons/actions/my_import.svg", MyIcons.class);
         Icon Clean = IconLoader.getIcon("/icons/actions/my_clean.svg", MyIcons.class);
+        Icon Share = IconLoader.getIcon("/icons/actions/my_share.svg", MyIcons.class);
+        Icon Shared = IconLoader.getIcon("/icons/actions/my_share_selected.svg", MyIcons.class);
     }
 
     interface FileType {

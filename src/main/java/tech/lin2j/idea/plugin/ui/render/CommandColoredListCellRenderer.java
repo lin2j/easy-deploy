@@ -6,6 +6,7 @@ import com.intellij.ui.ColoredListCellRenderer;
 import com.intellij.ui.SimpleTextAttributes;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.model.Command;
+import tech.lin2j.idea.plugin.model.SeparatorCommand;
 
 import javax.swing.JList;
 import java.util.Objects;
@@ -21,6 +22,10 @@ public class CommandColoredListCellRenderer extends ColoredListCellRenderer<Comm
     @Override
     protected void customizeCellRenderer(@NotNull JList<? extends Command> list, Command value,
                                          int index, boolean selected, boolean hasFocus) {
+        if (value instanceof SeparatorCommand) {
+            append(value.getTitle(), SimpleTextAttributes.GRAY_ATTRIBUTES);
+            return;
+        }
         setIcon(AllIcons.Debugger.Console);
         if (StringUtil.isNotEmpty(value.getTitle())) {
             append(value.getTitle());

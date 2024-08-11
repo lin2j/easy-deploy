@@ -14,11 +14,12 @@ import com.intellij.util.ui.FormBuilder;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.action.CopyCommandAction;
-import tech.lin2j.idea.plugin.model.Command;
-import tech.lin2j.idea.plugin.model.ConfigHelper;
-import tech.lin2j.idea.plugin.model.event.CommandAddEvent;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
+import tech.lin2j.idea.plugin.model.Command;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
+import tech.lin2j.idea.plugin.model.SeparatorCommand;
+import tech.lin2j.idea.plugin.model.event.CommandAddEvent;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ui.render.CommandColoredListCellRenderer;
 import tech.lin2j.idea.plugin.uitl.CommandUtil;
@@ -28,6 +29,7 @@ import tech.lin2j.idea.plugin.uitl.UiUtil;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.Dimension;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -94,6 +96,8 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
         return ToolbarDecorator.createDecorator(commandList)
                 .setToolbarPosition(ActionToolbarPosition.TOP)
                 .disableUpDownActions()
+                .setEditActionUpdater(e -> isEditable())
+                .setRemoveActionUpdater(e -> isEditable())
                 .setAddAction(e -> {
                     Command command = new Command();
                     command.setSshId(sshId);
@@ -122,14 +126,30 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
                 .createPanel();
     }
 
+    private boolean isEditable() {
+        Command selectedValue = commandList.getSelectedValue();
+        if (selectedValue instanceof SeparatorCommand) {
+            return false;
+        }
+        if (selectedValue != null) {
+            return !selectedValue.getSharable() || Objects.equals(selectedValue.getSshId(), sshId);
+        }
+        return true;
+    }
+
     public void loadCommandList() {
         List<Command> commands = ConfigHelper.getCommandsBySshId(sshId);
-        if (commands.size() == 0) {
-            showInput.setText("");
-            commandList.setListData(new Command[0]);
-            return;
+        List<Command> sharableCommands = ConfigHelper.getSharableCommands(sshId);
+
+        List<Command> data = new ArrayList<>(commands);
+        data.add(new SeparatorCommand());
+        data.addAll(sharableCommands);
+
+        if (data.size() == 1) {
+            data = new ArrayList<>();
         }
-        commandList.setListData(commands.toArray(new Command[0]));
+
+        commandList.setListData(data.toArray(new Command[0]));
     }
 
     private class RunCommandAction extends AnActionButton {
@@ -144,10 +164,10 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
         @Override
         public void actionPerformed(@NotNull AnActionEvent e) {
             Command cmd = commandList.getSelectedValue();
-            if (Objects.isNull(cmd)) {
+            if (Objects.isNull(cmd) || cmd instanceof SeparatorCommand) {
                 return;
             }
-            SshServer server = ConfigHelper.getSshServerById(cmd.getSshId());
+            SshServer server = ConfigHelper.getSshServerById(sshId);
 
             boolean needPassword = AuthType.needPassword(server.getAuthType());
             server = UiUtil.requestPasswordIfNecessary(server);
