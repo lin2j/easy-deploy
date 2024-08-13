@@ -6,9 +6,11 @@ import java.util.Objects;
  * @author linjinjia
  * @date 2022/4/27 14:01
  */
-public class Command implements Cloneable {
+public class Command implements Cloneable, UniqueModel {
 
     private Integer id;
+
+    private String uid;
 
     private Integer sshId;
 
@@ -145,5 +147,15 @@ public class Command implements Cloneable {
     @Override
     public int hashCode() {
         return Objects.hash(sshId, title, dir, content);
+    }
+
+    @Override
+    public String getUid() {
+        return uid;
+    }
+
+    @Override
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 }

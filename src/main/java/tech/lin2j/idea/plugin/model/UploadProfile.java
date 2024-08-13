@@ -7,9 +7,11 @@ import java.util.Objects;
  * @author linjinjia
  * @date 2022/5/24 15:57
  */
-public class UploadProfile implements Cloneable{
+public class UploadProfile implements Cloneable, UniqueModel {
 
     private Integer id;
+
+    private String uid;
 
     private String name;
 
@@ -91,6 +93,16 @@ public class UploadProfile implements Cloneable{
 
     public void setExclude(String exclude) {
         this.exclude = exclude;
+    }
+
+    @Override
+    public String getUid() {
+        return uid;
+    }
+
+    @Override
+    public void setUid(String uid) {
+        this.uid = uid;
     }
 
     @Override

@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.model;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
@@ -12,6 +13,7 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
@@ -48,6 +50,7 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
         if (sshServers == null) {
             sshServers = new CopyOnWriteArrayList<>();
         }
+        checkUid(sshServers);
         return sshServers;
     }
 
@@ -59,6 +62,7 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
         if (commands == null) {
             commands = new CopyOnWriteArrayList<>();
         }
+        checkUid(commands);
         return commands;
     }
 
@@ -79,6 +83,7 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
                 profile.setId(++maxProfileId);
             }
         }
+        checkUid(uploadProfiles);
         return uploadProfiles;
     }
 
@@ -107,5 +112,16 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
 
     public void setSetting(PluginSetting setting) {
         this.setting = setting;
+    }
+
+    private void checkUid(List<? extends UniqueModel> list) {
+        if (list == null || list.isEmpty()) {
+            return;
+        }
+        list.forEach(d -> {
+            if (d.getUid() == null) {
+                d.setUid(UUID.randomUUID().toString());
+            }
+        });
     }
 }

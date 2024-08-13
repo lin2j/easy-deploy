@@ -6,6 +6,7 @@ import com.intellij.credentialStore.Credentials;
 import com.intellij.ide.passwordSafe.PasswordSafe;
 import com.intellij.util.xmlb.annotations.Transient;
 import tech.lin2j.idea.plugin.enums.AuthType;
+import tech.lin2j.idea.plugin.model.UniqueModel;
 
 import java.util.Objects;
 
@@ -13,12 +14,13 @@ import java.util.Objects;
  * @author linjinjia
  * @date 2022/4/25 15:06
  */
-public class SshServer implements Cloneable {
+public class SshServer implements Cloneable, UniqueModel {
 
     public static final SshServer None = new SshServer();
 
-
     private Integer id;
+
+    private String uid;
 
     private String ip;
 
@@ -155,6 +157,16 @@ public class SshServer implements Cloneable {
 
     public void setProxy(Integer proxy) {
         this.proxy = proxy;
+    }
+
+    @Override
+    public String getUid() {
+        return uid;
+    }
+
+    @Override
+    public void setUid(String uuid) {
+        this.uid = uuid;
     }
 
     @Override
