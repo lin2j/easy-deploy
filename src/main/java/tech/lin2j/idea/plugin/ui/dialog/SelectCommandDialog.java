@@ -7,6 +7,7 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.AnActionButton;
+import com.intellij.ui.DoubleClickListener;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBTextField;
@@ -18,6 +19,7 @@ import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.model.Command;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
+import tech.lin2j.idea.plugin.model.NoneCommand;
 import tech.lin2j.idea.plugin.model.SeparatorCommand;
 import tech.lin2j.idea.plugin.model.event.CommandAddEvent;
 import tech.lin2j.idea.plugin.ssh.SshServer;
@@ -29,6 +31,7 @@ import tech.lin2j.idea.plugin.uitl.UiUtil;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import java.awt.Dimension;
+import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -82,7 +85,7 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
 
     private void initCommandList() {
         commandList = new JBList<>();
-        commandList.setCellRenderer(new CommandColoredListCellRenderer());
+        commandList.setCellRenderer(new CommandColoredListCellRenderer(sshId));
         commandList.addListSelectionListener(e -> {
             Command command = commandList.getSelectedValue();
             if (command != null) {
@@ -90,6 +93,14 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
                 selectedCommand = command;
             }
         });
+
+        new DoubleClickListener() {
+            @Override
+            protected boolean onDoubleClick(MouseEvent mouseEvent) {
+                runCommand();
+                return true;
+            }
+        }.installOn(commandList);
     }
 
     private JPanel createCommandToolbarPanel() {
@@ -122,7 +133,7 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
                     new AddCommandDialog(project, cmd).showAndGet();
                 })
                 .addExtraAction(AnActionButton.fromAction(new CopyCommandAction(() -> selectedCommand)))
-                .addExtraAction(new RunCommandAction(this))
+                .addExtraAction(new RunCommandAction())
                 .createPanel();
     }
 
@@ -152,29 +163,30 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
         commandList.setListData(data.toArray(new Command[0]));
     }
 
+    private void runCommand() {
+        Command cmd = commandList.getSelectedValue();
+        if (Objects.isNull(cmd) || cmd instanceof SeparatorCommand || cmd instanceof NoneCommand) {
+            return;
+        }
+        SshServer server = ConfigHelper.getSshServerById(sshId);
+
+        boolean needPassword = AuthType.needPassword(server.getAuthType());
+        server = UiUtil.requestPasswordIfNecessary(server);
+        if (needPassword && StringUtil.isEmpty(server.getPassword())) {
+            return;
+        }
+        CommandUtil.executeAndShowMessages(project, cmd, null, server, this);
+    }
+
     private class RunCommandAction extends AnActionButton {
 
-        private final DialogWrapper dialogWrapper;
-
-        public RunCommandAction(DialogWrapper dialogWrapper) {
+        public RunCommandAction() {
             super("Run", "Run command", AllIcons.Actions.RunAll);
-            this.dialogWrapper = dialogWrapper;
         }
 
         @Override
         public void actionPerformed(@NotNull AnActionEvent e) {
-            Command cmd = commandList.getSelectedValue();
-            if (Objects.isNull(cmd) || cmd instanceof SeparatorCommand) {
-                return;
-            }
-            SshServer server = ConfigHelper.getSshServerById(sshId);
-
-            boolean needPassword = AuthType.needPassword(server.getAuthType());
-            server = UiUtil.requestPasswordIfNecessary(server);
-            if (needPassword && StringUtil.isEmpty(server.getPassword())) {
-                return;
-            }
-            CommandUtil.executeAndShowMessages(project, cmd, null, server, dialogWrapper);
+            runCommand();
         }
     }
 }
