@@ -6,7 +6,6 @@ import com.intellij.ui.table.JBTable;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
-import javax.annotation.Nullable;
 import javax.swing.JOptionPane;
 import java.awt.Toolkit;
 
@@ -57,7 +56,7 @@ public class UiUtil {
      *                 displayed.
      * @return true if user confirms to do this action, or return false
      */
-    public static boolean deleteConfirm(@Nullable String specific) {
+    public static boolean deleteConfirm(String specific) {
         String defaultMessage = "Are you sure you want to remove the selected item?";
         if (StringUtil.isNotEmpty(specific)) {
             defaultMessage = defaultMessage + "\n" + specific;

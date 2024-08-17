@@ -37,7 +37,7 @@ public class AddCommandAction extends AnAction {
         Command tmp = new Command(sshId);
         boolean exitOk = new AddCommandDialog(project, tmp).showAndGet();
         if (exitOk && action != null) {
-            List<Command> list =ConfigHelper.getCommandsBySshId(sshId);
+            List<Command> list = ConfigHelper.getCommandsBySshId(sshId);
             Command newCmd = list.get(list.size() - 1);
             action.accept(newCmd);
         }

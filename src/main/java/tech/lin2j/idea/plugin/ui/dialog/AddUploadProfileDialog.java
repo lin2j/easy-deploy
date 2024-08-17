@@ -43,6 +43,7 @@ import java.awt.GridBagLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 
 /**
  * @author linjinjia
@@ -125,6 +126,7 @@ public class AddUploadProfileDialog extends DialogWrapper {
             newProfile.setLocation(trim(location));
             newProfile.setCommandId(getCommandId(command));
             newProfile.setSelected(true);
+            newProfile.setUid(UUID.randomUUID().toString());
 
             ConfigHelper.addUploadProfile(newProfile);
             ApplicationContext.getApplicationContext().publishEvent(new UploadProfileSelectedEvent(newProfile));
@@ -155,11 +157,11 @@ public class AddUploadProfileDialog extends DialogWrapper {
         data.addAll(ConfigHelper.getSharableCommands(sshId));
 
         commandBox = new ComboBox<>(new CollectionComboBoxModel<>(data));
-        commandBox.setRenderer(new CommandColoredListCellRenderer());
+        commandBox.setRenderer(new CommandColoredListCellRenderer(sshId));
 
         // Add command button
         DefaultActionGroup group = new DefaultActionGroup();
-        group.add(new AddCommandAction(project, sshId, newCmd -> commandBox.addItem(newCmd)));
+        group.add(new AddCommandAction(project, sshId, this::addNewCommand));
         ActionToolbar toolbar = ActionManager.getInstance()
                 .createActionToolbar("AddUploadProfile@AddCommand", group, true);
         toolbar.setTargetComponent(null);
@@ -246,6 +248,19 @@ public class AddUploadProfileDialog extends DialogWrapper {
            return null;
        }
        return cmd == null ? null : cmd.getId();
+    }
+
+    private void addNewCommand(Command cmd) {
+        CollectionComboBoxModel<Command> model = (CollectionComboBoxModel<Command>) commandBox.getModel();
+        List<Command> items = model.getItems();
+        int i = 0;
+        for (Command item : items) {
+            if (item instanceof SeparatorCommand) {
+                model.add(i, cmd);
+                break;
+            }
+            i++;
+        }
     }
 
     private FileChooserDescriptor allButNoMultipleChoose() {

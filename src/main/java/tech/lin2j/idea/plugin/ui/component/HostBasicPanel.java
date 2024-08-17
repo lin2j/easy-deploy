@@ -29,6 +29,7 @@ import java.awt.GridLayout;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.function.Consumer;
 
 public class HostBasicPanel {
@@ -182,6 +183,7 @@ public class HostBasicPanel {
         boolean miss = false;
         if (needId) {
             server.setId(ConfigHelper.maxSshServerId() + 1);
+            server.setUid(UUID.randomUUID().toString());
         }
         if (setText(ipInput, true, server::setIp)) {
             return true;

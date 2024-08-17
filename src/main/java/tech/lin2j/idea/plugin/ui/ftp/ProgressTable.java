@@ -53,7 +53,7 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
     private JBTable outputTable;
     private DefaultTableModel tableModel;
     private SFTPClient sftpClient;
-    private ConsoleView consoleView;
+    private final ConsoleView consoleView;
     private int rows = 0;
     private final FileTableContainer localContainer;
     private final FileTableContainer remoteContainer;
@@ -65,7 +65,6 @@ public class ProgressTable extends JPanel implements ApplicationListener<FileTra
                 task = TASK_QUEUE.take();
                 task.run();
             } catch (Exception e) {
-                log.error(e.getMessage(), e);
                 if (task != null) {
                     int row = task.cell.getRow();
                     tableModel.setValueAt(TransferState.FAILED, row, STATE_COL);

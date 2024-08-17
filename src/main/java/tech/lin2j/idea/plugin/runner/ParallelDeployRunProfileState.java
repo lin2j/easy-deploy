@@ -70,7 +70,7 @@ public class ParallelDeployRunProfileState extends CommandLineState {
             ExecutionResult er = new DefaultExecutionResult(h.getConsole(), h, new AnAction[0]);
             h.setExecutionResult(er);
         });
-        setFirstRunTabTitle(processHandler);
+//        setFirstRunTabTitle(processHandler);
 
         return new ListExecutionResult(processHandler, environment);
     }
@@ -79,6 +79,7 @@ public class ParallelDeployRunProfileState extends CommandLineState {
     @NotNull
     @Override
     protected ListProcessHandler startProcess() throws ExecutionException {
+        String configurationName = this.environment.getRunnerAndConfigurationSettings().getName();
         ListProcessHandler listProcessHandler = new ListProcessHandler(new ArrayList<>());
         Iterator<String> iterator = deployProfiles.listIterator();
         while (iterator.hasNext()) {
@@ -92,13 +93,14 @@ public class ParallelDeployRunProfileState extends CommandLineState {
             if (!deployProfile.isActive()) {
                 continue;
             }
-            UploadProcessHandler processHandler = startProcess(deployProfile);
+            UploadProcessHandler processHandler = startProcess(deployProfile, configurationName);
             listProcessHandler.getProcessHandlers().add(processHandler);
         }
         return listProcessHandler;
     }
 
-    private UploadProcessHandler startProcess(DeployProfile deployProfile) throws ExecutionException {
+    private UploadProcessHandler startProcess(DeployProfile deployProfile,
+                                              String configurationName) throws ExecutionException {
         // create console
         ConsoleView console = createConsole(executor);
         if (console == null) {
@@ -108,7 +110,7 @@ public class ParallelDeployRunProfileState extends CommandLineState {
         // create process handler
         SshUploadTask uploadTask = new SshUploadTask(console, deployProfile);
         UploadProcessHandler processHandler = new UploadProcessHandler();
-        processHandler.setName(uploadTask.getTaskName());
+        processHandler.setName(configurationName + " [" +uploadTask.getTaskName() + "]");
 
         // execute
         Task.Backgroundable task = new BackgroundUploadTask(uploadTask, console, processHandler);

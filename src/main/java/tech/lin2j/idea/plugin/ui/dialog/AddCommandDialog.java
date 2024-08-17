@@ -37,6 +37,7 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 /**
  * @author linjinjia
@@ -108,6 +109,7 @@ public class AddCommandDialog extends DialogWrapper {
         } else {
             cmdId = ConfigHelper.maxCommandId() + 1;
             Command cmd = new Command(cmdId, sshId, title, dir, cmdStr, shareCommand);
+            cmd.setUid(UUID.randomUUID().toString());
             ConfigHelper.addCommand(cmd);
         }
         ApplicationContext.getApplicationContext().publishEvent(new CommandAddEvent());

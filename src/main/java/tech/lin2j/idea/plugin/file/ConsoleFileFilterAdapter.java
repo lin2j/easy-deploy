@@ -5,7 +5,6 @@ import com.intellij.execution.ui.ConsoleViewContentType;
 import tech.lin2j.idea.plugin.model.event.CommandExecuteEvent;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
-import javax.annotation.concurrent.NotThreadSafe;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -14,7 +13,6 @@ import java.util.concurrent.atomic.AtomicInteger;
  * @author linjinjia
  * @date 2022/12/11 17:50
  */
-@NotThreadSafe
 public class ConsoleFileFilterAdapter implements FileFilter {
     private final AtomicInteger index = new AtomicInteger();
 

@@ -33,16 +33,17 @@ If this plugin proves helpful to you, please consider showing your support by gi
 # Features
 
 - [x] Add/Edit/Remove/Search server information
-- [x] Add/Edit/Remove commands
+- [x] Add/Edit/Remove/Share commands
 - [x] Upload files or directories with filtering support
 - [x] Deploy services
 - [x] Open terminal
 - [x] SSH password-free login (private key login)
-- [x] SSH Jump Host
-- [x] Run/Debug Configuration
-- [x] Internationalization support
+- [x] SSH jump host
+- [x] Run/Debug Configuration (parallel deployment)
+- [x] I18n support
 - [x] SFTP transfer panel
-- [x] Plugin Settings
+- [x] Plugin settings
+- [x] Export & Import & Clean plugin configuration
  
 # Contact me 🐾
 
