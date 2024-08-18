@@ -147,27 +147,27 @@ public class SshjLoggerFactory implements LoggerFactory {
 
         @Override
         public void error(String msg) {
-            logger.error(msg);
+            logger.warn(msg);
         }
 
         @Override
         public void error(String format, Object arg) {
-            logger.error(MessageFormatter.format(format, arg).getMessage());
+            logger.warn(MessageFormatter.format(format, arg).getMessage());
         }
 
         @Override
         public void error(String format, Object arg1, Object arg2) {
-            logger.error(MessageFormatter.format(format, new Object[]{arg1, arg2}).getMessage());
+            logger.warn(MessageFormatter.format(format, new Object[]{arg1, arg2}).getMessage());
         }
 
         @Override
         public void error(String format, Object... arguments) {
-            logger.error(MessageFormatter.arrayFormat(format, arguments).getMessage());
+            logger.warn(MessageFormatter.arrayFormat(format, arguments).getMessage());
         }
 
         @Override
         public void error(String msg, Throwable t) {
-            logger.error(msg, t);
+            logger.warn(msg, t);
         }
     }
 }

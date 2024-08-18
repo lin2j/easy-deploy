@@ -10,4 +10,9 @@ public interface Constant {
      * default top inset of form item
      */
     int DEFAULT_TOP_INSET = 20;
+
+    /**
+     * The prefix of run tab title
+     */
+    String RUN_TAB_PREFIX = "ED@";
 }

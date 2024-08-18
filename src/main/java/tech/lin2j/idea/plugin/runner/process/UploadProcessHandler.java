@@ -4,6 +4,7 @@ import com.intellij.execution.ExecutionResult;
 import com.intellij.execution.process.ProcessHandler;
 import com.intellij.execution.ui.ConsoleView;
 import org.jetbrains.annotations.Nullable;
+import tech.lin2j.idea.plugin.enums.Constant;
 
 import java.io.OutputStream;
 
@@ -75,6 +76,6 @@ public class UploadProcessHandler extends ProcessHandler {
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.name = Constant.RUN_TAB_PREFIX + name;
     }
 }

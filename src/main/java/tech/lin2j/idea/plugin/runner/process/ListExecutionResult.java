@@ -17,6 +17,7 @@ import com.intellij.ui.content.ContentFactory;
 import com.intellij.ui.content.ContentManager;
 import com.intellij.util.ReflectionUtil;
 import org.jetbrains.annotations.NotNull;
+import tech.lin2j.idea.plugin.enums.Constant;
 
 import javax.swing.*;
 import java.lang.reflect.Field;
@@ -64,6 +65,8 @@ public class ListExecutionResult implements ExecutionResult {
         ToolWindow runWindow = windowManager.getToolWindow("Run");
         ContentManager contentManager = runWindow.getContentManager();
 
+        removePluginRunTab(contentManager);
+
         Field displayField = ReflectionUtil.getDeclaredField(RunContentDescriptor.class, "myDisplayName");
         int size = processHandler.getProcessHandlers().size();
         for (int i = 1; i < size; i++) {
@@ -87,6 +90,17 @@ public class ListExecutionResult implements ExecutionResult {
                 contentManager.addContent(newContent);
             }
         }
+    }
+
+    private void removePluginRunTab(ContentManager contentManager) {
+        Content[] contents = contentManager.getContents();
+        for (Content content : contents) {
+            boolean remove = content.getDisplayName().startsWith(Constant.RUN_TAB_PREFIX);
+            if (remove) {
+                contentManager.removeContent(content, true);
+            }
+        }
+
     }
 
     private Content createNewContent(RunContentDescriptor descriptor) {

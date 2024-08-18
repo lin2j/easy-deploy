@@ -70,7 +70,7 @@ public class ParallelDeployRunProfileState extends CommandLineState {
             ExecutionResult er = new DefaultExecutionResult(h.getConsole(), h, new AnAction[0]);
             h.setExecutionResult(er);
         });
-//        setFirstRunTabTitle(processHandler);
+        setFirstRunTabTitle(processHandler);
 
         return new ListExecutionResult(processHandler, environment);
     }
