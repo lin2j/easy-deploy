@@ -2,28 +2,78 @@
     <id>tech.lin2j.simple-deployment</id>
     <name>Easy Deploy</name>
     <vendor email="linjinjia047@163.com" url="https://www.lin2j.tech">Lin2j</vendor>
-    <idea-version since-build="193.5662"/>
+    <idea-version since-build="193.5662" until-build="233.15325.26"/>
 
     <description><![CDATA[
-    Easy Deploy is a plugin for IntelliJ platform that
-    helps developers deploy applications by clicking the button.
-    <br>
-    <br>
-    <a href="https://github.com/lin2j/easy-deploy">Github Page</a><br>
-    please give a star on this repo if it helped you.
-    <br>
-    <br>
-    Core Features:<br>
+    <p>Convenient Intellij Platform Plugin for Deploying and Upgrading Services during Development</p>
+
+    <p></p>
+    <p>Easy Deploy is a plugin I developed, inspired by the Alibaba Cloud Toolkit, to facilitate my service deployment during
+    the development process. Compared to the Alibaba Cloud Toolkit, my plugin has significantly fewer features, as many of
+    the ACT functionalities are unnecessary for me and make it somewhat bloated.</p>
+
+    <p></p>
+    <p>Therefore, I focused only on developing the functionalities I care about: server management and the deployment process.
+    I named this plugin "Easy Deploy" in the hope that it will help developers simplify the deployment steps in their
+    development process. I will continually optimize it and enhance its features.</p>
+
+    <h3>Features</h3>
+
     <ul>
-        <li>Manage your servers</li>
-        <li>Upload the file you want to deploy to the remote server</li>
-        <li>Storage your command and execute it</li>
-        <li>SFTP panel</li>
-        <li>Plugin Settings</li>
+        <li>Add/Edit/Remove/Search server information</li>
+        <li>Add/Edit/Remove/Share commands</li>
+        <li>Upload files or directories with filtering support</li>
+        <li>Deploy services</li>
+        <li>Open terminal</li>
+        <li>SSH password-free login (private key login)</li>
+        <li>SSH jump host</li>
+        <li>Run/Debug Configuration (parallel deployment)</li>
+        <li>I18n support</li>
+        <li>SFTP transfer panel</li>
+        <li>Plugin settings</li>
+        <li>Export & Import & Clean plugin configuration</li>
+    </ul>
+
+    <p>issue: <a href="https://github.com/lin2j/easy-deploy">easy-deploy</a></p>
+
+    <p></p>
+    <p>方便开发过程中部署升级服务的 Intellij 平台插件</p>
+
+    <p></p>
+    <p>Easy Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己在开发过程中部署服务的插件。相比较 Alibaba Cloud Toolkit，我开发的插件功能会少很多很多，因为 ACT 很多的功能我都用不上，对我来说它有点臃肿。</p>
+
+    <p></p>
+    <p>因此，我只取自己关注的那部分功能进行开发，这部分就是对服务器的管理以及发布的过程。我给这个插件起这个名是希望他能够帮助开发者简化开发过程的部署步骤，我会不断地优化它，完善它的功能。</p>
+
+    <h3>功能</h3>
     <ul>
+        <li>添加/编辑/删除/搜索服务器信息</li>
+        <li>添加/编辑/删除/分享命令</li>
+        <li>上传文件或者目录，并支持过滤</li>
+        <li>文件（目录）上传配置</li>
+        <li>终端连接</li>
+        <li>SSH 免密登录（私钥登录）</li>
+        <li>SSH 代理跳板机</li>
+        <li>Run/Debug Configuration (并行部署)</li>
+        <li>国际化</li>
+        <li>SFTP 传输面板</li>
+        <li>插件设置</li>
+        <li>导出、导入、清除插件配置</li>
+    </ul>
+
+    <p>反馈: <a href="https://github.com/lin2j/easy-deploy">easy-deploy</a></p>
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.3.7</h2>
+    <ul>
+        <li>Commands can be shared</li>
+        <li>Add parallel deployment options to Run/Debug Configuration</li>
+        <li>Fix known issues [#10, #11]</li>
+        <li>Optimize SFTP panel and user interface</li>
+        <li>Modify the open source license to Apache 2.0</li>
+    </ul>
+
     <h2>release 1.3.6</h2>
     <ul>
         <li>I18n Support: Chinese</li>
