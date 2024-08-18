@@ -3,9 +3,9 @@ package tech.lin2j.idea.plugin.action;
 import com.intellij.openapi.project.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.model.event.TableRefreshEvent;
-import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ui.dialog.HostSettingsDialog;
 import tech.lin2j.idea.plugin.ui.editor.SFTPFileSystem;
@@ -48,7 +48,6 @@ public class HostMoreOpsAction implements ActionListener {
             @Override
             public void actionPerformed(ActionEvent e) {
                 SshServer server = ConfigHelper.getSshServerById(sshId);
-//                new HostUi(project, server).showAndGet();
                 new HostSettingsDialog(project, server).show();
             }
         }));

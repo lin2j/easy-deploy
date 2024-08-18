@@ -2,18 +2,14 @@ package tech.lin2j.idea.plugin.file;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.fileTypes.FileType;
-import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.util.PathUtil;
 import org.apache.commons.lang.time.DateFormatUtils;
 import tech.lin2j.idea.plugin.uitl.FileUtil;
 
 import javax.swing.Icon;
-import java.awt.Panel;
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.util.Date;

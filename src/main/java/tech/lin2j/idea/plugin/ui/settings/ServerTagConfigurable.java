@@ -15,9 +15,9 @@ import icons.MyIcons;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.model.event.TableRefreshEvent;
-import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.DefaultListCellRenderer;

@@ -1,6 +1,5 @@
 package tech.lin2j.idea.plugin.action;
 
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import icons.MyIcons;
 import org.jetbrains.annotations.NotNull;
@@ -11,7 +10,7 @@ import tech.lin2j.idea.plugin.uitl.WebBrowseUtil;
  * @author linjinjia
  * @date 2024/4/25 22:43
  */
-public class HomePageAction extends AnAction {
+public class HomePageAction extends NewUpdateThreadAction {
     private static final String text = MessagesBundle.getText("action.dashboard.home-page.text");
 
     public HomePageAction() {

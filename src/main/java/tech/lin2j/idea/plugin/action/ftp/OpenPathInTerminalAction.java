@@ -1,9 +1,9 @@
 package tech.lin2j.idea.plugin.action.ftp;
 
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import org.jetbrains.annotations.NotNull;
+import tech.lin2j.idea.plugin.action.NewUpdateThreadAction;
 import tech.lin2j.idea.plugin.action.OpenTerminalAction;
 import tech.lin2j.idea.plugin.file.TableFile;
 import tech.lin2j.idea.plugin.ui.ftp.container.RemoteFileTableContainer;
@@ -15,7 +15,7 @@ import java.util.List;
  * @author linjinjia
  * @date 2024/7/10 22:20
  */
-public class OpenPathInTerminalAction extends AnAction {
+public class OpenPathInTerminalAction extends NewUpdateThreadAction {
 
     private static final String text = MessagesBundle.getText("action.ftp.popup.open-in-ftp.text");
     private static final String desc = MessagesBundle.getText("action.ftp.popup.open-in-ftp.desc");

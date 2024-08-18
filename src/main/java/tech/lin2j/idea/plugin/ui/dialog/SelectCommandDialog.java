@@ -2,6 +2,7 @@ package tech.lin2j.idea.plugin.ui.dialog;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.actionSystem.ActionToolbarPosition;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
@@ -187,6 +188,11 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
         @Override
         public void actionPerformed(@NotNull AnActionEvent e) {
             runCommand();
+        }
+
+        @Override
+        public @NotNull ActionUpdateThread getActionUpdateThread() {
+            return ActionUpdateThread.BGT;
         }
     }
 }

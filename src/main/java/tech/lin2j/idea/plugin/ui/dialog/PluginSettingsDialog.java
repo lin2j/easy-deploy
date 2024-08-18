@@ -9,7 +9,6 @@ import tech.lin2j.idea.plugin.ui.settings.GeneralConfigurable;
 import tech.lin2j.idea.plugin.ui.settings.SFTPConfigurable;
 import tech.lin2j.idea.plugin.ui.settings.ServerTagConfigurable;
 
-import javax.swing.SwingUtilities;
 import java.util.Collections;
 
 /**

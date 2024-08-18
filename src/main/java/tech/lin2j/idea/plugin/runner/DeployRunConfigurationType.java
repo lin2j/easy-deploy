@@ -1,7 +1,6 @@
 package tech.lin2j.idea.plugin.runner;
 
 import com.intellij.execution.configurations.ConfigurationTypeBase;
-import com.intellij.icons.AllIcons;
 import com.intellij.openapi.util.NotNullLazyValue;
 import icons.MyIcons;
 

@@ -2,7 +2,6 @@ package tech.lin2j.idea.plugin.ui;
 
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.project.Project;
@@ -20,6 +19,7 @@ import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.action.ExportAndImportAction;
 import tech.lin2j.idea.plugin.action.GithubAction;
 import tech.lin2j.idea.plugin.action.HomePageAction;
+import tech.lin2j.idea.plugin.action.NewUpdateThreadAction;
 import tech.lin2j.idea.plugin.action.ServerSearchKeyAdapter;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
@@ -182,7 +182,7 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
         actionColumn.setMaxWidth(550);
     }
 
-    private class RefreshAction extends AnAction {
+    private class RefreshAction extends NewUpdateThreadAction {
 
         public RefreshAction(String text) {
             super(text, "Refresh host table", MyIcons.Actions.Refresh);
@@ -195,7 +195,7 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
         }
     }
 
-    private class AddHostAction extends AnAction {
+    private class AddHostAction extends NewUpdateThreadAction {
         public AddHostAction(String text) {
             super(text, "Add new host profile", MyIcons.Actions.AddHost);
         }
@@ -206,7 +206,7 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
         }
     }
 
-    private class SettingsAction extends AnAction {
+    private class SettingsAction extends NewUpdateThreadAction {
         public SettingsAction(String text) {
             super(text, "Update plugin settings", MyIcons.Actions.Settings);
         }

@@ -10,13 +10,13 @@ import com.intellij.util.ui.FormBuilder;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JTextField;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.util.Objects;
 
 import static com.intellij.ui.SimpleTextAttributes.STYLE_BOLD;
-import static com.intellij.ui.SimpleTextAttributes.STYLE_PLAIN;
 
 public class InputConfirmDialog extends DialogWrapper {
 

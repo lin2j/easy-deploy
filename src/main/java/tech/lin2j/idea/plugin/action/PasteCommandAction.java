@@ -2,7 +2,6 @@ package tech.lin2j.idea.plugin.action;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.openapi.ui.Messages;
@@ -19,7 +18,7 @@ import java.util.function.Consumer;
  * @author linjinjia
  * @date 2024/6/9 16:12
  */
-public class PasteCommandAction extends AnAction {
+public class PasteCommandAction extends NewUpdateThreadAction {
 
     private final Consumer<Command> consumer;
 

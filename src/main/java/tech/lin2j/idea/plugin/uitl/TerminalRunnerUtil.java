@@ -7,8 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.terminal.cloud.CloudTerminalProcess;
 import org.jetbrains.plugins.terminal.cloud.CloudTerminalRunner;
-import tech.lin2j.idea.plugin.ssh.CustomTtyConnector;
 import tech.lin2j.idea.plugin.factory.CustomTtyConnectorFactory;
+import tech.lin2j.idea.plugin.ssh.CustomTtyConnector;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.terminal.ClosableCloudTerminalProcess;
 

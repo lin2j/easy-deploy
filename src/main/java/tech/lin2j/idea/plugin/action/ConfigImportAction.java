@@ -1,7 +1,6 @@
 package tech.lin2j.idea.plugin.action;
 
 import com.google.gson.Gson;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.fileChooser.FileChooser;
@@ -27,7 +26,7 @@ import javax.swing.SwingUtilities;
  * @author linjinjia
  * @date 2024/7/17 21:28
  */
-public class ConfigImportAction extends AnAction {
+public class ConfigImportAction extends NewUpdateThreadAction {
     private static final Logger log = Logger.getInstance(ConfigImportAction.class);
 
     private static final String text = MessagesBundle.getText("action.dashboard.export-import.import.text");

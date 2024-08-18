@@ -1,7 +1,6 @@
 package tech.lin2j.idea.plugin.uitl;
 
 import com.intellij.ide.highlighter.ArchiveFileType;
-import com.intellij.openapi.fileChooser.FileChooserDescriptor;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.FileTypeRegistry;
 import com.intellij.openapi.fileTypes.UnknownFileType;

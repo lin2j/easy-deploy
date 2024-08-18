@@ -19,7 +19,7 @@ import com.intellij.util.ReflectionUtil;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.enums.Constant;
 
-import javax.swing.*;
+import javax.swing.Icon;
 import java.lang.reflect.Field;
 
 /**

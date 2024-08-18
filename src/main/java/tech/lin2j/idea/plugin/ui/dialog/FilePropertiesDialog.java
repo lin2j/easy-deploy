@@ -8,12 +8,14 @@ import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.UIUtil;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-import tech.lin2j.idea.plugin.file.LocalTableFile;
 import tech.lin2j.idea.plugin.file.RemoteTableFile;
 import tech.lin2j.idea.plugin.file.TableFile;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.Icon;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import java.awt.Font;
+import java.awt.GridLayout;
 
 /**
  *

@@ -4,14 +4,14 @@ import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.util.PathUtil;
 import net.schmizz.sshj.xfer.TransferListener;
-import tech.lin2j.idea.plugin.model.Command;
-import tech.lin2j.idea.plugin.model.ConfigHelper;
-import tech.lin2j.idea.plugin.model.DeployProfile;
-import tech.lin2j.idea.plugin.model.UploadProfile;
 import tech.lin2j.idea.plugin.factory.SshServiceFactory;
 import tech.lin2j.idea.plugin.file.ConsoleTransferListener;
 import tech.lin2j.idea.plugin.file.ExtensionFilter;
 import tech.lin2j.idea.plugin.file.FileFilter;
+import tech.lin2j.idea.plugin.model.Command;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
+import tech.lin2j.idea.plugin.model.DeployProfile;
+import tech.lin2j.idea.plugin.model.UploadProfile;
 import tech.lin2j.idea.plugin.service.ISshService;
 
 import java.io.File;

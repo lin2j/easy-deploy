@@ -13,9 +13,13 @@ import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.file.RemoteTableFile;
 import tech.lin2j.idea.plugin.uitl.PosixUtil;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 import javax.swing.border.TitledBorder;
-import java.awt.*;
+import java.awt.Color;
+import java.awt.GridLayout;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Objects;

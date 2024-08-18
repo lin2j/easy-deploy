@@ -1,8 +1,5 @@
 plugins {
-    id 'org.jetbrains.intellij' version '0.6.3'
-//    id 'org.jetbrains.intellij' version '1.5.2'
-// 2021.3 use the version below
-//    id 'org.jetbrains.intellij' version '1.6.0'
+    id 'org.jetbrains.intellij' version '1.17.4'
     id 'java'
 }
 
@@ -15,20 +12,12 @@ repositories {
 }
 
 dependencies {
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.2'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.2'
-    implementation 'com.jcraft:jsch:0.1.54'
     implementation 'com.hierynomus:sshj:0.38.0'
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2019.3.1'
-//    version = '2023.3.2'
-//    version = '2021.3'
-//    version = '2022.1'
-//    version = '2023.3.6'
-//    version = '2023.3.5'
+    version = '2024.1'
 //    type = 'IU'
     plugins = [
             "org.jetbrains.plugins.terminal",
@@ -36,9 +25,9 @@ intellij {
     updateSinceUntilBuild = false
 }
 
-tasks.withType(JavaCompile) {
-    sourceCompatibility = "11"
-    targetCompatibility = "11"
+tasks.withType(JavaCompile).configureEach {
+    sourceCompatibility = "17"
+    targetCompatibility = "17"
     options.encoding = "UTF-8"
 }
 

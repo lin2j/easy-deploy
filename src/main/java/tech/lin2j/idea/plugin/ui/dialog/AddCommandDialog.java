@@ -23,10 +23,10 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.action.CopyCommandAction;
 import tech.lin2j.idea.plugin.action.PasteCommandAction;
+import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.model.Command;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.model.event.CommandAddEvent;
-import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.Icon;

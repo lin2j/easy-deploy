@@ -1,6 +1,5 @@
 package tech.lin2j.idea.plugin.action;
 
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import icons.MyIcons;
@@ -17,7 +16,7 @@ import java.util.function.Consumer;
  * @author linjinjia
  * @date 2024/7/7 16:07
  */
-public class AddCommandAction extends AnAction {
+public class AddCommandAction extends NewUpdateThreadAction {
 
     private static final String text = MessagesBundle.getText("action.common.command.add.text");
 

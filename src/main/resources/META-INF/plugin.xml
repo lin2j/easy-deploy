@@ -2,7 +2,7 @@
     <id>tech.lin2j.simple-deployment</id>
     <name>Easy Deploy</name>
     <vendor email="linjinjia047@163.com" url="https://www.lin2j.tech">Lin2j</vendor>
-    <idea-version since-build="193.5662" until-build="233.15325.26"/>
+    <idea-version since-build="241.14494.240"/>
 
     <description><![CDATA[
     <p>Convenient Intellij Platform Plugin for Deploying and Upgrading Services during Development</p>

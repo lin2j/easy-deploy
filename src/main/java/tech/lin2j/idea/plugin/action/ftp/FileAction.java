@@ -1,9 +1,9 @@
 package tech.lin2j.idea.plugin.action.ftp;
 
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import org.apache.commons.collections.CollectionUtils;
 import org.jetbrains.annotations.NotNull;
+import tech.lin2j.idea.plugin.action.NewUpdateThreadAction;
 import tech.lin2j.idea.plugin.file.TableFile;
 import tech.lin2j.idea.plugin.ui.ftp.container.FileTableContainer;
 
@@ -15,7 +15,7 @@ import java.util.List;
  * @author linjinjia
  * @date 2024/5/24 21:38
  */
-public abstract class FileAction extends AnAction {
+public abstract class FileAction extends NewUpdateThreadAction {
 
     public FileTableContainer container;
 

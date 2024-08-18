@@ -1,7 +1,6 @@
 package tech.lin2j.idea.plugin.action;
 
 import com.google.gson.Gson;
-import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.ide.CopyPasteManager;
 import com.intellij.util.ui.TextTransferable;
@@ -15,7 +14,7 @@ import java.util.function.Supplier;
  * @author linjinjia
  * @date 2024/6/9 16:09
  */
-public class CopyUploadProfileAction extends AnAction {
+public class CopyUploadProfileAction extends NewUpdateThreadAction {
 
     private final Supplier<UploadProfile> provider;
 

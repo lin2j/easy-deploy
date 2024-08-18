@@ -12,12 +12,15 @@ import com.intellij.util.ui.JBUI;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tech.lin2j.idea.plugin.enums.SFTPAction;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.model.PluginSetting;
-import tech.lin2j.idea.plugin.enums.SFTPAction;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
-import javax.swing.*;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import javax.swing.JSpinner;
+import javax.swing.SpinnerNumberModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;

@@ -3,9 +3,9 @@ package tech.lin2j.idea.plugin.service.impl;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import net.schmizz.sshj.xfer.TransferListener;
+import tech.lin2j.idea.plugin.file.EventFileFilterAdapter;
 import tech.lin2j.idea.plugin.file.ExtensionFilter;
 import tech.lin2j.idea.plugin.file.FileFilter;
-import tech.lin2j.idea.plugin.file.EventFileFilterAdapter;
 import tech.lin2j.idea.plugin.service.ISshService;
 import tech.lin2j.idea.plugin.ssh.SshConnectionManager;
 import tech.lin2j.idea.plugin.ssh.SshServer;
@@ -13,7 +13,6 @@ import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.ssh.sshj.SshjConnection;
 
 import java.io.File;
-import java.io.IOException;
 
 /**
  * @author linjinjia
