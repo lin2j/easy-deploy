@@ -2,6 +2,7 @@ package tech.lin2j.idea.plugin.ui.dialog;
 
 import com.intellij.openapi.actionSystem.ActionManager;
 import com.intellij.openapi.actionSystem.ActionToolbar;
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.DefaultActionGroup;
 import com.intellij.openapi.fileTypes.FileTypes;
@@ -130,6 +131,11 @@ public class AddCommandDialog extends DialogWrapper {
                 @Override
                 public void setSelected(AnActionEvent e, boolean b) {
                     shareCommand = b;
+                }
+
+                @Override
+                public @NotNull ActionUpdateThread getActionUpdateThread() {
+                    return ActionUpdateThread.BGT;
                 }
             };
             shareBtnInitialized = true;

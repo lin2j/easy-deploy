@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.action.ftp;
 
+import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.actionSystem.ToggleAction;
 import icons.MyIcons;
@@ -36,5 +37,10 @@ public class ShowHiddenFileAndDirAction extends ToggleAction {
     @Override
     public void update(@NotNull AnActionEvent e) {
         super.update(e);
+    }
+
+    @Override
+    public @NotNull ActionUpdateThread getActionUpdateThread() {
+        return ActionUpdateThread.BGT;
     }
 }

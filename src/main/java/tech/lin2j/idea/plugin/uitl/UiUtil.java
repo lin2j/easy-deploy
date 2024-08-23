@@ -1,5 +1,8 @@
 package tech.lin2j.idea.plugin.uitl;
 
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.project.ProjectManager;
+import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.ui.table.JBTable;
@@ -61,14 +64,8 @@ public class UiUtil {
         if (StringUtil.isNotEmpty(specific)) {
             defaultMessage = defaultMessage + "\n" + specific;
         }
-        Object[] options = {"yes", "no"};
-        int foo = JOptionPane.showOptionDialog(null,
-                defaultMessage,
-                "Warning",
-                JOptionPane.DEFAULT_OPTION,
-                JOptionPane.WARNING_MESSAGE,
-                null, options, options[0]);
-        return foo == 0;
+        MessageDialogBuilder.YesNo warning = MessageDialogBuilder.yesNo("Warning", defaultMessage);
+        return warning.ask((Project) null);
     }
 
     public static int screenWidth() {

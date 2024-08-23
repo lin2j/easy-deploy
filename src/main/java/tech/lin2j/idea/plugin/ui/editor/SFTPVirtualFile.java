@@ -4,6 +4,7 @@ import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.openapi.vfs.VirtualFileSystem;
+import com.intellij.testFramework.LightVirtualFile;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -12,6 +13,7 @@ import tech.lin2j.idea.plugin.ui.ftp.FTPConsole;
 import tech.lin2j.idea.plugin.ui.ftp.container.RemoteFileTableContainer;
 
 import javax.swing.JPanel;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -20,7 +22,7 @@ import java.io.OutputStream;
  * @author linjinjia
  * @date 2024/3/31 02:29
  */
-public class SFTPVirtualFile extends VirtualFile {
+public class SFTPVirtualFile extends LightVirtualFile {
     private final String name;
     private final Project project;
     private final JPanel consolePanel;
@@ -99,11 +101,6 @@ public class SFTPVirtualFile extends VirtualFile {
     }
 
     @Override
-    public long getTimeStamp() {
-        return 0;
-    }
-
-    @Override
     public long getLength() {
         return 0;
     }
@@ -115,7 +112,7 @@ public class SFTPVirtualFile extends VirtualFile {
 
     @Override
     public @NotNull InputStream getInputStream() throws IOException {
-        return null;
+        return new ByteArrayInputStream(new byte[0]);
     }
 
     @Override

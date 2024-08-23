@@ -4,7 +4,7 @@ plugins {
 }
 
 group 'tech.lin2j'
-version '1.3.7'
+version '1.3.7-241'
 
 
 repositories {
@@ -17,7 +17,7 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2024.1'
+    version = '2024.2'
 //    type = 'IU'
     plugins = [
             "org.jetbrains.plugins.terminal",
@@ -29,6 +29,7 @@ tasks.withType(JavaCompile).configureEach {
     sourceCompatibility = "17"
     targetCompatibility = "17"
     options.encoding = "UTF-8"
+    options.compilerArgs << "-Xlint:unchecked"
 }
 
 test {
