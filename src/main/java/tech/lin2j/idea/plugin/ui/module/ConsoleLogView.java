@@ -12,10 +12,16 @@ import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.SimpleToolWindowPanel;
 import com.intellij.openapi.util.Disposer;
 import com.intellij.ui.JBSplitter;
+import tech.lin2j.idea.plugin.action.StopConsoleTaskAction;
 import tech.lin2j.idea.plugin.ssh.CommandLog;
 
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.BorderFactory;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.FutureTask;
 
 /**
  *
@@ -29,6 +35,7 @@ public class ConsoleLogView extends SimpleToolWindowPanel implements CommandLog,
     private final Project project;
     private ConsoleViewImpl console;
     private JPanel root;
+    private final List<FutureTask<?>> CONSOLE_TASKS = new ArrayList<>();
 
     public ConsoleLogView(Project project) {
         super(false, true);
@@ -62,6 +69,7 @@ public class ConsoleLogView extends SimpleToolWindowPanel implements CommandLog,
      */
     private void initConsoleView() {
         this.console = new ConsoleViewImpl(project, false);
+        console.addCustomConsoleAction(new StopConsoleTaskAction(this));
         //
         final RunContentDescriptor descriptor = new RunContentDescriptor(console, null, root, TITLE);
         Disposer.register(this, descriptor);
@@ -97,5 +105,30 @@ public class ConsoleLogView extends SimpleToolWindowPanel implements CommandLog,
     @Override
     public void print(String msg, ConsoleViewContentType contentType) {
         console.print(msg, contentType);
+    }
+
+    @Override
+    public void addTask(FutureTask<?> task) {
+        CONSOLE_TASKS.add(task);
+    }
+
+    @Override
+    public void deleteTask(FutureTask<?> task) {
+        CONSOLE_TASKS.remove(task);
+    }
+
+    @Override
+    public void stopAllTasks() {
+        for (FutureTask<?> task : CONSOLE_TASKS) {
+            if (!task.isDone() && !task.isCancelled()) {
+                task.cancel(true);
+            }
+        }
+        CONSOLE_TASKS.clear();
+    }
+
+    @Override
+    public int taskNum() {
+        return CONSOLE_TASKS.size();
     }
 }

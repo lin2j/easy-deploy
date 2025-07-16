@@ -23,9 +23,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.Deque;
+import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * @author linjinjia
@@ -169,8 +169,9 @@ public class SshjConnection implements SshConnection {
     }
 
     @Override
-    public FutureTask<Void> executeAsync(CommandLog commandLog, String cmd,
-                                         AtomicBoolean cancel, boolean closeAfterFinished) {
+    public FutureTask<Void> executeAsync(CommandLog commandLog,
+                                         String cmd,
+                                         boolean closeAfterFinished) {
         FutureTask<Void> task = new FutureTask<>(() -> {
             Session session = this.sshClient.startSession();
             try {
@@ -178,18 +179,15 @@ public class SshjConnection implements SshConnection {
                 InputStream std = command.getInputStream();
                 InputStream err = command.getErrorStream();
                 for (; ; ) {
-                    if (cancel.get()) {
-                        break;
-                    }
                     BufferedReader stdReader = new BufferedReader(new InputStreamReader(std));
                     BufferedReader errReader = new BufferedReader(new InputStreamReader(err));
 
                     String msg;
-                    while ((msg = errReader.readLine()) != null) {
+                    while ((msg = stdReader.readLine()) != null) {
                         commandLog.println(msg);
                     }
 
-                    while ((msg = stdReader.readLine()) != null) {
+                    while ((msg = errReader.readLine()) != null) {
                         commandLog.println(msg);
                     }
 

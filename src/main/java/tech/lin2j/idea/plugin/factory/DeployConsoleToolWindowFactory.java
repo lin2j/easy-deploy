@@ -31,7 +31,7 @@ public class DeployConsoleToolWindowFactory implements ToolWindowFactory {
         Content messages = contentFactory.createContent(commandExecuteView, "Console", false);
         toolWindow.getContentManager().addContent(messages);
 
-        // make sure every time you click on the tool window is the console
+        // make sure every time you click on the tool window is the dashboard tab
         project.getMessageBus().connect().subscribe(ToolWindowManagerListener.TOPIC, new ToolWindowManagerListener() {
             @Override
             public void stateChanged() {

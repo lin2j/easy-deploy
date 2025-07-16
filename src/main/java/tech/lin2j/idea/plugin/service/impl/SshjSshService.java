@@ -10,7 +10,7 @@ import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.ssh.sshj.SshjConnection;
 
 import java.io.File;
-import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.FutureTask;
 
 /**
  * @author linjinjia
@@ -54,7 +54,8 @@ public class SshjSshService implements ISshService {
         SshjConnection sshjConnection = null;
         try {
             sshjConnection = SshConnectionManager.makeSshjConnection(sshServer);
-            sshjConnection.executeAsync(commandLog, command, new AtomicBoolean(false), true);
+            FutureTask<Void> task = sshjConnection.executeAsync(commandLog, command, true);
+            commandLog.addTask(task);
         } catch (Exception e) {
             commandLog.error(e.getMessage());
         }
@@ -62,7 +63,8 @@ public class SshjSshService implements ISshService {
 
     @Override
     public void executeAsync(CommandLog commandLog, SshjConnection connection, String command) {
-        connection.executeAsync(commandLog, command, new AtomicBoolean(false), true);
+        FutureTask<Void> task = connection.executeAsync(commandLog, command, true);
+        commandLog.addTask(task);
     }
 
     @Override

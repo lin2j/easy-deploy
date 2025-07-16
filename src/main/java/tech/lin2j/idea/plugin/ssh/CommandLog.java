@@ -4,6 +4,8 @@ import com.intellij.execution.ui.ConsoleView;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import com.intellij.openapi.util.Key;
 
+import java.util.concurrent.FutureTask;
+
 /**
  *
  * @author linjinjia
@@ -15,6 +17,14 @@ public interface CommandLog {
     ConsoleView getConsole();
 
     void print(String msg, ConsoleViewContentType contentType);
+
+    void addTask(FutureTask<?> task);
+
+    void deleteTask(FutureTask<?> task);
+
+    void stopAllTasks();
+
+    int taskNum();
 
     default void print(String msg) {
         print(msg, ConsoleViewContentType.NORMAL_OUTPUT);
