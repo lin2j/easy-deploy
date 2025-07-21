@@ -36,6 +36,8 @@ If this plugin proves helpful to you, please consider showing your support by gi
 - [x] Add/Edit/Remove/Share commands
 - [x] Upload files or directories with filtering support
 - [x] Deploy services
+- [x] Pre/Post-upload command execution support
+- [x] Command execution directory override (use upload path)
 - [x] Open terminal
 - [x] SSH password-free login (private key login)
 - [x] SSH jump host

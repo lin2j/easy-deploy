@@ -55,8 +55,10 @@ public class UploadProfileDialog extends DialogWrapper implements ApplicationLis
     private JBLabel fileLabel;
     private JBLabel excludeLabel;
     private JBLabel locationLabel;
-    private JPanel commandLabelContainer;
-    private SimpleColoredComponent commandLabel;
+    private JPanel preCommandLabelContainer;
+    private SimpleColoredComponent preCommandLabel;
+    private JPanel postCommandLabelContainer;
+    private SimpleColoredComponent postCommandLabel;
 
     private final Project project;
     private final SshServer server;
@@ -69,7 +71,7 @@ public class UploadProfileDialog extends DialogWrapper implements ApplicationLis
         initLabel();
         initActionButton();
         initProfileContainer();
-        initCommandLabelContainer();
+        initCommandLabelContainers();
         reloadProfileBox();
 
         root = FormBuilder.createFormBuilder()
@@ -78,7 +80,8 @@ public class UploadProfileDialog extends DialogWrapper implements ApplicationLis
                 .addLabeledComponent(MessagesBundle.getText("dialog.upload.file"), fileLabel, 20)
                 .addLabeledComponent(MessagesBundle.getText("dialog.upload.exclude"), excludeLabel, 20)
                 .addLabeledComponent(MessagesBundle.getText("dialog.upload.location"), locationLabel, 20)
-                .addLabeledComponent(MessagesBundle.getText("dialog.upload.command"), commandLabelContainer, 20)
+                .addLabeledComponent(MessagesBundle.getText("dialog.upload.pre-command"), preCommandLabelContainer, 20)
+                .addLabeledComponent(MessagesBundle.getText("dialog.upload.post-command"), postCommandLabelContainer, 20)
                 .getPanel();
         root.setPreferredSize(new Dimension(UiUtil.screenWidth() / 2, 0));
 
@@ -125,14 +128,19 @@ public class UploadProfileDialog extends DialogWrapper implements ApplicationLis
         locationLabel = new JBLabel();
     }
 
-    private void initCommandLabelContainer() {
-        commandLabel = new SimpleColoredComponent();
+    private void initCommandLabelContainers() {
+        preCommandLabel = new SimpleColoredComponent();
+        postCommandLabel = new SimpleColoredComponent();
 
         GridBagConstraints gbc = new GridBagConstraints();
         gbc.fill = GridBagConstraints.HORIZONTAL;
         gbc.weightx = 1.0;
-        commandLabelContainer = new JPanel(new GridBagLayout());
-        commandLabelContainer.add(commandLabel, gbc);
+        
+        preCommandLabelContainer = new JPanel(new GridBagLayout());
+        preCommandLabelContainer.add(preCommandLabel, gbc);
+        
+        postCommandLabelContainer = new JPanel(new GridBagLayout());
+        postCommandLabelContainer.add(postCommandLabel, gbc);
     }
 
     private void initProfileContainer() {
@@ -212,17 +220,45 @@ public class UploadProfileDialog extends DialogWrapper implements ApplicationLis
         excludeLabel.setText(profile.getExclude());
         locationLabel.setText(profile.getLocation());
 
-        commandLabel.clear();
-        if (profile.getCommandId() != null) {
-            Command cmd = ConfigHelper.getCommandById(profile.getCommandId());
-            if (cmd == null) {
-                cmd = NoneCommand.INSTANCE;
-                profile.setCommandId(null);
+        // Clear both command labels
+        preCommandLabel.clear();
+        postCommandLabel.clear();
+        
+        // Handle backward compatibility: if commandId exists but pre/postCommandId don't, migrate to postCommandId
+        Integer preCommandId = profile.getPreCommandId();
+        Integer postCommandId = profile.getPostCommandId();
+        if (preCommandId == null && postCommandId == null && profile.getCommandId() != null) {
+            postCommandId = profile.getCommandId();
+        }
+        
+        // Display pre-upload command
+        if (preCommandId != null) {
+            Command preCmd = ConfigHelper.getCommandById(preCommandId);
+            if (preCmd == null) {
+                preCmd = NoneCommand.INSTANCE;
+                profile.setPreCommandId(null);
+            } else {
+                if (StringUtil.isNotEmpty(preCmd.getTitle())) {
+                    preCommandLabel.append(preCmd.getTitle() + TEXT_PADDING);
+                }
+                String overrideDir = (profile.getUseUploadPath() != null && profile.getUseUploadPath()) ? profile.getLocation() : null;
+                preCommandLabel.append(preCmd.toDisplayString(overrideDir), SimpleTextAttributes.GRAY_ATTRIBUTES);
             }
-            if (StringUtil.isNotEmpty(cmd.getTitle())) {
-                commandLabel.append(cmd.getTitle() + TEXT_PADDING);
+        }
+        
+        // Display post-upload command
+        if (postCommandId != null) {
+            Command postCmd = ConfigHelper.getCommandById(postCommandId);
+            if (postCmd == null) {
+                postCmd = NoneCommand.INSTANCE;
+                profile.setPostCommandId(null);
+            } else {
+                if (StringUtil.isNotEmpty(postCmd.getTitle())) {
+                    postCommandLabel.append(postCmd.getTitle() + TEXT_PADDING);
+                }
+                String overrideDir = (profile.getUseUploadPath() != null && profile.getUseUploadPath()) ? profile.getLocation() : null;
+                postCommandLabel.append(postCmd.toDisplayString(overrideDir), SimpleTextAttributes.GRAY_ATTRIBUTES);
             }
-            commandLabel.append(cmd.toString(), SimpleTextAttributes.GRAY_ATTRIBUTES);
         }
     }
 
@@ -248,7 +284,8 @@ public class UploadProfileDialog extends DialogWrapper implements ApplicationLis
             hostLabel.setText(server.getIp() + ":" + server.getPort());
             fileLabel.setText("");
             locationLabel.setText("");
-            commandLabel.clear();
+            preCommandLabel.clear();
+            postCommandLabel.clear();
         }
     }
 }

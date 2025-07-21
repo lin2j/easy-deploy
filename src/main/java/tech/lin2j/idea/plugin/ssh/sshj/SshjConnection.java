@@ -143,6 +143,32 @@ public class SshjConnection implements SshConnection {
     }
 
     @Override
+    public SshStatus execute(String cmd, CommandLog commandLog) throws IOException {
+        Session session = this.sshClient.startSession();
+        try {
+            Session.Command command = session.exec(cmd);
+
+            String result = IOUtils.readFully(command.getInputStream()).toString();
+            String err = IOUtils.readFully(command.getErrorStream()).toString();
+            command.close();
+
+            // Output command result to console
+            if (!result.isEmpty()) {
+                commandLog.println(result.trim());
+            }
+            if (!err.isEmpty()) {
+                commandLog.println(err.trim());
+            }
+
+            boolean isOk = command.getExitStatus() == 0;
+            String msg = isOk ? result : err;
+            return new SshStatus(isOk, msg);
+        } finally {
+            close(session);
+        }
+    }
+
+    @Override
     public FutureTask<Void> executeAsync(CommandLog commandLog, String cmd,
                                          AtomicBoolean cancel, boolean closeAfterFinished) {
         FutureTask<Void> task = new FutureTask<>(() -> {

@@ -1,7 +1,6 @@
 package tech.lin2j.idea.plugin.uitl;
 
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.project.ProjectManager;
 import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
@@ -9,8 +8,7 @@ import com.intellij.ui.table.JBTable;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
-import javax.swing.JOptionPane;
-import java.awt.Toolkit;
+import java.awt.*;
 
 /**
  * @author linjinjia

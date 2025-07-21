@@ -29,7 +29,22 @@ public class UploadProfile implements Cloneable, UniqueModel {
 
     private Integer commandId;
 
+    /**
+     * Command to execute before upload
+     */
+    private Integer preCommandId;
+
+    /**
+     * Command to execute after upload
+     */
+    private Integer postCommandId;
+
     private Boolean isSelected = false;
+
+    /**
+     * Use upload path as command execution directory
+     */
+    private Boolean useUploadPath = false;
 
     public Integer getId() {
         return id;
@@ -103,6 +118,30 @@ public class UploadProfile implements Cloneable, UniqueModel {
     @Override
     public void setUid(String uid) {
         this.uid = uid;
+    }
+
+    public Integer getPreCommandId() {
+        return preCommandId;
+    }
+
+    public void setPreCommandId(Integer preCommandId) {
+        this.preCommandId = preCommandId;
+    }
+
+    public Integer getPostCommandId() {
+        return postCommandId;
+    }
+
+    public void setPostCommandId(Integer postCommandId) {
+        this.postCommandId = postCommandId;
+    }
+
+    public Boolean getUseUploadPath() {
+        return useUploadPath;
+    }
+
+    public void setUseUploadPath(Boolean useUploadPath) {
+        this.useUploadPath = useUploadPath;
     }
 
     @Override

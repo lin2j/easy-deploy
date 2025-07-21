@@ -45,6 +45,14 @@ public interface SshConnection {
      */
     SshStatus execute(String cmd) throws IOException;
 
+    /**
+     * execute command with real-time output to command log
+     * @param cmd command to execute
+     * @param commandLog command log for real-time output
+     * @return the execution result of the command
+     */
+    SshStatus execute(String cmd, CommandLog commandLog) throws IOException;
+
     FutureTask<Void> executeAsync(CommandLog commandLog, String cmd,
                                   AtomicBoolean cancel, boolean closeAfterFinished);
 
