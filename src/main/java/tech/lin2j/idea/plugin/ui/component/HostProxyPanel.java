@@ -74,6 +74,10 @@ public class HostProxyPanel {
         return null;
     }
 
+    public void setProxySettings(SshServer server) {
+        server.setProxy(getProxy());
+    }
+
     private void initRadio() {
         noProxyRadio = new JBRadioButton(MessagesBundle.getText("dialog.panel.host.proxy.radio.no-proxy"));
         fromSettingsRadio = new JBRadioButton(MessagesBundle.getText("dialog.panel.host.proxy.radio.from-settings"));

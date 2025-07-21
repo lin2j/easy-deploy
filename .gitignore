@@ -2,6 +2,7 @@
 /target
 /logs
 .idea/
+.kotlin/
 .svn/
 *.iml
 *.ipr

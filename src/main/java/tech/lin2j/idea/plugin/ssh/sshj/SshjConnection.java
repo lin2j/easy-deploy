@@ -13,6 +13,7 @@ import net.schmizz.sshj.xfer.scp.SCPFileTransfer;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.ssh.CommandLog;
 import tech.lin2j.idea.plugin.ssh.SshConnection;
+import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 
 import java.io.BufferedReader;
@@ -23,7 +24,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.time.LocalDateTime;
 import java.util.Deque;
-import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
 import java.util.concurrent.TimeUnit;
 
@@ -35,12 +35,14 @@ public class SshjConnection implements SshConnection {
 
     private static final Logger log = Logger.getInstance(SshjConnection.class);
 
+    private final SshServer server;
     private final Deque<SSHClient> clients;
     private final SSHClient sshClient;
     private final SFTPClient sftpClient;
     private SCPFileTransfer scpFileTransfer;
 
-    public SshjConnection(Deque<SSHClient> clients) throws IOException {
+    public SshjConnection(Deque<SSHClient> clients, SshServer server) throws IOException {
+        this.server = server;
         this.clients = clients;
         this.sshClient = clients.getLast();
         this.sftpClient = sshClient.newSFTPClient();
@@ -134,9 +136,9 @@ public class SshjConnection implements SshConnection {
             String err = IOUtils.readFully(command.getErrorStream()).toString();
             command.close();
 
-            boolean isOk = command.getExitStatus() == 0;
-            String msg = isOk ? result : err;
-            return new SshStatus(isOk, msg);
+            boolean success = server.isCommandSuccess(command.getExitStatus());
+            String msg = success ? result : err;
+            return new SshStatus(success, msg);
         } finally {
             close(session);
         }

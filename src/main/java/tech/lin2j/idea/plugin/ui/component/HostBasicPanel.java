@@ -27,6 +27,11 @@ import java.util.Objects;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+/**
+ *
+ * @author lin2j
+ * @date 2024-07-21 21:42
+ */
 public class HostBasicPanel {
 
     private final JPanel root;

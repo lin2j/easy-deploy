@@ -10,6 +10,7 @@ import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.model.event.TableRefreshEvent;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ui.component.HostBasicPanel;
+import tech.lin2j.idea.plugin.ui.component.HostOtherPanel;
 import tech.lin2j.idea.plugin.ui.component.HostProxyPanel;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
@@ -24,6 +25,7 @@ public class HostSettingsDialog extends DialogWrapper {
     private final JPanel root = new JPanel(new BorderLayout());
     private final HostBasicPanel hostBasicPanel;
     private final HostProxyPanel hostProxyPanel;
+    private final HostOtherPanel hostOtherPanel;
 
     private SshServer server;
 
@@ -37,6 +39,7 @@ public class HostSettingsDialog extends DialogWrapper {
 
         hostBasicPanel = new HostBasicPanel(project, server, testButton);
         hostProxyPanel = new HostProxyPanel(project, server);
+        hostOtherPanel = new HostOtherPanel(server);
 
         setTitle(MessagesBundle.getText("dialog.host.title"));
         setSize(500, 0);
@@ -54,7 +57,9 @@ public class HostSettingsDialog extends DialogWrapper {
         if (!isOk) {
             return;
         }
-        server.setProxy(hostProxyPanel.getProxy());
+
+        hostProxyPanel.setProxySettings(server);
+        hostOtherPanel.setOtherSettings(server);
 
         if (isAdd) {
             ConfigHelper.addSshServer(server);
@@ -74,7 +79,9 @@ public class HostSettingsDialog extends DialogWrapper {
         if (!isOk) {
             return;
         }
-        test.setProxy(hostProxyPanel.getProxy());
+
+        hostProxyPanel.setProxySettings(test);
+        hostOtherPanel.setOtherSettings(test);
 
         new TestConnectionAction(project, test).actionPerformed(e);
     }
@@ -84,10 +91,12 @@ public class HostSettingsDialog extends DialogWrapper {
     protected JComponent createCenterPanel() {
         String basicTab = MessagesBundle.getText("dialog.host.tab.basic");
         String proxyTab = MessagesBundle.getText("dialog.host.tab.proxy");
+        String otherTab = MessagesBundle.getText("dialog.host.tab.other");
 
         JBTabbedPane tabs = new JBTabbedPane();
         tabs.addTab(basicTab, hostBasicPanel.createUI());
         tabs.addTab(proxyTab, hostProxyPanel.createUI());
+        tabs.addTab(otherTab, hostOtherPanel.createUI());
 
         root.add(tabs);
 

@@ -98,6 +98,6 @@ public class SshConnectionManager {
     }
 
     public static SshjConnection makeSshjConnection(SshServer server) throws RemoteSdkException, IOException {
-        return new SshjConnection(makeSshClients(server));
+        return new SshjConnection(makeSshClients(server), server);
     }
 }

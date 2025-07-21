@@ -50,6 +50,11 @@ public class SshServer implements Cloneable, UniqueModel {
      */
     private String pemPrivateKey;
 
+    /**
+     * the command exit code that indicates the command is executed successfully
+     */
+    private Integer successCommandExitCode;
+
     public SshServer(String ip) {
         this.ip = ip;
     }
@@ -186,6 +191,25 @@ public class SshServer implements Cloneable, UniqueModel {
 
     public void setTag(String tag) {
         this.tag = tag;
+    }
+
+    public Integer getSuccessCommandExitCode() {
+        return Objects.requireNonNullElse(successCommandExitCode, 0);
+    }
+
+    public void setSuccessCommandExitCode(Integer successCommandExitCode) {
+        this.successCommandExitCode = successCommandExitCode;
+    }
+
+    /**
+     * Check if the command execution is successful based on the exit code.
+     * Some servers may return a non-zero exit code after a successful command execution.
+     *
+     * @param exitCode the exit code of the command
+     * @return true if the command execution is successful, false otherwise
+     */
+    public boolean isCommandSuccess(int exitCode) {
+        return getSuccessCommandExitCode().equals(exitCode);
     }
 
     @Override

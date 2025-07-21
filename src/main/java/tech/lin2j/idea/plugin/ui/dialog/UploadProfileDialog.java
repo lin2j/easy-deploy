@@ -145,6 +145,7 @@ public class UploadProfileDialog extends DialogWrapper implements ApplicationLis
 
     private void initProfileContainer() {
         profileBox = new ComboBox<>();
+        profileBox.setSwingPopup(false);
         profileBox.addItemListener(e -> updateProfileInfo((UploadProfile) e.getItem()));
 
         GridBagConstraints gbc = new GridBagConstraints();

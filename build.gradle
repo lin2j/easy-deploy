@@ -1,6 +1,7 @@
 plugins {
     id 'org.jetbrains.intellij' version '1.17.4'
     id 'java'
+    id 'org.jetbrains.kotlin.jvm'
 }
 
 group 'tech.lin2j'
@@ -14,6 +15,7 @@ dependencies {
     implementation 'com.hierynomus:sshj:0.39.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.2'
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
 }
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
@@ -28,12 +30,14 @@ intellij {
 }
 
 tasks.withType(JavaCompile).configureEach {
-    sourceCompatibility = "17"
-    targetCompatibility = "17"
     options.encoding = "UTF-8"
     options.compilerArgs << "-Xlint:unchecked"
 }
 
 test {
     useJUnitPlatform()
+}
+
+kotlin {
+    jvmToolchain(17)
 }

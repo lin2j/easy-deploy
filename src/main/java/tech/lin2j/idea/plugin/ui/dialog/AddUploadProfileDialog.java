@@ -86,7 +86,9 @@ public class AddUploadProfileDialog extends DialogWrapper {
                 .addLabeledComponent(MessagesBundle.getText("dialog.profile.add.exclude"), excludeInput)
                 .addLabeledComponent(MessagesBundle.getText("dialog.profile.add.location"), locationInput)
                 .addLabeledComponent(MessagesBundle.getText("dialog.upload.pre-command"), preCommandBoxContainer)
+                .addLabeledComponent(" ", preCommandPreview)
                 .addLabeledComponent(MessagesBundle.getText("dialog.upload.post-command"), postCommandBoxContainer)
+                .addLabeledComponent(" ", postCommandPreview)
                 .addComponent(useUploadPathCheckBox)
                 .addComponent(ignored)
                 .getPanel();
@@ -187,11 +189,13 @@ public class AddUploadProfileDialog extends DialogWrapper {
 
         // Pre-upload command box
         preCommandBox = new ComboBox<>(new CollectionComboBoxModel<>(new ArrayList<>(data)));
+        preCommandBox.setSwingPopup(false);
         preCommandBox.setRenderer(new CommandColoredListCellRenderer(sshId));
         preCommandBox.addItemListener(e -> updateCommandPreview());
 
         // Post-upload command box
         postCommandBox = new ComboBox<>(new CollectionComboBoxModel<>(new ArrayList<>(data)));
+        postCommandBox.setSwingPopup(false);
         postCommandBox.setRenderer(new CommandColoredListCellRenderer(sshId));
         postCommandBox.addItemListener(e -> updateCommandPreview());
 
@@ -211,8 +215,6 @@ public class AddUploadProfileDialog extends DialogWrapper {
                 JBUI.emptyInsets(), 0, 0));
         preCommandBoxContainer.add(preToolbar.getComponent(), new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL,
                 JBUI.emptyInsets(), 0, 0));
-        preCommandBoxContainer.add(preCommandPreview, new GridBagConstraints(0, 1, 2, 1, 1, 0, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL,
-                JBUI.insets(2, 0), 0, 0));
 
         // Add command button for post-upload
         DefaultActionGroup postGroup = new DefaultActionGroup();
@@ -226,9 +228,7 @@ public class AddUploadProfileDialog extends DialogWrapper {
                 JBUI.emptyInsets(), 0, 0));
         postCommandBoxContainer.add(postToolbar.getComponent(), new GridBagConstraints(1, 0, 1, 1, 0, 0, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL,
                 JBUI.emptyInsets(), 0, 0));
-        postCommandBoxContainer.add(postCommandPreview, new GridBagConstraints(0, 1, 2, 1, 1, 0, GridBagConstraints.BASELINE_LEADING, GridBagConstraints.HORIZONTAL,
-                JBUI.insets(2, 0), 0, 0));
-        
+
         // Add listener for useUploadPathCheckBox to update command preview
         useUploadPathCheckBox.addActionListener(e -> updateCommandPreview());
     }
@@ -255,7 +255,7 @@ public class AddUploadProfileDialog extends DialogWrapper {
         fileBrowser = new TextFieldWithBrowseButton();
         fileBrowser.addActionListener(e -> {
             FileChooserDescriptor descriptor = allButNoMultipleChoose();
-            VirtualFile virtualFile = FileChooser.chooseFile(descriptor, fileBrowser, project,  getCurrentWorkingDir());
+            VirtualFile virtualFile = FileChooser.chooseFile(descriptor, fileBrowser, project, getCurrentWorkingDir());
             if (virtualFile != null) {
                 fileBrowser.setText(virtualFile.getPath());
             }
@@ -290,48 +290,52 @@ public class AddUploadProfileDialog extends DialogWrapper {
         }
         locationInput.setText(up.getLocation());
         useUploadPathCheckBox.setSelected(up.getUseUploadPath() != null && up.getUseUploadPath());
-        
+
         // Handle backward compatibility: if commandId exists but pre/postCommandId don't, migrate to postCommandId
         Integer preCommandId = up.getPreCommandId();
         Integer postCommandId = up.getPostCommandId();
         if (preCommandId == null && postCommandId == null && up.getCommandId() != null) {
             postCommandId = up.getCommandId();
         }
-        
+
         // Set pre-upload command
         selectCommandInBox(preCommandBox, preCommandId);
-        
+
         // Set post-upload command
         selectCommandInBox(postCommandBox, postCommandId);
-        
+
         // Update command preview after setting content
         updateCommandPreview();
     }
-    
+
     private void updateCommandPreview() {
         String overrideDir = useUploadPathCheckBox.isSelected() ? locationInput.getText() : null;
-        
+
         // Update pre-command preview
         preCommandPreview.clear();
         Command preCommand = (Command) preCommandBox.getSelectedItem();
-        if (preCommand != null && !(preCommand instanceof NoneCommand) && !(preCommand instanceof SeparatorCommand)) {
+        if (preCommand != null && !(preCommand instanceof SeparatorCommand)) {
             if (StringUtil.isNotEmpty(preCommand.getTitle())) {
                 preCommandPreview.append(preCommand.getTitle() + " ");
             }
-            preCommandPreview.append(preCommand.toDisplayString(overrideDir), SimpleTextAttributes.GRAY_ATTRIBUTES);
+            if (!(preCommand instanceof NoneCommand)) {
+                preCommandPreview.append(preCommand.toDisplayString(overrideDir), SimpleTextAttributes.GRAY_ATTRIBUTES);
+            }
         }
-        
+
         // Update post-command preview
         postCommandPreview.clear();
         Command postCommand = (Command) postCommandBox.getSelectedItem();
-        if (postCommand != null && !(postCommand instanceof NoneCommand) && !(postCommand instanceof SeparatorCommand)) {
+        if (postCommand != null && !(postCommand instanceof SeparatorCommand)) {
             if (StringUtil.isNotEmpty(postCommand.getTitle())) {
                 postCommandPreview.append(postCommand.getTitle() + " ");
             }
-            postCommandPreview.append(postCommand.toDisplayString(overrideDir), SimpleTextAttributes.GRAY_ATTRIBUTES);
+            if (!(postCommand instanceof NoneCommand)) {
+                postCommandPreview.append(postCommand.toDisplayString(overrideDir), SimpleTextAttributes.GRAY_ATTRIBUTES);
+            }
         }
     }
-    
+
     private void selectCommandInBox(ComboBox<Command> box, Integer commandId) {
         for (int i = 0; i < box.getItemCount(); i++) {
             Command command = box.getItemAt(i);
@@ -363,10 +367,10 @@ public class AddUploadProfileDialog extends DialogWrapper {
     }
 
     private Integer getCommandId(Command cmd) {
-       if (cmd instanceof NoneCommand || cmd instanceof SeparatorCommand) {
-           return null;
-       }
-       return cmd == null ? null : cmd.getId();
+        if (cmd instanceof NoneCommand || cmd instanceof SeparatorCommand) {
+            return null;
+        }
+        return cmd == null ? null : cmd.getId();
     }
 
     private void addNewCommand(Command cmd, boolean isPreCommand) {
@@ -389,7 +393,7 @@ public class AddUploadProfileDialog extends DialogWrapper {
 
     private class RegexToggleAction extends ToggleAction {
         public RegexToggleAction() {
-            super("Regex", "Use regex",AllIcons.Actions.Regex);
+            super("Regex", "Use regex", AllIcons.Actions.Regex);
         }
 
         @Override
