@@ -16,6 +16,10 @@ public interface Constant {
 
     String STR_TRUE = "1";
 
+    int INT_FALSE = 0;
+
+    int INT_TRUE = 1;
+
     /**
      * default top inset of form item
      */

@@ -190,6 +190,12 @@ public class ConfigHelper {
                 .max(Integer::compareTo).orElse(1);
     }
 
+    public static boolean isUploadProfileExist(int profileId) {
+        ensureConfigLoadInMemory();
+        return CONFIG_PERSISTENCE.getUploadProfiles().stream()
+                .anyMatch(profile -> Objects.equals(profile.getId(), profileId));
+    }
+
     public static List<String> getServerTags() {
         ensureConfigLoadInMemory();
         return CONFIG_PERSISTENCE.getServerTags();

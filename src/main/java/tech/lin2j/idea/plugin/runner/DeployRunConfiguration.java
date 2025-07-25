@@ -14,6 +14,7 @@ import com.intellij.util.xmlb.annotations.Tag;
 import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.model.DeployProfile;
 
 import java.util.ArrayList;
@@ -41,6 +42,7 @@ public class DeployRunConfiguration extends RunConfigurationBase<Element> {
         if (this.deployProfiles == null) {
             this.deployProfiles = new ArrayList<>();
         }
+        removeIfUploadProfileNotExist(deployProfiles);
         ConfigurationState state = new ConfigurationState();
         state.deployProfiles = this.deployProfiles;
         state.parallelExec = this.parallelExec;
@@ -60,6 +62,7 @@ public class DeployRunConfiguration extends RunConfigurationBase<Element> {
         if (this.parallelExec == null) {
             this.parallelExec = Boolean.FALSE;
         }
+        removeIfUploadProfileNotExist(deployProfiles);
     }
 
     public void setDeployProfiles(List<DeployProfile> dps) {
@@ -73,6 +76,7 @@ public class DeployRunConfiguration extends RunConfigurationBase<Element> {
         if (this.deployProfiles == null) {
             deployProfiles = new ArrayList<>();
         }
+        removeIfUploadProfileNotExist(deployProfiles);
         return deployProfiles.stream().map(DeployProfile::new)
                 .filter(dp -> dp.getUploadProfile() != null)
                 .collect(Collectors.toList());
@@ -100,10 +104,19 @@ public class DeployRunConfiguration extends RunConfigurationBase<Element> {
     public RunProfileState getState(@NotNull Executor executor,
                                     @NotNull ExecutionEnvironment environment) {
         boolean isParallelExec = this.parallelExec != null && this.parallelExec;
+        removeIfUploadProfileNotExist(deployProfiles);
 
         return isParallelExec
                 ? new ParallelDeployRunProfileState(executor, environment, deployProfiles)
                 : new DeployRunProfileState(executor, environment, deployProfiles);
+    }
+
+    private void removeIfUploadProfileNotExist(List<String> deployProfiles) {
+        deployProfiles.removeIf(profile -> {
+            int uploadProfileId = DeployProfile.resolveProfile(profile)[DeployProfile.UPLOAD_PROFILE_IDX];
+            boolean uploadProfileExist = ConfigHelper.isUploadProfileExist(uploadProfileId);
+            return !uploadProfileExist;
+        });
     }
 
     public static class ConfigurationState {
