@@ -60,7 +60,7 @@ public class SshConnectionManager {
         Deque<SSHClient> clients = new LinkedList<>();
         SshServer errHost = null;
         try {
-            for(SshServer host : hostChain) {
+            for (SshServer host : hostChain) {
                 errHost = host;
                 SSHClient client = new SSHClient(defaultConfig);
                 client.addHostKeyVerifier(new PromiscuousVerifier());
@@ -69,7 +69,7 @@ public class SshConnectionManager {
                     client.getConnection().getKeepAlive().setKeepAliveInterval(setting.getHeartbeatInterval());
                 }
                 // jump
-                if (clients.size() == 0) {
+                if (clients.isEmpty()) {
                     client.connect(host.getIp(), host.getPort());
                 } else {
                     DirectConnection tunnel = clients.getLast().newDirectConnection(host.getIp(), host.getPort());
@@ -78,7 +78,12 @@ public class SshConnectionManager {
                 // auth
                 boolean needPemPrivateKey = AuthType.needPemPrivateKey(host.getAuthType());
                 if (needPemPrivateKey) {
-                    KeyProvider keyProvider = client.loadKeys(host.getPemPrivateKey());
+                    KeyProvider keyProvider;
+                    if (host.getPassPhrase() != null && !host.getPassPhrase().isEmpty()) {
+                        keyProvider = client.loadKeys(host.getPemPrivateKey(), host.getPassPhrase());
+                    } else {
+                        keyProvider = client.loadKeys(host.getPemPrivateKey());
+                    }
                     client.authPublickey(host.getUsername(), keyProvider);
                 } else {
                     client.authPassword(host.getUsername(), host.getPassword());

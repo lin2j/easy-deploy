@@ -43,6 +43,7 @@ public class HostBasicPanel {
 
     private JBPasswordField passwdInput;
     private TextFieldWithBrowseButton privateKeyInput;
+    private JBPasswordField passphraseInput;
     private ComboBox<String> tagComboBox;
 
     private JBRadioButton passwdRadio;
@@ -72,6 +73,7 @@ public class HostBasicPanel {
                 .addLabeledComponent(MessagesBundle.getText("dialog.panel.host.basic.auth-type"), authTypeContainer)
                 .addLabeledComponent(MessagesBundle.getText("dialog.panel.host.basic.password"), passwdInput)
                 .addLabeledComponent(MessagesBundle.getText("dialog.panel.host.basic.private-key"), privateKeyInput)
+                .addLabeledComponent(MessagesBundle.getText("dialog.panel.host.basic.pass-phrase"), passphraseInput)
                 .addLabeledComponent(MessagesBundle.getText("dialog.panel.host.basic.tag"), tagComboBox)
                 .addLabeledComponent(MessagesBundle.getText("dialog.panel.host.basic.description"), descInput)
                 .addComponent(testConnectContainer)
@@ -106,6 +108,7 @@ public class HostBasicPanel {
                 privateKeyInput.setText(virtualFile.getPath());
             }
         });
+        passphraseInput = new JBPasswordField();
     }
 
     private void initAuthTypeContainer() {
@@ -121,11 +124,13 @@ public class HostBasicPanel {
         passwdRadio.addActionListener(e -> {
             passwdInput.setEnabled(true);
             privateKeyInput.setEnabled(false);
+            passphraseInput.setEnabled(false);
         });
 
         privateKeyRadio.addActionListener(e -> {
             passwdInput.setEnabled(false);
             privateKeyInput.setEnabled(true);
+            passphraseInput.setEnabled(true);
         });
 
         authTypeContainer.add(passwdRadio);
@@ -157,6 +162,7 @@ public class HostBasicPanel {
             tagComboBox.setSelectedItem(contentProvider.getTag());
             descInput.setText(contentProvider.getDescription());
             privateKeyInput.setText(contentProvider.getPemPrivateKey());
+            passphraseInput.setText(contentProvider.getPassPhrase());
             if (AuthType.needPassword(contentProvider.getAuthType())) {
                 passwdRadio.setSelected(true);
                 passwdRadio.doClick();
@@ -200,11 +206,13 @@ public class HostBasicPanel {
             }
             server.setAuthType(AuthType.PASSWORD.getCode());
             server.setPemPrivateKey(null);
+            server.setPassPhrase(null);
         }
         if (privateKeyRadio.isSelected()) {
             if (setText(privateKeyInput.getTextField(), true, server::setPemPrivateKey)) {
                 return true;
             }
+            setText(passphraseInput, false, server::setPassPhrase);
             server.setAuthType(AuthType.PEM_PRIVATE_KEY.getCode());
             server.setPassword(null);
         }

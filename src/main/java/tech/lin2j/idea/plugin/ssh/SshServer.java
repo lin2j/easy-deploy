@@ -68,28 +68,14 @@ public class SshServer implements Cloneable, UniqueModel {
         );
     }
 
-    private String getKey() {
-        return "SD$" + username + "@" + ip + ":" + port;
-    }
-
     @Transient
     public String getPassword() {
-        CredentialAttributes attributes = createCredentialAttributes(getKey());
-        PasswordSafe passwordSafe = PasswordSafe.getInstance();
-
-        Credentials credentials = passwordSafe.get(attributes);
-        if (credentials != null) {
-            return credentials.getPasswordAsString();
-        }
-        return passwordSafe.getPassword(attributes);
+        return loadPassword(getKey());
     }
 
     @Transient
     public void setPassword(String password) {
-        String key = getKey();
-        CredentialAttributes attributes = createCredentialAttributes(key);
-        Credentials credentials = new Credentials(key, password);
-        PasswordSafe.getInstance().set(attributes, credentials);
+        savePassword(password, getKey());
     }
 
     public Integer getId() {
@@ -126,7 +112,6 @@ public class SshServer implements Cloneable, UniqueModel {
         this.password = "";
     }
 
-
     @Override
     public String toString() {
         return ip;
@@ -154,6 +139,16 @@ public class SshServer implements Cloneable, UniqueModel {
 
     public void setPemPrivateKey(String pemPrivateKey) {
         this.pemPrivateKey = pemPrivateKey;
+    }
+
+    @Transient
+    public String getPassPhrase() {
+        return loadPassword(getPassPhraseKey());
+    }
+
+    @Transient
+    public void setPassPhrase(String passPhrase) {
+        savePassword(passPhrase, getPassPhraseKey());
     }
 
     public Integer getProxy() {
@@ -199,6 +194,31 @@ public class SshServer implements Cloneable, UniqueModel {
 
     public void setSuccessCommandExitCode(Integer successCommandExitCode) {
         this.successCommandExitCode = successCommandExitCode;
+    }
+
+    private String getKey() {
+        return "SD$" + username + "@" + ip + ":" + port;
+    }
+
+    private String getPassPhraseKey() {
+        return "SD$PASSPHRASE" + username + "@" + ip + ":" + port;
+    }
+
+    private String loadPassword(String key) {
+        CredentialAttributes attributes = createCredentialAttributes(key);
+        PasswordSafe passwordSafe = PasswordSafe.getInstance();
+
+        Credentials credentials = passwordSafe.get(attributes);
+        if (credentials != null) {
+            return credentials.getPasswordAsString();
+        }
+        return passwordSafe.getPassword(attributes);
+    }
+
+    private void savePassword(String password, String key) {
+        CredentialAttributes attributes = createCredentialAttributes(key);
+        Credentials credentials = new Credentials(key, password);
+        PasswordSafe.getInstance().set(attributes, credentials);
     }
 
     /**
