@@ -14,8 +14,6 @@ import javax.swing.Icon;
  */
 public class DmgFileType implements FileType {
 
-    public static final DmgFileType INSTANCE = new DmgFileType();
-
     @NotNull
     @Override
     public String getName() {
@@ -25,7 +23,7 @@ public class DmgFileType implements FileType {
     @NotNull
     @Override
     public String getDescription() {
-        return "Disk Image";
+        return "Disk image";
     }
 
     @NotNull

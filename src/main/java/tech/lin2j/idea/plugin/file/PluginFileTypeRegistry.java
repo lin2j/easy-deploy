@@ -4,9 +4,18 @@ import com.intellij.ide.highlighter.ArchiveFileType;
 import com.intellij.openapi.fileTypes.FileType;
 import com.intellij.openapi.fileTypes.UnknownFileType;
 import com.intellij.openapi.util.text.StringUtil;
+import tech.lin2j.idea.plugin.file.fileTypes.ConfigFileType;
+import tech.lin2j.idea.plugin.file.fileTypes.DmgFileType;
 import tech.lin2j.idea.plugin.file.fileTypes.EbookFileType;
+import tech.lin2j.idea.plugin.file.fileTypes.ExcelFileType;
+import tech.lin2j.idea.plugin.file.fileTypes.LogFileType;
+import tech.lin2j.idea.plugin.file.fileTypes.MusicFileType;
+import tech.lin2j.idea.plugin.file.fileTypes.PdfFileType;
+import tech.lin2j.idea.plugin.file.fileTypes.PkgFileType;
+import tech.lin2j.idea.plugin.file.fileTypes.PptFileType;
 import tech.lin2j.idea.plugin.file.fileTypes.SpecifiedArchiveFileType;
 import tech.lin2j.idea.plugin.file.fileTypes.VideoFileType;
+import tech.lin2j.idea.plugin.file.fileTypes.WordFileType;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -45,6 +54,31 @@ public class PluginFileTypeRegistry {
         FILE_TYPE_MAP.put("mobi", new EbookFileType("mobi"));
         FILE_TYPE_MAP.put("azw", new EbookFileType("azw"));
         FILE_TYPE_MAP.put("azw3", new EbookFileType("azw3"));
+        // cfg;config;ini;
+        FILE_TYPE_MAP.put("cfg", new ConfigFileType("cfg"));
+        FILE_TYPE_MAP.put("config", new ConfigFileType("config"));
+        FILE_TYPE_MAP.put("ini", new ConfigFileType("ini"));
+        // dmg;pkg
+        FILE_TYPE_MAP.put("dmg", new DmgFileType());
+        FILE_TYPE_MAP.put("pkg", new PkgFileType("pkg"));
+        // pdf
+        FILE_TYPE_MAP.put("pdf", new PdfFileType());
+        // doc;docx
+        FILE_TYPE_MAP.put("doc", new WordFileType("doc"));
+        FILE_TYPE_MAP.put("docx", new WordFileType("docx"));
+        // ppt;pptx
+        FILE_TYPE_MAP.put("ppt", new PptFileType("ppt"));
+        FILE_TYPE_MAP.put("pptx", new PptFileType("pptx"));
+        // xlsx;xls
+        FILE_TYPE_MAP.put("xlsx", new ExcelFileType("xlsx"));
+        FILE_TYPE_MAP.put("xls", new ExcelFileType("xls"));
+        // log
+        FILE_TYPE_MAP.put("log", new LogFileType());
+        // mp3;wav;flac;m4a
+        FILE_TYPE_MAP.put("mp3", new MusicFileType("mp3"));
+        FILE_TYPE_MAP.put("wav", new MusicFileType("wav"));
+        FILE_TYPE_MAP.put("flac", new MusicFileType("flac"));
+        FILE_TYPE_MAP.put("m4a", new MusicFileType("m4a"));
 
     }
 

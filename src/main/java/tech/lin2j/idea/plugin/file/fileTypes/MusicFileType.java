@@ -12,30 +12,36 @@ import javax.swing.Icon;
  * @author linjinjia
  * @date 2024/4/21 15:19
  */
-public class PdfFileType implements FileType {
+public class MusicFileType implements FileType {
+
+    private final String ext;
+
+    public MusicFileType(String ext) {
+        this.ext = ext;
+    }
 
     @NotNull
     @Override
     public String getName() {
-        return "PDF";
+        return "Music";
     }
 
     @NotNull
     @Override
     public String getDescription() {
-        return "PDF";
+        return "Music";
     }
 
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return "pdf";
+        return ext;
     }
 
     @Nullable
     @Override
     public Icon getIcon() {
-        return MyIcons.FileType.PDF;
+        return MyIcons.FileType.Music;
     }
 
     @Override

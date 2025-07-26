@@ -13,8 +13,11 @@ import javax.swing.Icon;
  * @date 2024/4/21 15:19
  */
 public class ExcelFileType implements FileType {
+    private final String ext;
 
-    public static final ExcelFileType INSTANCE = new ExcelFileType();
+    public ExcelFileType(String ext) {
+        this.ext = ext;
+    }
 
     @NotNull
     @Override
@@ -31,7 +34,7 @@ public class ExcelFileType implements FileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return "xlsx";
+        return ext;
     }
 
     @Nullable

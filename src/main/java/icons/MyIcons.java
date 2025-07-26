@@ -62,5 +62,7 @@ public interface MyIcons {
         Icon PDF = load("/icons/fileTypes/pdf.svg");
         Icon EBook = load("/icons/fileTypes/ebook.svg");
         Icon Log = load("/icons/fileTypes/log.svg");
+        Icon Music = load("/icons/fileTypes/music.svg");
+        Icon Pkg = load("/icons/fileTypes/pkg.svg");
     }
 }

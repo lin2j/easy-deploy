@@ -14,8 +14,6 @@ import javax.swing.Icon;
  */
 public class LogFileType implements FileType {
 
-    public static final LogFileType INSTANCE = new LogFileType();
-
     @NotNull
     @Override
     public String getName() {

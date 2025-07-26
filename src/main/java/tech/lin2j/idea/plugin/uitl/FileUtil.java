@@ -15,12 +15,20 @@ import tech.lin2j.idea.plugin.file.fileTypes.SpecifiedArchiveFileType;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author linjinjia
  * @date 2022/12/3 15:05
  */
 public class FileUtil {
+
+    /**
+     * Special file types that are not recognized by the default file type registry.
+     */
+    private static final List<String> SPECIAL_FILE_TYPE = Arrays.asList("doc", "docx");
+
 
     private FileUtil() {
 
@@ -125,7 +133,7 @@ public class FileUtil {
             fileType = new SpecifiedArchiveFileType(fileType, ext);
         }
 
-        if (fileType instanceof UnknownFileType) {
+        if (fileType instanceof UnknownFileType || SPECIAL_FILE_TYPE.contains(ext)) {
             fileType = PluginFileTypeRegistry.getFileTypeByExtension(ext);
         }
 

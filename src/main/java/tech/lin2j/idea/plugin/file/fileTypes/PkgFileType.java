@@ -12,30 +12,36 @@ import javax.swing.Icon;
  * @author linjinjia
  * @date 2024/4/21 15:19
  */
-public class PdfFileType implements FileType {
+public class PkgFileType implements FileType {
+
+    private final String ext;
+
+    public PkgFileType(String ext) {
+        this.ext = ext;
+    }
 
     @NotNull
     @Override
     public String getName() {
-        return "PDF";
+        return "Software Package";
     }
 
     @NotNull
     @Override
     public String getDescription() {
-        return "PDF";
+        return "Software package file type, typically used for software distribution.";
     }
 
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return "pdf";
+        return ext;
     }
 
     @Nullable
     @Override
     public Icon getIcon() {
-        return MyIcons.FileType.PDF;
+        return MyIcons.FileType.Pkg;
     }
 
     @Override

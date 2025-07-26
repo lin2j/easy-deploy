@@ -14,7 +14,11 @@ import javax.swing.Icon;
  */
 public class WordFileType implements FileType {
 
-    public static final WordFileType INSTANCE = new WordFileType();
+    private final String ext;
+
+    public WordFileType(String ext) {
+        this.ext = ext;
+    }
 
     @NotNull
     @Override
@@ -31,7 +35,7 @@ public class WordFileType implements FileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return "docx";
+        return ext;
     }
 
     @Nullable

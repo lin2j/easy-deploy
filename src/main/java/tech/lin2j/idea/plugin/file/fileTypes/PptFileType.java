@@ -14,7 +14,12 @@ import javax.swing.Icon;
  */
 public class PptFileType implements FileType {
 
-    public static final PptFileType INSTANCE = new PptFileType();
+    private final String ext;
+
+    public PptFileType(String ext) {
+        this.ext = ext;
+    }
+
 
     @NotNull
     @Override
@@ -31,7 +36,7 @@ public class PptFileType implements FileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return "ppt";
+        return ext;
     }
 
     @Nullable

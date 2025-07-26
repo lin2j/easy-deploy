@@ -13,8 +13,11 @@ import javax.swing.Icon;
  * @date 2024/4/21 15:19
  */
 public class ConfigFileType implements FileType {
+    private final String ext;
 
-    public static final ConfigFileType INSTANCE = new ConfigFileType();
+    public ConfigFileType(String ext) {
+        this.ext = ext;
+    }
 
     @NotNull
     @Override
@@ -31,7 +34,7 @@ public class ConfigFileType implements FileType {
     @NotNull
     @Override
     public String getDefaultExtension() {
-        return "cfg";
+        return ext;
     }
 
     @Nullable

@@ -6,14 +6,12 @@ import com.intellij.openapi.util.SystemInfo;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.util.PathUtil;
 import com.intellij.util.text.DateFormatUtil;
-import org.apache.commons.lang.time.DateFormatUtils;
 import tech.lin2j.idea.plugin.uitl.FileUtil;
 
 import javax.swing.Icon;
 import java.io.File;
 import java.nio.file.Files;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.Date;
 
 /**
  * @author linjinjia
