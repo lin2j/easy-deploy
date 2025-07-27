@@ -24,6 +24,8 @@
         <li>Add/Edit/Remove/Share commands</li>
         <li>Upload files or directories with filtering support</li>
         <li>Deploy services</li>
+        <li>Pre/Post-upload command execution support</li>
+        <li>Command execution directory override (use upload path)</li>
         <li>Remote class hot update</li>
         <li>Open terminal</li>
         <li>SSH password-free login (private key login)</li>
@@ -52,6 +54,8 @@
         <li>添加/编辑/删除/分享命令</li>
         <li>上传文件或者目录，并支持过滤</li>
         <li>文件（目录）上传配置</li>
+        <li>前置/后置命令执行支持</li>
+        <li>命令执行目录覆盖（使用上传路径）</li>
         <li>远程类热更新</li>
         <li>终端连接</li>
         <li>SSH 免密登录（私钥登录）</li>
@@ -67,6 +71,17 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.3.9</h2>
+    <ul>
+        <li>Added configuration for pre-command and post-command in UploadProfile when uploading files, supporting the use of the file upload path as the execution path for commands (Thanks <a href="https://github.com/zephyr949">Zephyr</a>) </li>
+        <li>The ComboBox in UploadProfile configuration panel now supports search functionality</li>
+        <li>Added private key passphrase configuration for SSH key authentication </li>
+        <li>Added stop button for asynchronous command execution in Console </li>
+        <li>Added post-success command exit code configuration for server settings </li>
+        <li>Fixed known bugs (#20, #24) </li>
+        <li>Updated to use new plugin icon </li>
+    </ul>
+
     <h2>release 1.3.8</h2>
     <ul>
         <li>Add remote Java class hot update using Arthas (single file only).</li>

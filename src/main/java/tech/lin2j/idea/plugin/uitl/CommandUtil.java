@@ -111,11 +111,11 @@ public class CommandUtil {
                 }
             }
             
-            printFinished(commandLog);
             // Only close connection in main thread if no async post command is running
             // Async post command will close the connection itself
             if (!hasAsyncPostCommand) {
                 sshjConnection.close();
+                printFinished(commandLog);
             }
         } catch (Exception e) {
             commandLog.error(e.getMessage());
