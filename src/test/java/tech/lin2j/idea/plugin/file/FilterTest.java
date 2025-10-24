@@ -6,6 +6,8 @@ import org.junit.Test;
 import tech.lin2j.idea.plugin.file.filter.ExtExcludeFilter;
 import tech.lin2j.idea.plugin.ssh.CommandLog;
 
+import java.util.concurrent.FutureTask;
+
 /**
  * @author linjinjia
  * @date 2022/12/11 00:00
@@ -35,6 +37,26 @@ public class FilterTest {
         @Override
         public void print(String msg, ConsoleViewContentType contentType) {
 
+        }
+
+        @Override
+        public void addTask(FutureTask<?> task) {
+
+        }
+
+        @Override
+        public void deleteTask(FutureTask<?> task) {
+
+        }
+
+        @Override
+        public void stopAllTasks() {
+
+        }
+
+        @Override
+        public int taskNum() {
+            return 0;
         }
     }
 }

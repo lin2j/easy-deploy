@@ -6,7 +6,7 @@ import com.intellij.openapi.util.NlsActions;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import javax.swing.Icon;
+import javax.swing.*;
 import java.util.function.Supplier;
 
 /**
@@ -32,14 +32,6 @@ public abstract class NewUpdateThreadAction extends AnAction {
 
     public NewUpdateThreadAction(@Nullable @NlsActions.ActionText String text, @Nullable @NlsActions.ActionDescription String description, @Nullable Icon icon) {
         super(text, description, icon);
-    }
-
-    public NewUpdateThreadAction(@NotNull @NlsActions.ActionText Supplier<String> text, @Nullable @NlsActions.ActionDescription Supplier<String> description, @Nullable Supplier<? extends @Nullable Icon> icon) {
-        super(text, description, icon);
-    }
-
-    public NewUpdateThreadAction(@NotNull @NlsActions.ActionText Supplier<String> text, @NotNull @NlsActions.ActionDescription Supplier<String> description) {
-        super(text, description);
     }
 
     public NewUpdateThreadAction(@NotNull Supplier<@NlsActions.ActionText String> dynamicText, @Nullable Icon icon) {
