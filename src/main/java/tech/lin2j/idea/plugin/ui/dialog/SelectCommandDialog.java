@@ -5,11 +5,12 @@ import com.intellij.openapi.actionSystem.ActionToolbarPosition;
 import com.intellij.openapi.actionSystem.ActionUpdateThread;
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.ui.AnActionButton;
+import com.intellij.openapi.util.text.Strings;
+import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.DoubleClickListener;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
@@ -31,21 +32,23 @@ import tech.lin2j.idea.plugin.uitl.CommandUtil;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import java.awt.Dimension;
+import javax.swing.*;
+import javax.swing.event.DocumentEvent;
+import java.awt.*;
 import java.awt.event.MouseEvent;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Objects;
 
 /**
  * @author linjinjia
  * @date 2024/5/4 22:38
  */
 public class SelectCommandDialog extends DialogWrapper implements ApplicationListener<CommandAddEvent> {
+    private static final Logger LOG = Logger.getInstance(SelectCommandDialog.class);
+
     private final JPanel root;
-    private JBTextField showInput;
+    private JBTextField inputText;
+    private JBTextField commandDetails;
     private JBList<Command> commandList;
     private Command selectedCommand;
 
@@ -59,18 +62,54 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
 
         initInput();
         initCommandList();
-        loadCommandList();
+        initCommandDetail();
+        List<Command> commands = loadCommandList();
 
+        // 绑定监听时间，实现模糊搜索
+        bindInputChangeListener(commands);
         root = FormBuilder.createFormBuilder()
-                .addLabeledComponent(MessagesBundle.getText("dialog.command.select.show"), showInput, true)
+                .addLabeledComponent(MessagesBundle.getText("dialog.command.select.show"), inputText, true)
                 .addComponentFillVertically(createCommandToolbarPanel(), 8)
+                .addComponent(commandDetails)
                 .getPanel();
-        root.setPreferredSize(new Dimension(UiUtil.screenWidth() / 2, 400));
+        root.setPreferredSize(new Dimension(UiUtil.screenWidth() / 2, 600));
 
         setTitle(MessagesBundle.getText("dialog.command.select.frame"));
         init();
     }
 
+    private void bindInputChangeListener(List<Command> commands) {
+        inputText.getDocument().addDocumentListener(new DocumentAdapter() {
+            @Override
+            protected void textChanged(DocumentEvent e) {
+                // 根据查询条件更新命令列表
+                // 当输入内容为空时，显示所有命令
+                String text = inputText.getText();
+                if (text.isEmpty() || text.isBlank()){
+                    // 重置commonList
+                    commandList.setListData(commands.toArray(new Command[0]));
+                } else {
+                    List<Command> searchList = commands.stream().filter(command -> Strings.contains(command.getTitle(), text)).toList();
+                    // 预先构建名称到索引的映射
+                    Map<String, Integer> nameToIndex = new HashMap<>();
+                    for (int i = 0; i < searchList.size(); i++) {
+                        nameToIndex.put(searchList.get(i).getTitle(), i);
+                    }
+
+                    // 快速查找
+                    Integer index = nameToIndex.get(text);
+                    if (index != null) {
+                        LOG.info("find command: " + text);
+                        commandList.setSelectedIndex(index);
+                    }
+                    commandList.setListData(searchList.toArray(new Command[0]));
+                    commandList.requestFocusInWindow();
+                    commandList.repaint();
+                }
+            }
+        });
+    }
+    
     @Nullable
     @Override
     protected JComponent createCenterPanel() {
@@ -83,7 +122,12 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
     }
 
     private void initInput() {
-        showInput = new JBTextField();
+        inputText = new JBTextField();
+    }
+
+    private void initCommandDetail() {
+        commandDetails = new JBTextField();
+        commandDetails.setEditable(false);
     }
 
     private void initCommandList() {
@@ -92,8 +136,10 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
         commandList.addListSelectionListener(e -> {
             Command command = commandList.getSelectedValue();
             if (command != null) {
-                showInput.setText(command.toString());
                 selectedCommand = command;
+                commandDetails.setText(command.getContent());
+            } else {
+                commandDetails.setText("");
             }
         });
 
@@ -151,7 +197,7 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
         return true;
     }
 
-    public void loadCommandList() {
+public List<Command> loadCommandList() {
         List<Command> commands = ConfigHelper.getCommandsBySshId(sshId);
         List<Command> sharableCommands = ConfigHelper.getSharableCommands(sshId);
 
@@ -164,6 +210,7 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
         }
 
         commandList.setListData(data.toArray(new Command[0]));
+        return data;
     }
 
     private void runCommand() {
