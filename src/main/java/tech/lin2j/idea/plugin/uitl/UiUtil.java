@@ -1,5 +1,6 @@
 package tech.lin2j.idea.plugin.uitl;
 
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageDialogBuilder;
 import com.intellij.openapi.ui.Messages;
@@ -9,12 +10,32 @@ import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import java.awt.*;
+import java.util.concurrent.CompletableFuture;
 
 /**
  * @author linjinjia
  * @date 2022/7/1 22:08
  */
 public class UiUtil {
+    public static CompletableFuture<String> getUserInputAsync() {
+        CompletableFuture<String> future = new CompletableFuture<>();
+        String tip = MessagesBundle.getText("dialog.password.tip");
+        String title = MessagesBundle.getText("dialog.password.frame");
+        ApplicationManager.getApplication().invokeLater(() -> {
+            String password = Messages.showPasswordDialog(tip, title);
+            if (StringUtil.isEmpty(password)) {
+                Messages.showErrorDialog(MessagesBundle.getText("dialog.password.error"), "Error");
+            }
+            if (StringUtil.isNotEmpty(password)) {
+                future.complete(password);
+            } else {
+                future.cancel(true);
+            }
+        });
+
+        return future;
+    }
+
 
     /**
      * get password from user input
@@ -22,14 +43,8 @@ public class UiUtil {
      * @return password
      */
     public static String requestPassword() {
-        String tip = MessagesBundle.getText("dialog.password.tip");
-        String title = MessagesBundle.getText("dialog.password.frame");
-        String password = Messages.showPasswordDialog(tip, title);
-
-        if (StringUtil.isEmpty(password)) {
-            Messages.showErrorDialog(MessagesBundle.getText("dialog.password.error"), "Error");
-        }
-        return password;
+        CompletableFuture<String> stringCompletableFuture = getUserInputAsync();
+        return stringCompletableFuture.join();
     }
 
     /**
