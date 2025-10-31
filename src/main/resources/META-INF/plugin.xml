@@ -270,6 +270,13 @@
                 description="Remote class hot reload">
             <add-to-group group-id="EditorPopupMenu" anchor="before" relative-to-action="$Paste"/>
         </action>
+        <action id="QuickCommand"
+                class="tech.lin2j.idea.plugin.action.QuickCommandAction"
+                text="QuickCommand"
+                icon="MyIcons.EasyDeploy"
+                description="Quick command tool">
+            <add-to-group group-id="TerminalToolwindowActionGroup" anchor="first"/>
+        </action>
     </actions>
 
     <extensions defaultExtensionNs="com.intellij">
