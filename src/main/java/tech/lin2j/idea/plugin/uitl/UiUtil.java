@@ -1,5 +1,7 @@
 package tech.lin2j.idea.plugin.uitl;
 
+import com.intellij.ide.DataManager;
+import com.intellij.openapi.actionSystem.CommonDataKeys;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.MessageDialogBuilder;
@@ -11,6 +13,7 @@ import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import java.awt.*;
 import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.ExecutionException;
 
 /**
  * @author linjinjia
@@ -22,46 +25,21 @@ public class UiUtil {
         String tip = MessagesBundle.getText("dialog.password.tip");
         String title = MessagesBundle.getText("dialog.password.frame");
         ApplicationManager.getApplication().invokeLater(() -> {
-            String password = Messages.showPasswordDialog(tip, title);
-            if (StringUtil.isEmpty(password)) {
-                Messages.showErrorDialog(MessagesBundle.getText("dialog.password.error"), "Error");
-            }
-            if (StringUtil.isNotEmpty(password)) {
-                future.complete(password);
-            } else {
-                future.cancel(true);
+            try {
+                Project project = CommonDataKeys.PROJECT.getData(DataManager.getInstance().getDataContext());
+                String password = Messages.showPasswordDialog(project, tip, title, Messages.getQuestionIcon());
+                if (StringUtil.isNotEmpty(password)) {
+                    future.complete(password);
+                } else {
+                    Messages.showErrorDialog(project, MessagesBundle.getText("dialog.password.error"), "Error");
+                    future.cancel(true);
+                }
+            } catch (Exception e) {
+                future.completeExceptionally(e);
             }
         });
 
         return future;
-    }
-
-
-    /**
-     * get password from user input
-     *
-     * @return password
-     */
-    public static String requestPassword() {
-        CompletableFuture<String> stringCompletableFuture = getUserInputAsync();
-        return stringCompletableFuture.join();
-    }
-
-    /**
-     * request password if password not exists in server,
-     * and return the clone of server
-     *
-     * @param server server information
-     * @return the clone of server
-     */
-    public static SshServer requestPasswordIfNecessary(SshServer server) {
-        Integer authType = server.getAuthType();
-        SshServer ret = server.clone();
-        if (AuthType.needPassword(authType)
-                && StringUtil.isEmpty(ret.getPassword())) {
-            ret.setPassword(requestPassword());
-        }
-        return ret;
     }
 
     /**

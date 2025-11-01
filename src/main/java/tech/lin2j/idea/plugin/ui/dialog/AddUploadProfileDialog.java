@@ -58,6 +58,7 @@ public class AddUploadProfileDialog extends DialogWrapper {
     private TextFieldWithBrowseButton fileBrowser;
     private JPanel fileContainer;
     private boolean useRegex;
+    private boolean includeCurrentDir;
     private JPanel preCommandBoxContainer;
     private JPanel postCommandBoxContainer;
     private ComboBox<Command> preCommandBox;
@@ -112,13 +113,14 @@ public class AddUploadProfileDialog extends DialogWrapper {
         Command postCommand = (Command) postCommandBox.getSelectedItem();
 
         String exclude = excludeInput.getText();
-
+        System.out.println("includeCurrentDir = " + includeCurrentDir);
         // update config if profile is exist
         Integer sshId = profile.getSshId();
         if (profile.getId() != null) {
             profile.setSshId(sshId);
             profile.setName(trim(name));
             profile.setFile(trim(file));
+            profile.setIncludeCurrentDir(includeCurrentDir);
             profile.setExclude(trim(exclude));
             profile.setLocation(trim(location));
             profile.setPreCommandId(getCommandId(preCommand));
@@ -132,6 +134,7 @@ public class AddUploadProfileDialog extends DialogWrapper {
             newProfile.setName(trim(name));
             newProfile.setSshId(sshId);
             newProfile.setFile(trim(file));
+            newProfile.setIncludeCurrentDir(includeCurrentDir);
             newProfile.setExclude(trim(exclude));
             newProfile.setLocation(trim(location));
             newProfile.setPreCommandId(getCommandId(preCommand));
@@ -262,7 +265,11 @@ public class AddUploadProfileDialog extends DialogWrapper {
         });
 
         DefaultActionGroup group = new DefaultActionGroup();
+        AnActionEvent event = AnActionEvent.createFromDataContext("AddUploadProfileDialog", null, DataContext.EMPTY_CONTEXT);
+        CurrentIncludeToggleAction includeToggleAction = new CurrentIncludeToggleAction();
+        includeToggleAction.setSelected(event, true);
         group.add(new RegexToggleAction());
+        group.add(includeToggleAction);
         ActionToolbar uploadToolbar = ActionManager.getInstance()
                 .createActionToolbar("AddUploadProfileDialog@UseRegex", group, true);
         uploadToolbar.setTargetComponent(null);
@@ -404,6 +411,27 @@ public class AddUploadProfileDialog extends DialogWrapper {
         @Override
         public void setSelected(@NotNull AnActionEvent e, boolean state) {
             useRegex = state;
+        }
+
+        @Override
+        public @NotNull ActionUpdateThread getActionUpdateThread() {
+            return ActionUpdateThread.BGT;
+        }
+    }
+    private class CurrentIncludeToggleAction extends ToggleAction {
+        public CurrentIncludeToggleAction() {
+            super("Include Current", "Include current dir", AllIcons.Nodes.Include);
+        }
+
+        @Override
+        public boolean isSelected(@NotNull AnActionEvent e) {
+            return includeCurrentDir;
+        }
+
+        @Override
+        public void setSelected(@NotNull AnActionEvent e, boolean state) {
+            includeCurrentDir = state;
+            System.out.println("set includeCurrentDir = " + includeCurrentDir);
         }
 
         @Override

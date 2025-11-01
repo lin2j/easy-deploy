@@ -221,11 +221,22 @@ public List<Command> loadCommandList() {
         SshServer server = ConfigHelper.getSshServerById(sshId);
 
         boolean needPassword = AuthType.needPassword(server.getAuthType());
-        server = UiUtil.requestPasswordIfNecessary(server);
-        if (needPassword && StringUtil.isEmpty(server.getPassword())) {
-            return;
+//        server = UiUtil.requestPasswordIfNecessary(server);
+        if (!needPassword || StringUtil.isNotEmpty(server.getPassword())) {
+            CommandUtil.executeCommand(project, cmd, server, this);
+        } else {
+            UiUtil.getUserInputAsync().thenAccept(password -> {
+                server.setPassword(password);
+                // 继续后续业务操作
+                if (StringUtil.isEmpty(server.getPassword())) {
+                    return;
+                }
+                CommandUtil.executeCommand(project, cmd, server, this);
+            }).exceptionally(throwable -> {
+                // 处理异常情况
+                return null;
+            });
         }
-        CommandUtil.executeCommand(project, cmd, server, this);
     }
 
     private class RunCommandAction extends AnAction {

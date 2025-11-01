@@ -20,6 +20,12 @@ public class UploadProfile implements Cloneable, UniqueModel {
     private String file;
 
     /**
+     * Whether to include the current directory
+     * when uploading
+     */
+    private Boolean includeCurrentDir;
+
+    /**
      * the suffix name that needs to be excluded
      * during the uploading process
      */
@@ -120,6 +126,12 @@ public class UploadProfile implements Cloneable, UniqueModel {
         this.uid = uid;
     }
 
+    public Boolean getIncludeCurrentDir() {
+        return includeCurrentDir;
+    }
+    public void setIncludeCurrentDir(Boolean includeCurrentDir) {
+        this.includeCurrentDir = includeCurrentDir;
+    }
     public Integer getPreCommandId() {
         return preCommandId;
     }

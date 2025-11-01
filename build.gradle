@@ -21,7 +21,7 @@ dependencies {
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
     version = '2022.3'
-    type = 'IU'
+//    type = 'IU'
     plugins = [
             'com.intellij.java',
             "org.jetbrains.plugins.terminal",

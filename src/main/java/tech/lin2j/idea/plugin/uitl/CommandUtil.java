@@ -23,10 +23,12 @@ import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.ssh.sshj.SshjConnection;
 
+import java.io.File;
 import java.time.LocalDateTime;
 import java.util.Objects;
 
 import static com.intellij.openapi.ui.DialogWrapper.OK_EXIT_CODE;
+import static tech.lin2j.idea.plugin.uitl.FileUtil.isDirectory;
 
 /**
  * @author linjinjia
@@ -82,10 +84,23 @@ public class CommandUtil {
                     filter.addFilter(regexFilter);
                     targetFile = PathUtil.getParentPath(targetFile);
                 }
+                File file = new File(targetFile);
+                boolean includeCurrent = profile.getIncludeCurrentDir() != null && profile.getIncludeCurrentDir();
+                boolean success;
+                if (file.isFile() || (includeCurrent && isDirectory(targetFile))) {
+                    success = performUpload(sshjConnection, sshService, filter, targetFile, remoteTargetDir, commandLog, !useRegex);
+                } else {
+                    commandLog.info("Upload [" + targetFile + "] SubDir or file to [" + remoteTargetDir + "]" + (useRegex ? ", regex: true" : ""));
+                    success = true;
+                    for (String subFile : Objects.requireNonNull(file.list())) {
+                        String subTargetFile = targetFile + "/" + subFile;
+                        if (!performUpload(sshjConnection, sshService, filter, subTargetFile, remoteTargetDir, commandLog, !useRegex)) {
+                            success = false;
+                            break;
+                        }
+                    }
+                }
 
-                commandLog.info("Upload [" + targetFile + "] to [" + remoteTargetDir + "]" + (useRegex ? ", regex: true" : ""));
-                sshjConnection.setTransferListener(new ConsoleTransferListener(targetFile, commandLog));
-                boolean success = sshService.upload(filter, sshjConnection, targetFile, remoteTargetDir, commandLog, !useRegex);
                 if (!success) {
                     allUploaded = false;
                     break;
@@ -121,7 +136,13 @@ public class CommandUtil {
             commandLog.error(e.getMessage());
         }
     }
-
+    // 新增私有方法，提取公共上传逻辑
+    private static boolean performUpload(SshjConnection sshjConnection, ISshService sshService, ConsoleFileFilter filter,
+                                         String targetFile, String remoteTargetDir, CommandLog commandLog, boolean preserveRoot) {
+        commandLog.info("Upload [" + targetFile + "] to [" + remoteTargetDir + "]");
+        sshjConnection.setTransferListener(new ConsoleTransferListener(targetFile, commandLog));
+        return sshService.upload(filter, sshjConnection, targetFile, remoteTargetDir, commandLog, preserveRoot);
+    }
     private static void executeCommand(Integer commandId, String timing, UploadProfile profile, SshServer server, 
                                      ISshService sshService, SshjConnection sshjConnection, CommandLog commandLog, boolean synchronous) {
         if (commandId == null) {

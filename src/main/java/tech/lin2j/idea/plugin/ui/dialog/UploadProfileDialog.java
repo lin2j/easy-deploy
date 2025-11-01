@@ -110,14 +110,25 @@ public class UploadProfileDialog extends DialogWrapper implements ApplicationLis
         profile.setSelected(true);
 
         boolean needPassword = AuthType.needPassword(server.getAuthType());
-        SshServer sshServer = UiUtil.requestPasswordIfNecessary(server);
-        if (needPassword && StringUtil.isEmpty(sshServer.getPassword())) {
-            return;
+        if (!needPassword || StringUtil.isNotEmpty(server.getPassword())) {
+            CommandUtil.executeUpload(project, profile, server, this);
+            ApplicationContext.getApplicationContext().publishEvent(new UploadProfileSelectedEvent(profile));
+        } else {
+            UiUtil.getUserInputAsync().thenAccept(password -> {
+                server.setPassword(password);
+                // 继续后续业务操作
+                if (StringUtil.isEmpty(server.getPassword())) {
+                    return;
+                }
+
+                CommandUtil.executeUpload(project, profile, server, this);
+                ApplicationContext.getApplicationContext().publishEvent(new UploadProfileSelectedEvent(profile));
+
+            }).exceptionally(throwable -> {
+                // 处理异常情况
+                return null;
+            });
         }
-
-        CommandUtil.executeUpload(project, profile, sshServer, this);
-        ApplicationContext.getApplicationContext().publishEvent(new UploadProfileSelectedEvent(profile));
-
         super.doOKAction();
     }
 

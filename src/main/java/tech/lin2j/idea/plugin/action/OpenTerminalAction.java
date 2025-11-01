@@ -48,10 +48,27 @@ public class OpenTerminalAction implements ActionListener {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 boolean needPassword = AuthType.needPassword(tmp.getAuthType());
-                SshServer server = UiUtil.requestPasswordIfNecessary(tmp);
-                if (needPassword && StringUtil.isEmpty(server.getPassword())) {
-                    return;
+                if (!needPassword || StringUtil.isNotEmpty(tmp.getPassword())) {
+                    //
+                    SshServer server = tmp.clone();
+                    coreProcess(indicator, server);
+                } else {
+                    UiUtil.getUserInputAsync().thenAccept(password -> {
+                        SshServer server = tmp.clone();
+                        server.setPassword(password);
+                        // 继续后续业务操作
+                        if (StringUtil.isEmpty(server.getPassword())) {
+                            return;
+                        }
+                        coreProcess(indicator, server);
+                    }).exceptionally(throwable -> {
+                        // 处理异常情况
+                        return null;
+                    });
                 }
+            }
+
+            private void coreProcess(@NotNull ProgressIndicator indicator, SshServer server) {
                 indicator.setIndeterminate(false);
                 try {
                     runner = TerminalRunnerUtil.createCloudTerminalRunner(project, server, workingDirectory);
