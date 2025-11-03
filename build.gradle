@@ -5,7 +5,7 @@ plugins {
 }
 
 group 'tech.lin2j'
-version '1.3.9-241'
+version '1.4.0-223'
 
 repositories {
     mavenCentral()

@@ -21,8 +21,8 @@
 
     <ul>
         <li>Add/Edit/Remove/Search server information</li>
-        <li>Add/Edit/Remove/Share commands</li>
-        <li>Upload files or directories with filtering support</li>
+        <li>Add/Edit/Remove/Share/Search commands and show command details</li>
+        <li>Upload files or directories with filtering support, include or exclude self</li>
         <li>Deploy services</li>
         <li>Pre/Post-upload command execution support</li>
         <li>Command execution directory override (use upload path)</li>
@@ -51,8 +51,8 @@
     <h3>功能</h3>
     <ul>
         <li>添加/编辑/删除/搜索服务器信息</li>
-        <li>添加/编辑/删除/分享命令</li>
-        <li>上传文件或者目录，并支持过滤</li>
+        <li>添加/编辑/删除/分享/搜索命令，并查看详情</li>
+        <li>上传文件或者目录，并支持过滤，可选包含或不包含自身</li>
         <li>文件（目录）上传配置</li>
         <li>前置/后置命令执行支持</li>
         <li>命令执行目录覆盖（使用上传路径）</li>
@@ -71,6 +71,12 @@
     ]]></description>
 
     <change-notes><![CDATA[
+    <h2>release 1.4.0</h2>
+    <ul>
+        <li>Add configuration item to allow including or excluding the folder itself when uploading files.</li>
+        <li>Extend command functionality to support command search and view details.</li>
+        <li>Compile, test, and build the plugin package based on version 2022.3.</li>
+    </ul>
     <h2>release 1.3.9</h2>
     <ul>
         <li>Added configuration for pre-command and post-command in UploadProfile when uploading files, supporting the use of the file upload path as the execution path for commands (Thanks <a href="https://github.com/zephyr949">Zephyr</a>) </li>
