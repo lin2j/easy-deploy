@@ -1,11 +1,11 @@
 plugins {
     id 'org.jetbrains.intellij' version '1.17.4'
     id 'java'
-    id 'org.jetbrains.kotlin.jvm'
+    id 'org.jetbrains.kotlin.jvm' version "1.9.0"
 }
 
 group 'tech.lin2j'
-version '1.4.0-223'
+version '1.4.1-223'
 
 repositories {
     mavenCentral()
@@ -26,6 +26,7 @@ intellij {
             'com.intellij.java',
             "org.jetbrains.plugins.terminal",
     ]
+    //localPath = 'D:\\Program Files\\ideaIU-2023.2.8.win'
     updateSinceUntilBuild = false
 }
 

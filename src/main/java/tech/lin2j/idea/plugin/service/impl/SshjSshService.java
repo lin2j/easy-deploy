@@ -157,6 +157,10 @@ public class SshjSshService implements ISshService {
                         String localFile, String remoteDstDir) throws Exception {
         File dir = new File(localFile);
         if (dir.isDirectory()) {
+            if (!filter.accept(dir.getName())) {
+                System.out.println("dir = " + dir + "is Exclude");
+                return;
+            }
             String[] fileList = dir.list();
             if (fileList == null) {
                 return;

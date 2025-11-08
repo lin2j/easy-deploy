@@ -1,6 +1,5 @@
 package tech.lin2j.idea.plugin.ssh.sshj;
 
-import com.jediterm.terminal.Questioner;
 import net.schmizz.sshj.SSHClient;
 import net.schmizz.sshj.connection.channel.direct.Session;
 import net.schmizz.sshj.transport.TransportException;
@@ -108,11 +107,6 @@ public class SshjTtyConnector implements CustomTtyConnector {
             resizeImmediately();
         }
 
-    }
-
-    @Override
-    public boolean init(Questioner questioner) {
-        return false;
     }
 
     @Override

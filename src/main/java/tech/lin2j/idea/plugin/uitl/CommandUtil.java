@@ -63,7 +63,8 @@ public class CommandUtil {
     public static void executeUpload(UploadProfile profile, SshServer server, CommandLog commandLog) {
         String remoteTargetDir = profile.getLocation();
         String exclude = profile.getExclude();
-        ConsoleFileFilter filter = new ConsoleFileFilter(new ExtExcludeFilter(exclude, commandLog), commandLog);
+        ExtExcludeFilter extExcludeFilter = new ExtExcludeFilter(exclude, commandLog);
+        ConsoleFileFilter filter = new ConsoleFileFilter(extExcludeFilter, commandLog);
         try {
             SshjConnection sshjConnection = SshConnectionManager.makeSshjConnection(server);
             ISshService sshService = ApplicationManager.getApplication().getService(ISshService.class);
@@ -94,6 +95,12 @@ public class CommandUtil {
                     success = true;
                     for (String subFile : Objects.requireNonNull(file.list())) {
                         String subTargetFile = targetFile + "/" + subFile;
+                        if (!extExcludeFilter.accept(subFile)) {
+                            // 顶层排除需要过滤的文件夹或者文件
+                            commandLog.info("Exclude sub file [" + subTargetFile + "] " + (useRegex ? ", useRegex: [true]" : ""));
+                            continue;
+                        }
+
                         if (!performUpload(sshjConnection, sshService, filter, subTargetFile, remoteTargetDir, commandLog, !useRegex)) {
                             success = false;
                             break;
@@ -104,10 +111,6 @@ public class CommandUtil {
                 if (!success) {
                     allUploaded = false;
                     break;
-                }
-
-                if (useRegex) {
-                    filter.remove(filter);
                 }
             }
 

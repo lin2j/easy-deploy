@@ -7,6 +7,7 @@ import tech.lin2j.idea.plugin.file.filter.ExtExcludeFilter;
 import tech.lin2j.idea.plugin.ssh.CommandLog;
 
 import java.util.concurrent.FutureTask;
+import java.util.regex.Pattern;
 
 /**
  * @author linjinjia
@@ -20,7 +21,7 @@ public class FilterTest {
         ExtExcludeFilter fileFilter = new ExtExcludeFilter(extensions, new TestCommandLog());
         String[] suffix = {"bat", "log", "iml"};
         for (String s : suffix) {
-            assert fileFilter.getExtensionSet().contains(s);
+            assert fileFilter.getExtensionSet().contains(Pattern.compile(s));
         }
         assert !fileFilter.accept("abc.iml");
         assert fileFilter.accept("abc.txt");

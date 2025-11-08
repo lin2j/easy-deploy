@@ -6,6 +6,8 @@ import tech.lin2j.idea.plugin.ssh.CommandLog;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 /**
@@ -14,20 +16,37 @@ import java.util.stream.Collectors;
  */
 public class ExtExcludeFilter implements FileFilter {
     private final String extensions;
-    private final Set<String> extensionSet;
-    private final CommandLog commandLog;;
+    private final Set<Pattern> extensionPatternSet;
+    private final CommandLog commandLog;
 
     public ExtExcludeFilter(String extensions, CommandLog commandLog) {
         this.commandLog = commandLog;
         if (StringUtil.isEmpty(extensions)) {
             this.extensions = "";
-            this.extensionSet = new HashSet<>();
+            this.extensionPatternSet = new HashSet<>();
             return;
         }
         this.extensions = extensions;
-        extensionSet = Arrays.stream(extensions.split(";"))
-                .map(s -> s.replaceAll("\\*?\\.?", ""))
+        extensionPatternSet = Arrays.stream(extensions.split(";"))
+                .map(regx -> {
+                    String pattern = fillPattern(regx);
+                    return Pattern.compile(pattern);
+                })
                 .collect(Collectors.toSet());
+    }
+
+    public static String fillPattern(String pattern) {
+        return "^" + pattern
+                .replace(".", "\\.")
+                .replace("*", ".*")
+                .replace("?", ".")
+                .replace("+", "\\+")
+                .replace("(", "\\(")
+                .replace(")", "\\)")
+                .replace("[", "\\[")
+                .replace("]", "\\]")
+                .replace("{", "\\{")
+                .replace("}", "\\}") + "$";
     }
 
     @Override
@@ -35,24 +54,22 @@ public class ExtExcludeFilter implements FileFilter {
         if (StringUtil.isEmpty(extensions)) {
             return true;
         }
-
-        int dot = f.lastIndexOf('.');
-        if (dot == -1) {
-            return true;
+        // 使用正则表达式验证
+        for (Pattern pattern : extensionPatternSet) {
+            Matcher m = pattern.matcher(f);
+            if (m.matches()) {
+                commandLog.info("[" + f + "] excluded by '" + extensions + "'");
+                return false;
+            }
         }
-        String suffix = f.substring(dot + 1);
-        boolean contains = extensionSet.contains(suffix);
-        if (contains) {
-            commandLog.info("[" + f + "] excluded by '" + extensions + "'");
-        }
-        return !contains;
+        return true;
     }
 
     public String getExtensions() {
         return extensions;
     }
 
-    public Set<String> getExtensionSet() {
-        return extensionSet;
+    public Set<Pattern> getExtensionSet() {
+        return extensionPatternSet;
     }
 }
