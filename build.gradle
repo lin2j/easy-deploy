@@ -20,13 +20,14 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-    version = '2022.3'
+//    version = '2022.3'
 //    type = 'IU'
     plugins = [
             'com.intellij.java',
             "org.jetbrains.plugins.terminal",
     ]
     //localPath = 'D:\\Program Files\\ideaIU-2023.2.8.win'
+    localPath = '/Applications/IntelliJ IDEA 2.app/Contents'
     updateSinceUntilBuild = false
 }
 
