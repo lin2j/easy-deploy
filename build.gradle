@@ -1,5 +1,6 @@
 plugins {
     id 'org.jetbrains.intellij' version '1.17.4'
+    //    id 'org.jetbrains.intellij.platform' version '2.2.1'
     id 'java'
     id 'org.jetbrains.kotlin.jvm' version "1.9.0"
 }
@@ -20,15 +21,40 @@ dependencies {
 
 // See https://github.com/JetBrains/gradle-intellij-plugin/
 intellij {
-//    version = '2022.3'
-//    type = 'IU'
+    // 根据环境变量自动选择版本，如果没有设置则使用默认版本
+//    version = System.getenv('IDEA_VERSION') ?: '2023.2.8'
+
+    // 根据环境变量自动选择类型，如果没有设置则使用IU
+    type = System.getenv('IDEA_TYPE') ?: 'IU'
+
     plugins = [
             'com.intellij.java',
             "org.jetbrains.plugins.terminal",
     ]
-    //localPath = 'D:\\Program Files\\ideaIU-2023.2.8.win'
-    localPath = '/Applications/IntelliJ IDEA 2.app/Contents'
+
+    // 根据操作系统自动设置本地路径
+    localPath = getLocalIdePath()
+
     updateSinceUntilBuild = false
+}
+
+// 获取本地IDE路径的方法
+def getLocalIdePath() {
+    // 优先使用环境变量中设置的路径
+    def envPath = System.getenv('IDEA_LOCAL_PATH')
+    if (envPath) {
+        return envPath
+    }
+
+    // 根据操作系统自动选择默认路径
+    if (org.gradle.internal.os.OperatingSystem.current().isWindows()) {
+        return 'D:\\Program Files\\ideaIU-2022.3.3.win'
+    } else if (org.gradle.internal.os.OperatingSystem.current().isMacOsX()) {
+        return '/Applications/IntelliJ IDEA 2.app/Contents'
+    } else {
+        // Linux 或其他系统
+        return '/opt/idea'
+    }
 }
 
 tasks.withType(JavaCompile).configureEach {

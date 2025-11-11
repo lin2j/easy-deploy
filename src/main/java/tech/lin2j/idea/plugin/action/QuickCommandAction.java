@@ -4,9 +4,9 @@ import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.Messages;
-import com.intellij.terminal.ui.TerminalWidget;
 import com.jediterm.terminal.TtyConnector;
-import org.jetbrains.plugins.terminal.TerminalToolWindowManager;
+import com.jediterm.terminal.ui.TerminalWidget;
+import org.jetbrains.plugins.terminal.TerminalView;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import java.io.IOException;
@@ -27,23 +27,35 @@ public class QuickCommandAction extends AnAction {
     public void actionPerformed(AnActionEvent e) {
         Project project = e.getProject();
         if (project == null) return;
-        TerminalToolWindowManager instance = TerminalToolWindowManager.getInstance(project);
-        for (TerminalWidget terminalWidget : instance.getTerminalWidgets()) {
-            if (terminalWidget.hasFocus()) {
-                String title = terminalWidget.getTerminalTitle().getDefaultTitle();
-                // 可以向终端发送文本，
-                TtyConnector ttyConnector = terminalWidget.getTtyConnector();
-                try {
-                    if (ttyConnector != null) {
-                        ttyConnector.write("echo \"Hello World\"\r");
-                    }
-                } catch (IOException ex) {
-                    throw new RuntimeException(ex);
+        TerminalView instance = TerminalView.getInstance(project);
+        for (TerminalWidget terminalWidget : instance.getWidgets()) {
+            String sessionName = terminalWidget.getCurrentSession().getSessionName();
+            TtyConnector ttyConnector = terminalWidget.getCurrentSession().getTtyConnector();
+            try {
+                if (ttyConnector != null) {
+                    ttyConnector.write("echo \"Hello World\"\r");
                 }
-                Messages.showInfoMessage(project,
-                        "Current Terminal: " + title ,
-                        "Active Terminal Info");
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
             }
+            Messages.showInfoMessage(project,
+                    "Current Terminal: " + sessionName ,
+                    "Active Terminal Info");
+//            if (terminalWidget.hasFocus()) {
+//                String title = terminalWidget.getTerminalTitle().getDefaultTitle();
+//                // 可以向终端发送文本，
+//                TtyConnector ttyConnector = terminalWidget.getTtyConnector();
+//                try {
+//                    if (ttyConnector != null) {
+//                        ttyConnector.write("echo \"Hello World\"\r");
+//                    }
+//                } catch (IOException ex) {
+//                    throw new RuntimeException(ex);
+//                }
+//                Messages.showInfoMessage(project,
+//                        "Current Terminal: " + title ,
+//                        "Active Terminal Info");
+//            }
         }
     }
 }
