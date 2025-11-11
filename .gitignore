@@ -16,3 +16,4 @@
 .flattened-pom.xml
 .gradle
 build
+.intellijPlatform/*

@@ -25,6 +25,8 @@ public class QuickCommandAction extends AnAction {
 
     @Override
     public void actionPerformed(AnActionEvent e) {
+        //
+        // 向当前活跃的终端发送指令
         Project project = e.getProject();
         if (project == null) return;
         TerminalView instance = TerminalView.getInstance(project);
@@ -38,24 +40,8 @@ public class QuickCommandAction extends AnAction {
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
-            Messages.showInfoMessage(project,
-                    "Current Terminal: " + sessionName ,
+            Messages.showInfoMessage(project, "Current Terminal: " + sessionName ,
                     "Active Terminal Info");
-//            if (terminalWidget.hasFocus()) {
-//                String title = terminalWidget.getTerminalTitle().getDefaultTitle();
-//                // 可以向终端发送文本，
-//                TtyConnector ttyConnector = terminalWidget.getTtyConnector();
-//                try {
-//                    if (ttyConnector != null) {
-//                        ttyConnector.write("echo \"Hello World\"\r");
-//                    }
-//                } catch (IOException ex) {
-//                    throw new RuntimeException(ex);
-//                }
-//                Messages.showInfoMessage(project,
-//                        "Current Terminal: " + title ,
-//                        "Active Terminal Info");
-//            }
         }
     }
 }

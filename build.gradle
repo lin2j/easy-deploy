@@ -27,7 +27,8 @@ dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     // See https://github.com/JetBrains/gradle-intellij-plugin/
     intellijPlatform {
-        local 'D:\\Program Files\\ideaIU-2022.3.3.win'
+        create("IC","2022.3.3", false)
+//        local 'D:\\Program Files\\ideaIU-2022.3.3.win'
         bundledPlugins 'com.intellij.java', 'org.jetbrains.plugins.terminal'
         instrumentationTools()
         javaCompiler()
