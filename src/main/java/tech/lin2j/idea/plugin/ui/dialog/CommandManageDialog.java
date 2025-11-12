@@ -2,8 +2,11 @@ package tech.lin2j.idea.plugin.ui.dialog;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.ui.components.JBTabbedPane;
 import org.jetbrains.annotations.Nullable;
-import tech.lin2j.idea.plugin.ui.component.*;
+import tech.lin2j.idea.plugin.ui.component.CommandManagePanel;
+import tech.lin2j.idea.plugin.ui.component.CommandPipelinePanel;
+import tech.lin2j.idea.plugin.ui.component.CommandSettingPanel;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.*;
@@ -13,27 +16,39 @@ public class CommandManageDialog extends DialogWrapper {
     private final Project project;
     private final JPanel root = new JPanel(new BorderLayout());
 
-    private final QuickCommandPanel quickCommandPanel;
-//    private final CommandManagePanel commandManagePanel;
-//    private final CommandSettingsPanel commandSettingsPanel;
+    private final CommandManagePanel commandManagePanel;
+    private final CommandPipelinePanel commandPipelinePanel;
+    private final CommandSettingPanel commandSettingsPanel;
 
-    protected CommandManageDialog(@Nullable Project project) {
+    public CommandManageDialog(@Nullable Project project) {
         super(project);
         this.project = project;
-//        JButton testButton = new JButton(MessagesBundle.getText("dialog.panel.host.test-connect"));
-//        testButton.addActionListener(this::testConnect);
+        // 快捷指令管理
+        commandManagePanel = new CommandManagePanel(project);
+        // 指令、任务编排
+        commandPipelinePanel = new CommandPipelinePanel(project);
+        // 指令设置
+        commandSettingsPanel = new CommandSettingPanel(project);
 
-        quickCommandPanel = new QuickCommandPanel(project);
-//        commandManagePanel = new HostProxyPanel(project, server);
-//        commandSettingsPanel = new HostOtherPanel(server);
-
-        setTitle(MessagesBundle.getText("dialog.host.title"));
+        setTitle(MessagesBundle.getText("dialog.panel.command.title"));
         setSize(500, 0);
         init();
     }
 
+    @Nullable
     @Override
-    protected @Nullable JComponent createCenterPanel() {
-        return null;
+    protected JComponent createCenterPanel() {
+        String mangeTab = MessagesBundle.getText("dialog.command.tab.manage");
+        String pipelineTab = MessagesBundle.getText("dialog.command.tab.task");
+        String settingTab = MessagesBundle.getText("dialog.command.tab.setting");
+
+        JBTabbedPane tabs = new JBTabbedPane();
+        tabs.addTab(mangeTab, commandManagePanel.createUI());
+        tabs.addTab(pipelineTab, commandPipelinePanel.createUI());
+        tabs.addTab(settingTab, commandSettingsPanel.createUI());
+
+        root.add(tabs);
+
+        return tabs;
     }
 }

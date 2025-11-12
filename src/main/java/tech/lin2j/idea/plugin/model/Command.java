@@ -4,9 +4,9 @@ import java.util.Objects;
 
 /**
  * @author linjinjia
- * @date 2022/4/27 14:01
+ * @since 2022/4/27 14:01
  */
-public class Command implements Cloneable, UniqueModel {
+public class Command implements UniqueModel {
 
     private Integer id;
 
@@ -23,6 +23,15 @@ public class Command implements Cloneable, UniqueModel {
     private Boolean sharable;
 
     public Command() {
+    }
+    public Command(Command command) {
+        this.id = command.id;
+        this.uid = command.uid;
+        this.sshId = command.sshId;
+        this.title = command.title;
+        this.dir = command.dir;
+        this.content = command.content;
+        this.sharable = command.sharable;
     }
 
     public Command(Integer sshId) {
@@ -111,11 +120,6 @@ public class Command implements Cloneable, UniqueModel {
 
     public void setSharable(Boolean sharable) {
         this.sharable = sharable;
-    }
-
-    @Override
-    public Command clone() throws CloneNotSupportedException {
-        return (Command) super.clone();
     }
 
     @Override

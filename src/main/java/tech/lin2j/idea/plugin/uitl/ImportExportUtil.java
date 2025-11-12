@@ -53,7 +53,7 @@ public class ImportExportUtil {
             if (options.isCommand() && ConfigHelper.getCommandsBySshId(sshId) != null) {
                 List<Command> cloneCommands = new ArrayList<>();
                 for (Command command : ConfigHelper.getCommandsBySshId(sshId)) {
-                    cloneCommands.add(command.clone());
+                    cloneCommands.add(new Command(command));
                 }
                 hostInfo.setCommands(cloneCommands);
             }

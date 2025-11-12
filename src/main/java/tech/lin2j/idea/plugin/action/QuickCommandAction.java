@@ -2,14 +2,8 @@ package tech.lin2j.idea.plugin.action;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
-import com.jediterm.terminal.TtyConnector;
-import com.jediterm.terminal.ui.TerminalWidget;
-import org.jetbrains.plugins.terminal.TerminalView;
+import tech.lin2j.idea.plugin.ui.dialog.CommandManageDialog;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
-
-import java.io.IOException;
 
 /**
  * 快捷指令功能入口
@@ -20,28 +14,11 @@ public class QuickCommandAction extends AnAction {
      * Creates a new action with its text, description and icon set to {@code null}.
      */
     public QuickCommandAction() {
-        super(MessagesBundle.getText("dialog.quick.command.frame"));
+        super(MessagesBundle.getText("dialog.command.quick.frame"));
     }
 
     @Override
     public void actionPerformed(AnActionEvent e) {
-        //
-        // 向当前活跃的终端发送指令
-        Project project = e.getProject();
-        if (project == null) return;
-        TerminalView instance = TerminalView.getInstance(project);
-        for (TerminalWidget terminalWidget : instance.getWidgets()) {
-            String sessionName = terminalWidget.getCurrentSession().getSessionName();
-            TtyConnector ttyConnector = terminalWidget.getCurrentSession().getTtyConnector();
-            try {
-                if (ttyConnector != null) {
-                    ttyConnector.write("echo \"Hello World\"\r");
-                }
-            } catch (IOException ex) {
-                throw new RuntimeException(ex);
-            }
-            Messages.showInfoMessage(project, "Current Terminal: " + sessionName ,
-                    "Active Terminal Info");
-        }
+        new CommandManageDialog(e.getProject()).show();
     }
 }

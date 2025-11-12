@@ -16,11 +16,17 @@ import java.util.stream.Collectors;
  * @date 2022/4/25 17:27
  */
 public class ConfigHelper {
+    // 禁止实例化
+    private ConfigHelper() {
+        throw new IllegalStateException("Utility class");
+    }
     private static final Logger log = Logger.getInstance(ConfigHelper.class);
 
     private static volatile ConfigPersistence CONFIG_PERSISTENCE = null;
 
     private static Map<Integer, SshServer> SSH_SERVER_MAP;
+
+    private static List<Command> COMMAND_LIST;
 
     private static Map<Integer, List<Command>> COMMAND_MAP;
 
@@ -39,12 +45,18 @@ public class ConfigHelper {
         }
     }
 
+    public static List<Command> getCommandList() {
+        ensureConfigLoadInMemory();
+        return COMMAND_LIST;
+    }
+
     public static void refreshConfig() {
         SSH_SERVER_MAP = CONFIG_PERSISTENCE.getSshServers().stream()
                 .collect(Collectors.toMap(SshServer::getId, s -> s, (s1, s2) -> s1));
 
-        COMMAND_MAP = CONFIG_PERSISTENCE.getCommands().stream()
-                .collect(Collectors.groupingBy(Command::getSshId));
+        COMMAND_LIST = CONFIG_PERSISTENCE.getCommands();
+
+        COMMAND_MAP = COMMAND_LIST.stream().collect(Collectors.groupingBy(Command::getSshId));
 
         UPLOAD_PROFILE_MAP = CONFIG_PERSISTENCE.getUploadProfiles().stream()
                 .collect(Collectors.groupingBy(UploadProfile::getSshId));
@@ -122,6 +134,7 @@ public class ConfigHelper {
         profiles.forEach(profile -> CONFIG_PERSISTENCE.getUploadProfiles().remove(profile));
     }
 
+
     public static List<Command> getCommandsBySshId(int sshId) {
         ensureConfigLoadInMemory();
         return COMMAND_MAP.getOrDefault(sshId, new ArrayList<>());
@@ -132,7 +145,7 @@ public class ConfigHelper {
         return CONFIG_PERSISTENCE.getCommands().stream()
                 .filter(Command::getSharable)
                 .filter(cmd -> !Objects.equals(cmd.getSshId(), excludeSshId))
-                .collect(Collectors.toList());
+                .toList();
     }
 
     public static void addCommand(Command command) {
