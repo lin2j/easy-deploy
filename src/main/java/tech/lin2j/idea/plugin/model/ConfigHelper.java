@@ -162,6 +162,7 @@ public class ConfigHelper {
 
     public static void removeCommand(Command command) {
         ensureConfigLoadInMemory();
+        CONFIG_PERSISTENCE.getCommands().remove(command);
         COMMAND_LIST =  CONFIG_PERSISTENCE.getCommands();
         COMMAND_MAP = COMMAND_LIST.stream()
                 .filter(it -> Objects.nonNull(it.getSshId()))
