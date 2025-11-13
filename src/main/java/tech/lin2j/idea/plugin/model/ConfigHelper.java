@@ -56,7 +56,9 @@ public class ConfigHelper {
 
         COMMAND_LIST = CONFIG_PERSISTENCE.getCommands();
 
-        COMMAND_MAP = COMMAND_LIST.stream().collect(Collectors.groupingBy(Command::getSshId));
+        COMMAND_MAP = COMMAND_LIST.stream()
+                .filter(it -> Objects.nonNull(it.getSshId()))
+                .collect(Collectors.groupingBy(Command::getSshId));
 
         UPLOAD_PROFILE_MAP = CONFIG_PERSISTENCE.getUploadProfiles().stream()
                 .collect(Collectors.groupingBy(UploadProfile::getSshId));
@@ -128,6 +130,7 @@ public class ConfigHelper {
         List<Command> commands = getCommandsBySshId(id);
         COMMAND_MAP.remove(id);
         commands.forEach(cmd -> CONFIG_PERSISTENCE.getCommands().remove(cmd));
+        COMMAND_LIST =  CONFIG_PERSISTENCE.getCommands();
         // delete upload profile
         List<UploadProfile> profiles = getUploadProfileBySshId(id);
         UPLOAD_PROFILE_MAP.remove(id);
@@ -151,14 +154,17 @@ public class ConfigHelper {
     public static void addCommand(Command command) {
         ensureConfigLoadInMemory();
         CONFIG_PERSISTENCE.getCommands().add(command);
-        COMMAND_MAP = CONFIG_PERSISTENCE.getCommands().stream()
+        COMMAND_LIST =  CONFIG_PERSISTENCE.getCommands();
+        COMMAND_MAP = COMMAND_LIST.stream()
+                .filter(it -> Objects.nonNull(it.getSshId()))
                 .collect(Collectors.groupingBy(Command::getSshId));
     }
 
     public static void removeCommand(Command command) {
         ensureConfigLoadInMemory();
-        CONFIG_PERSISTENCE.getCommands().remove(command);
-        COMMAND_MAP = CONFIG_PERSISTENCE.getCommands().stream()
+        COMMAND_LIST =  CONFIG_PERSISTENCE.getCommands();
+        COMMAND_MAP = COMMAND_LIST.stream()
+                .filter(it -> Objects.nonNull(it.getSshId()))
                 .collect(Collectors.groupingBy(Command::getSshId));
     }
 

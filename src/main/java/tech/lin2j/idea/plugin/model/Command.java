@@ -2,6 +2,8 @@ package tech.lin2j.idea.plugin.model;
 
 import java.util.Objects;
 
+import com.intellij.openapi.util.text.StringUtil;
+
 /**
  * @author linjinjia
  * @since 2022/4/27 14:01
@@ -24,6 +26,7 @@ public class Command implements UniqueModel {
 
     public Command() {
     }
+
     public Command(Command command) {
         this.id = command.id;
         this.uid = command.uid;
@@ -50,24 +53,20 @@ public class Command implements UniqueModel {
     }
 
     public String generateCmdLine() {
-        return "cd " + dir + "; " + content;
+        if (StringUtil.isEmpty(dir)) {
+            return content;
+        } else {
+            return "cd " + dir + "; " + content;
+        }
     }
 
     public String generateCmdLine(String overrideDir) {
         String workingDir = (overrideDir != null && !overrideDir.trim().isEmpty()) ? overrideDir : dir;
-        return "cd " + workingDir + "; " + content;
-    }
-
-    public String logString() {
-        StringBuilder buf = new StringBuilder();
-        buf.append("cd ").append(dir).append(";\n");
-        if (content != null) {
-            String[] line = content.split("\n");
-            for (String s : line) {
-                buf.append(s).append("\n");
-            }
+        if (StringUtil.isEmpty(dir)) {
+            return content;
+        } else {
+            return "cd " + workingDir + "; " + content;
         }
-        return buf.toString();
     }
 
     public Integer getSshId() {

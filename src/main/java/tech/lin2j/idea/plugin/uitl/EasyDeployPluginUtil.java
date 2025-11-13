@@ -14,7 +14,7 @@ import javax.swing.Icon;
  */
 public class EasyDeployPluginUtil {
 
-    public static final PluginId PLUGIN_ID = PluginId.getId("tech.lin2j.simple-deployment");
+    public static final PluginId PLUGIN_ID = PluginId.getId("io.github.yueryou.easydev");
     public static final String version = PluginManagerCore.getPlugin(PLUGIN_ID).getVersion();
 
     public static String version() {

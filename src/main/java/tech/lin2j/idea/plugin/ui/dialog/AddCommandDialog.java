@@ -1,22 +1,12 @@
 package tech.lin2j.idea.plugin.ui.dialog;
 
-import com.intellij.openapi.actionSystem.ActionManager;
-import com.intellij.openapi.actionSystem.ActionToolbar;
-import com.intellij.openapi.actionSystem.ActionUpdateThread;
-import com.intellij.openapi.actionSystem.AnActionEvent;
-import com.intellij.openapi.actionSystem.DefaultActionGroup;
-import com.intellij.openapi.actionSystem.ToggleAction;
+import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.fileTypes.FileTypes;
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.StringUtil;
-import com.intellij.ui.AdditionalPageAtBottomEditorCustomization;
-import com.intellij.ui.EditorCustomization;
-import com.intellij.ui.EditorTextField;
-import com.intellij.ui.EditorTextFieldProvider;
-import com.intellij.ui.SoftWrapsEditorCustomization;
-import com.intellij.ui.ToggleActionButton;
+import com.intellij.ui.*;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import com.intellij.util.ui.JBUI;
@@ -31,12 +21,8 @@ import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.model.event.CommandAddEvent;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
-import javax.swing.Icon;
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-import java.awt.Dimension;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
+import javax.swing.*;
+import java.awt.*;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -88,7 +74,7 @@ public class AddCommandDialog extends DialogWrapper {
         String title = titleInput.getText();
         String dir = pathInput.getText();
         String cmdStr = commandEditor.getText();
-        if (StringUtil.isEmpty(dir) || StringUtil.isEmpty(cmdStr) || StringUtil.isEmpty(title)) {
+        if (StringUtil.isEmpty(cmdStr) || StringUtil.isEmpty(title)) {
             Messages.showErrorDialog(
                     MessagesBundle.getText("dialog.command.error"),
                     MessagesBundle.getText("dialog.command.frame")

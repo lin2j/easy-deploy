@@ -188,13 +188,7 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
 
     private boolean isEditable() {
         Command selectedValue = commandList.getSelectedValue();
-        if (selectedValue instanceof SeparatorCommand) {
-            return false;
-        }
-        if (selectedValue != null) {
-            return !selectedValue.getSharable() || Objects.equals(selectedValue.getSshId(), sshId);
-        }
-        return true;
+        return !(selectedValue instanceof SeparatorCommand);
     }
 
 public List<Command> loadCommandList() {

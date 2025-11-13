@@ -2,7 +2,8 @@ plugins {
 //    id 'org.jetbrains.intellij' version '1.17.4'
     id 'org.jetbrains.intellij.platform' version '2.10.4'
     id 'java'
-    id 'org.jetbrains.kotlin.jvm' version "1.9.25"
+//    id 'org.jetbrains.kotlin.jvm' version "1.9.25"
+    id 'org.jetbrains.kotlin.jvm' version '2.2.20'  // 或者对应的插件
 
 }
 
@@ -20,15 +21,17 @@ repositories {
 
 dependencies {
     implementation 'org.jetbrains:annotations:24.0.1'
-    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.25'
+//    implementation 'org.jetbrains.kotlin:kotlin-stdlib:1.9.25'
+//    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:2.2.20"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:2.2.20"
     implementation 'com.hierynomus:sshj:0.39.0'
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
     testImplementation 'org.junit.vintage:junit-vintage-engine:5.8.2'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
     // See https://github.com/JetBrains/gradle-intellij-plugin/
     intellijPlatform {
         create("IC","2022.3.3", false)
-//        local 'D:\\Program Files\\ideaIU-2022.3.3.win'
+//        local 'C:\\Users\\user\\AppData\\Local\\Programs\\IntelliJ IDEA Ultimate'
         bundledPlugins 'com.intellij.java', 'org.jetbrains.plugins.terminal'
         instrumentationTools()
         javaCompiler()

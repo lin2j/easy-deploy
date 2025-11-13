@@ -7,6 +7,7 @@ import org.jetbrains.annotations.Nullable;
 import io.github.yueryou.easydev.plugin.ui.component.CommandManagePanel;
 import io.github.yueryou.easydev.plugin.ui.component.CommandPipelinePanel;
 import io.github.yueryou.easydev.plugin.ui.component.CommandSettingPanel;
+import tech.lin2j.idea.plugin.event.ApplicationContext;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.*;
@@ -60,7 +61,7 @@ public class CommandManageDialog extends DialogWrapper {
         tabs.addTab(settingTab, commandSettingsPanel.createUI());
 
         root.add(tabs);
-
+        ApplicationContext.getApplicationContext().addApplicationListener(commandManagePanel);
         return tabs;
     }
 }

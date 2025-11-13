@@ -104,7 +104,9 @@ public class CommandManagePanel extends JPanel implements ApplicationListener<Co
     public Map<@Nls @Nullable String, JBTerminalWidget> getActiveSessionList(Project project) {
         if (project == null) return null;
         TerminalView instance = TerminalView.getInstance(project);
-        return instance.getWidgets().stream().collect(Collectors.toMap(JBTerminalWidget::getSessionName, value -> value));
+        return instance.getWidgets().stream().collect(Collectors.toMap(item -> {
+            return item.getTerminalTitle().getDefaultTitle();
+        }, value -> value));
     }
 
     private void bindInputChangeListener(List<Command> commands) {
@@ -242,10 +244,10 @@ public class CommandManagePanel extends JPanel implements ApplicationListener<Co
                 // 获取要执行的命令
                 // 根据session name 过滤终端
                 instance.getWidgets().stream()
-                        .filter(it -> selectedItems.contains(it.getSessionName()))
+                        .filter(it -> selectedItems.contains(it.getTerminalTitle().getDefaultTitle()))
                         .forEach(terminalWidget -> {
-                            String sessionName = terminalWidget.getSessionName();
-                            TtyConnector ttyConnector = terminalWidget.getCurrentSession().getTtyConnector();
+                            String sessionName = terminalWidget.getTerminalTitle().getDefaultTitle();
+                            TtyConnector ttyConnector = terminalWidget.getTtyConnector();
                             if (ttyConnector != null) {
                                 try {
                                     String command = selectedValue.generateCmdLine();
