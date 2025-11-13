@@ -1,7 +1,7 @@
 <idea-plugin>
     <id>io.github.yueryou.easydev</id>
     <name>Easy Dev</name>
-    <vendor email="630198766@qq.com" url="https://yueryou.github.io">Lin2j</vendor>
+    <vendor email="630198766@qq.com" url="https://yueryou.github.io">Yueryou</vendor>
     <idea-version since-build="223.8836"/>
     <description><![CDATA[
     <p>Convenient Intellij Platform Plugin for Deploying and Upgrading Services during Development</p>

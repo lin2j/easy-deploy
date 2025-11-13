@@ -6,7 +6,7 @@ plugins {
 
 }
 
-group 'tech.lin2j'
+group 'io.github.yueryou'
 version '1.4.1-223'
 
 repositories {
