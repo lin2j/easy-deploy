@@ -35,6 +35,18 @@ public class CommandManageDialog extends DialogWrapper {
         init();
     }
 
+    /**
+     * This method is invoked by default implementation of "OK" action. It just closes dialog
+     * with {@code OK_EXIT_CODE}. This is convenient place to override functionality of "OK" action.
+     * Note that the method does nothing if "OK" action isn't enabled.
+     */
+    @Override
+    protected void doOKAction() {
+        // 调用
+        commandManagePanel.executeCommand();
+        super.doOKAction();
+    }
+
     @Nullable
     @Override
     protected JComponent createCenterPanel() {

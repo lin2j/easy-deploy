@@ -1,8 +1,13 @@
 package tech.lin2j.idea.plugin.ui.component;
 
 import com.intellij.openapi.actionSystem.ActionToolbarPosition;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.diagnostic.Logger;
+import com.intellij.openapi.progress.ProgressIndicator;
+import com.intellij.openapi.progress.ProgressManager;
+import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.Strings;
 import com.intellij.terminal.JBTerminalWidget;
 import com.intellij.ui.DocumentAdapter;
@@ -10,17 +15,19 @@ import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
+import com.jediterm.terminal.TtyConnector;
+import com.jediterm.terminal.ui.TerminalWidget;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.jetbrains.plugins.terminal.TerminalView;
 import tech.lin2j.idea.plugin.action.CopyCommandAction;
-import tech.lin2j.idea.plugin.action.RunQuickCommandAction;
 import tech.lin2j.idea.plugin.event.ApplicationListener;
 import tech.lin2j.idea.plugin.model.Command;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.model.SeparatorCommand;
 import tech.lin2j.idea.plugin.model.event.CommandAddEvent;
+import tech.lin2j.idea.plugin.service.impl.PluginNotificationService;
 import tech.lin2j.idea.plugin.ui.dialog.AddCommandDialog;
 import tech.lin2j.idea.plugin.ui.dialog.SelectCommandDialog;
 import tech.lin2j.idea.plugin.ui.render.CommandColoredListCellRenderer;
@@ -30,6 +37,7 @@ import tech.lin2j.idea.plugin.uitl.UiUtil;
 import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import java.awt.*;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -67,6 +75,7 @@ public class CommandManagePanel extends JPanel implements ApplicationListener<Co
     private transient Command selectedCommand;
 
     private final transient Project project;
+    private final PluginNotificationService notificationService;
 
     public CommandManagePanel(Project project) {
         this.project = project;
@@ -82,11 +91,12 @@ public class CommandManagePanel extends JPanel implements ApplicationListener<Co
         bindInputChangeListener(loadCommandList());
         root = FormBuilder.createFormBuilder()
                 .addLabeledComponent(MessagesBundle.getText("dialog.command.search.show"), searchInput)
-                .addLabeledComponent(MessagesBundle.getText("dialog.panel.host.basic.ip"), searchableCheckboxList)
                 .addComponentFillVertically(createCommandToolbarPanel(), 8)
-                .addComponent(commandDetails)
+                .addLabeledComponent(MessagesBundle.getText("dialog.command.detail"), commandDetails)
+                .addLabeledComponent(MessagesBundle.getText("dialog.command.send.hosts"), searchableCheckboxList)
                 .getPanel();
         root.setPreferredSize(new Dimension(UiUtil.screenWidth() / 2, 600));
+        notificationService = ApplicationManager.getApplication().getService(PluginNotificationService.class);
     }
 
     private void initSessionCheckableList(List<String> sessionList) {
@@ -96,10 +106,9 @@ public class CommandManagePanel extends JPanel implements ApplicationListener<Co
     public Map<@Nls @Nullable String, JBTerminalWidget> getActiveSessionList(Project project) {
         if (project == null) return null;
         TerminalView instance = TerminalView.getInstance(project);
-        return instance.getWidgets().stream().collect(Collectors.toMap(JBTerminalWidget::getDefaultSessionName, value -> value));
-
-
+        return instance.getWidgets().stream().collect(Collectors.toMap(JBTerminalWidget::getSessionName, value -> value));
     }
+
     private void bindInputChangeListener(List<Command> commands) {
         searchInput.getDocument().addDocumentListener(new DocumentAdapter() {
             @Override
@@ -107,7 +116,7 @@ public class CommandManagePanel extends JPanel implements ApplicationListener<Co
                 // 根据查询条件更新命令列表
                 // 当输入内容为空时，显示所有命令
                 String text = searchInput.getText();
-                if (text.isBlank()){
+                if (text.isBlank()) {
                     // 重置commonList
                     commandList.setListData(commands.toArray(new Command[0]));
                 } else {
@@ -153,7 +162,7 @@ public class CommandManagePanel extends JPanel implements ApplicationListener<Co
             Command command = commandList.getSelectedValue();
             if (command != null) {
                 selectedCommand = command;
-                commandDetails.setText(command.getContent());
+                commandDetails.setText(command.toString());
             } else {
                 commandDetails.setText("");
             }
@@ -189,7 +198,6 @@ public class CommandManagePanel extends JPanel implements ApplicationListener<Co
                     new AddCommandDialog(project, cmd).showAndGet();
                 })
                 .addExtraAction(new CopyCommandAction(() -> selectedCommand))
-                .addExtraAction(new RunQuickCommandAction(() -> selectedCommand))
                 .createPanel();
     }
 
@@ -209,8 +217,48 @@ public class CommandManagePanel extends JPanel implements ApplicationListener<Co
         commandList.setListData(commands.toArray(new Command[0]));
         return commands;
     }
+
     public JPanel createUI() {
         return root;
     }
 
+    /**
+     * 向目标session发送指令
+     */
+    public void executeCommand() {
+        String title = "Send command";
+        ProgressManager.getInstance().run(new Task.Backgroundable(project, title) {
+            @Override
+            public void run(@NotNull ProgressIndicator indicator) {
+                // 向当前活跃的终端发送指令
+                if (project == null) return;
+                TerminalView instance = TerminalView.getInstance(project);
+                // 获取选中的session列表
+                Command selectedValue = commandList.getSelectedValue();
+                // 获取要执行的命令
+                if (selectedValue == null) {
+                    notificationService.showNotification(project, title, "no command selected");
+                    return;
+                }
+                List<String> selectedItems = searchableCheckboxList.getSelectedItems();
+                // 获取要执行的命令
+                // 根据session name 过滤终端
+                instance.getWidgets().stream()
+                        .filter(it -> selectedItems.contains(it.getSessionName()))
+                        .forEach(terminalWidget -> {
+                            String sessionName = terminalWidget.getSessionName();
+                            TtyConnector ttyConnector = terminalWidget.getCurrentSession().getTtyConnector();
+                            if (ttyConnector != null) {
+                                try {
+                                    String command = selectedValue.generateCmdLine();
+                                    ttyConnector.write(command + "\r");
+                                } catch (IOException e) {
+                                    String msg = sessionName + " send failed: " + e.getMessage();
+                                    notificationService.showNotification(project, title, msg);
+                                }
+                            }
+                        });
+            }
+        });
+    }
 }

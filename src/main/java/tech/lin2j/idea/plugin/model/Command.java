@@ -132,13 +132,13 @@ public class Command implements UniqueModel {
         String newDir = null;
         String newContent = null;
         if (content != null) {
-            newContent = content.substring(0, Math.min(content.length(), 30));
+            newContent = content.substring(0, Math.min(content.length(), 60));
             if (newContent.length() < content.length()) {
                 newContent += "...";
             }
         }
         if (displayDir != null) {
-            newDir = displayDir.substring(0, Math.min(displayDir.length(), 40));
+            newDir = displayDir.substring(0, Math.min(displayDir.length(), 60));
             if (newDir.length() < displayDir.length()) {
                 newDir += "...";
             }
