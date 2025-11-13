@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.ui.component;
+package io.github.yueryou.easydev.plugin.ui.component;
 
 import com.intellij.icons.AllIcons;
 import com.intellij.openapi.ui.OnePixelDivider;

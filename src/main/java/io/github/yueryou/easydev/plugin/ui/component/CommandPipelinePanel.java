@@ -1,11 +1,7 @@
-package tech.lin2j.idea.plugin.ui.component;
+package io.github.yueryou.easydev.plugin.ui.component;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.ui.components.JBLabel;
-import com.intellij.ui.components.JBList;
-import com.intellij.ui.components.JBTextField;
-import com.intellij.util.ui.FormBuilder;
-import tech.lin2j.idea.plugin.model.Command;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
 

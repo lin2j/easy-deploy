@@ -36,10 +36,10 @@ public class ConfigHelper {
         if (CONFIG_PERSISTENCE == null) {
             synchronized (ConfigHelper.class) {
                 if (CONFIG_PERSISTENCE == null) {
-                    log.info("Easy Deploy first time load configuration");
+                    log.info("Easy Dev first time load configuration");
                     CONFIG_PERSISTENCE = ApplicationManager.getApplication().getService(ConfigPersistence.class);
                     refreshConfig();
-                    log.info("Easy Deploy first time load configuration finished");
+                    log.info("Easy Dev first time load configuration finished");
                 }
             }
         }

@@ -12,7 +12,7 @@ public class DeployRunConfigurationType extends ConfigurationTypeBase {
     static final String ID = "EasyDeployRunConfiguration";
 
     DeployRunConfigurationType() {
-        super(ID, "Easy Deploy", "Deploy service to remote server",
+        super(ID, "Easy Dev", "Deploy service to remote server",
                 NotNullLazyValue.createValue(() -> MyIcons.EasyDeploy));
         addFactory(new DeployConfigurationFactory(this));
     }

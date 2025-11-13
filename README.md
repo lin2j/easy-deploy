@@ -1,4 +1,4 @@
-<p align="center"><img src="https://www.lin2j.tech/blog-image/easy-deploy/small-logo.svg" alt="Easy Deploy" width="200" height="200"></p>
+<p align="center"><img src="https://www.lin2j.tech/blog-image/easy-deploy/small-logo.svg" alt="Easy Dev" width="200" height="200"></p>
 
 <p align="center">Convenient Intellij Platform Plugin for Deploying and Upgrading Services during Development</p>
 
@@ -11,12 +11,12 @@
 
 [**简体中文**](README_zh_CN.md) 🐼
 
-Easy Deploy is a plugin I developed, inspired by the Alibaba Cloud Toolkit, to facilitate my service deployment during 
+Easy Dev is a plugin I developed, inspired by the Alibaba Cloud Toolkit, to facilitate my service deployment during 
 the development process. Compared to the Alibaba Cloud Toolkit, my plugin has significantly fewer features, as many of 
 the ACT functionalities are unnecessary for me and make it somewhat bloated.
 
 Therefore, I focused only on developing the functionalities I care about: server management and the deployment process. 
-I named this plugin "Easy Deploy" in the hope that it will help developers simplify the deployment steps in their 
+I named this plugin "Easy Dev" in the hope that it will help developers simplify the deployment steps in their 
 development process. I will continually optimize it and enhance its features.
 
 This is also the first Idea plugin I have developed. Many issues were resolved gradually through extensive searching, 
@@ -54,4 +54,4 @@ I'm relatively new to developing Idea plugins, so there might be some shortcomin
 If you have any suggestions or encounter bugs, feel free to raise issues or contact me via email. I'll respond as 
 promptly as possible.
 
-📮📮 linjinjia047@163.com
+📮📮 630198766@qq.com

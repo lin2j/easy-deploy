@@ -1,12 +1,12 @@
-package tech.lin2j.idea.plugin.ui.dialog;
+package io.github.yueryou.easydev.plugin.ui.dialog;
 
 import com.intellij.openapi.project.Project;
 import com.intellij.openapi.ui.DialogWrapper;
 import com.intellij.ui.components.JBTabbedPane;
 import org.jetbrains.annotations.Nullable;
-import tech.lin2j.idea.plugin.ui.component.CommandManagePanel;
-import tech.lin2j.idea.plugin.ui.component.CommandPipelinePanel;
-import tech.lin2j.idea.plugin.ui.component.CommandSettingPanel;
+import io.github.yueryou.easydev.plugin.ui.component.CommandManagePanel;
+import io.github.yueryou.easydev.plugin.ui.component.CommandPipelinePanel;
+import io.github.yueryou.easydev.plugin.ui.component.CommandSettingPanel;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.*;

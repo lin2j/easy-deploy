@@ -64,7 +64,7 @@ public class SshServer implements Cloneable, UniqueModel {
 
     private CredentialAttributes createCredentialAttributes(String key) {
         return new CredentialAttributes(
-                CredentialAttributesKt.generateServiceName("Easy Deploy", key)
+                CredentialAttributesKt.generateServiceName("Easy Dev", key)
         );
     }
 

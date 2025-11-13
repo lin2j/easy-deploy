@@ -77,9 +77,9 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
         final JPanel northPanel = new JPanel(new GridBagLayout());
 
         DefaultActionGroup actionGroup = new DefaultActionGroup();
-        actionGroup.add(new HomePageAction());
-        actionGroup.add(new GithubAction());
-        actionGroup.addSeparator();
+//        actionGroup.add(new HomePageAction());
+//        actionGroup.add(new GithubAction());
+//        actionGroup.addSeparator();
         actionGroup.add(new ExportAndImportAction());
         actionGroup.add(new SettingsAction(MessagesBundle.getText("action.dashboard.plugin-setting.text")));
         actionGroup.add(new RefreshAction(MessagesBundle.getText("action.dashboard.refresh.text")));

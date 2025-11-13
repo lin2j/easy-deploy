@@ -1,4 +1,4 @@
-<p align="center"><img src="https://www.lin2j.tech/blog-image/easy-deploy/small-logo.svg" alt="Easy Deploy" width="200" height="200"></p>
+<p align="center"><img src="https://www.lin2j.tech/blog-image/easy-deploy/small-logo.svg" alt="Easy Dev" width="200" height="200"></p>
 
 <p align="center">方便开发过程中部署升级服务的 Intellij 平台插件</p>
 
@@ -11,7 +11,7 @@
 
 
 
-Easy Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己在开发过程中部署服务的插件。相比较 Alibaba Cloud Toolkit，我开发的插件功能会少很多很多，因为 ACT 很多的功能我都用不上，对我来说它有点臃肿。
+Easy Dev 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己在开发过程中部署服务的插件。相比较 Alibaba Cloud Toolkit，我开发的插件功能会少很多很多，因为 ACT 很多的功能我都用不上，对我来说它有点臃肿。
 
 因此，我只取自己关注的那部分功能进行开发，这部分就是对服务器的管理以及发布的过程。我给这个插件起这个名是希望他能够帮助开发者简化开发过程的部署步骤，我会不断地优化它，完善它的功能。
 
@@ -46,6 +46,6 @@ Easy Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己
 
 如果你有什么建议或者遇到什么bug，可以提 issues 也可以邮箱联系我，我会尽快回复你。
 
-📮📮 linjinjia047@163.com
+📮📮 630198766@qq.com
 
 👻👻[去 Github 提 Issue](https://github.com/lin2j/easy-deploy/issues)

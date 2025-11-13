@@ -195,7 +195,7 @@ public class CommandUtil {
     }
 
     private static void showToolWindow(Project project) {
-        ToolWindow deployToolWindow = ToolWindowManager.getInstance(project).getToolWindow("Easy Deploy");
+        ToolWindow deployToolWindow = ToolWindowManager.getInstance(project).getToolWindow("Easy Dev");
         assert deployToolWindow != null;
         deployToolWindow.activate(null);
         Content messages = deployToolWindow.getContentManager().findContent("Console");

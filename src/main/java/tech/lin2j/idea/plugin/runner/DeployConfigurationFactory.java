@@ -27,7 +27,7 @@ public class DeployConfigurationFactory extends ConfigurationFactory {
     @Override
     public RunConfiguration createTemplateConfiguration(
             @NotNull Project project) {
-        return new DeployRunConfiguration(project, this, "Easy Deploy");
+        return new DeployRunConfiguration(project, this, "Easy Dev");
     }
 
     @Nullable

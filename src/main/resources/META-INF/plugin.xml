@@ -1,19 +1,19 @@
 <idea-plugin>
-    <id>tech.lin2j.simple-deployment</id>
-    <name>Easy Deploy</name>
-    <vendor email="linjinjia047@163.com" url="https://www.lin2j.tech">Lin2j</vendor>
+    <id>io.github.yueryou.easydev</id>
+    <name>Easy Dev</name>
+    <vendor email="630198766@qq.com" url="https://yueryou.github.io">Lin2j</vendor>
     <idea-version since-build="223.8836"/>
     <description><![CDATA[
     <p>Convenient Intellij Platform Plugin for Deploying and Upgrading Services during Development</p>
 
     <p></p>
-    <p>Easy Deploy is a plugin I developed, inspired by the Alibaba Cloud Toolkit, to facilitate my service deployment during
+    <p>Easy Dev is a plugin I developed, inspired by the Alibaba Cloud Toolkit, to facilitate my service deployment during
     the development process. Compared to the Alibaba Cloud Toolkit, my plugin has significantly fewer features, as many of
     the ACT functionalities are unnecessary for me and make it somewhat bloated.</p>
 
     <p></p>
     <p>Therefore, I focused only on developing the functionalities I care about: server management and the deployment process.
-    I named this plugin "Easy Deploy" in the hope that it will help developers simplify the deployment steps in their
+    I named this plugin "Easy Dev" in the hope that it will help developers simplify the deployment steps in their
     development process. I will continually optimize it and enhance its features.</p>
 
     <h3>Features</h3>
@@ -42,7 +42,7 @@
     <p>方便开发过程中部署升级服务的 Intellij 平台插件</p>
 
     <p></p>
-    <p>Easy Deploy 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己在开发过程中部署服务的插件。相比较 Alibaba Cloud Toolkit，我开发的插件功能会少很多很多，因为 ACT 很多的功能我都用不上，对我来说它有点臃肿。</p>
+    <p>Easy Dev 是我借鉴 Alibaba Cloud Toolkit 插件开发的一个方便自己在开发过程中部署服务的插件。相比较 Alibaba Cloud Toolkit，我开发的插件功能会少很多很多，因为 ACT 很多的功能我都用不上，对我来说它有点臃肿。</p>
 
     <p></p>
     <p>因此，我只取自己关注的那部分功能进行开发，这部分就是对服务器的管理以及发布的过程。我给这个插件起这个名是希望他能够帮助开发者简化开发过程的部署步骤，我会不断地优化它，完善它的功能。</p>
@@ -276,7 +276,7 @@
             <add-to-group group-id="EditorPopupMenu" anchor="before" relative-to-action="$Paste"/>
         </action>
         <action id="QuickCommand"
-                class="tech.lin2j.idea.plugin.action.QuickCommandAction"
+                class="io.github.yueryou.easydev.plugin.action.QuickCommandAction"
                 text="QuickCommand"
                 icon="MyIcons.EasyDeploy"
                 description="Quick command tool">
@@ -287,7 +287,7 @@
     <extensions defaultExtensionNs="com.intellij">
         <toolWindow
                 factoryClass="tech.lin2j.idea.plugin.factory.DeployConsoleToolWindowFactory"
-                id="Easy Deploy"
+                id="Easy Dev"
                 anchor="bottom"
                 canCloseContents="false"
                 icon="MyIcons.Deploy"

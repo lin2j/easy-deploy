@@ -49,7 +49,7 @@ public class PluginSettingsDialog {
 
         @Override
         public String getDisplayName() {
-            return "Easy Deploy";
+            return "Easy Dev";
         }
 
         @Override

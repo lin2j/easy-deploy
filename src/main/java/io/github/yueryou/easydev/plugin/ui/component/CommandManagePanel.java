@@ -1,4 +1,4 @@
-package tech.lin2j.idea.plugin.ui.component;
+package io.github.yueryou.easydev.plugin.ui.component;
 
 import com.intellij.openapi.actionSystem.ActionToolbarPosition;
 import com.intellij.openapi.application.ApplicationManager;
@@ -7,7 +7,6 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
-import com.intellij.openapi.ui.Messages;
 import com.intellij.openapi.util.text.Strings;
 import com.intellij.terminal.JBTerminalWidget;
 import com.intellij.ui.DocumentAdapter;
@@ -16,7 +15,6 @@ import com.intellij.ui.components.JBList;
 import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import com.jediterm.terminal.TtyConnector;
-import com.jediterm.terminal.ui.TerminalWidget;
 import org.jetbrains.annotations.Nls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;

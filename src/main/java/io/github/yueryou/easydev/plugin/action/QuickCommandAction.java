@@ -1,8 +1,8 @@
-package tech.lin2j.idea.plugin.action;
+package io.github.yueryou.easydev.plugin.action;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import tech.lin2j.idea.plugin.ui.dialog.CommandManageDialog;
+import io.github.yueryou.easydev.plugin.ui.dialog.CommandManageDialog;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 /**

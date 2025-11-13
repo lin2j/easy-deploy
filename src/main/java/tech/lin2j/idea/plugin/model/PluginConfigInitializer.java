@@ -19,7 +19,7 @@ public class PluginConfigInitializer implements AppLifecycleListener {
         try {
             ConfigHelper.ensureConfigLoadInMemory();
         } catch (Exception e) {
-            log.error("Easy-Deploy plugin load configuration failed: " + e.getMessage(), e);
+            log.error("Easy-Dev plugin load configuration failed: " + e.getMessage(), e);
         }
     }
 
