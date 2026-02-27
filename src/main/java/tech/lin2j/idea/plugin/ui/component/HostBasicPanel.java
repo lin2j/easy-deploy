@@ -22,6 +22,7 @@ import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
@@ -155,7 +156,11 @@ public class HostBasicPanel {
         passwdRadio.setSelected(true);
         passwdRadio.doClick();
         if (contentProvider != null) {
-            ipInput.setText(contentProvider.getIp());
+            // Support multiple IPs separated by comma
+            String ipText = contentProvider.getIpList().stream()
+                    .reduce((a, b) -> a + ", " + b)
+                    .orElse("");
+            ipInput.setText(ipText);
             portInput.setText(contentProvider.getPort().toString());
             userInput.setText(contentProvider.getUsername());
             passwdInput.setText(contentProvider.getPassword());
@@ -191,7 +196,16 @@ public class HostBasicPanel {
             server.setId(ConfigHelper.maxSshServerId() + 1);
             server.setUid(UUID.randomUUID().toString());
         }
-        if (setText(ipInput, true, server::setIp)) {
+        if (setText(ipInput, true, ipString -> {
+            if (ipString.contains(",")) {
+                server.setIp(ipString);
+                List<String> ipList = Arrays.asList(ipString.split(","));
+                server.setIps(ipList);
+            } else {
+                server.setIp(ipString);
+                server.setIps(null);
+            }
+        })) {
             return true;
         }
         if (setText(portInput, true, port -> server.setPort(Integer.parseInt(port)))) {

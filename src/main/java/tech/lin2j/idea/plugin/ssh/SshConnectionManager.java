@@ -103,6 +103,8 @@ public class SshConnectionManager {
     }
 
     public static SshjConnection makeSshjConnection(SshServer server) throws RemoteSdkException, IOException {
-        return new SshjConnection(makeSshClients(server), server);
+        Deque<SSHClient> clients = makeSshClients(server);
+        boolean preferSftpOverScp = setting.isPreferSftpOverScp();
+        return new SshjConnection(clients, server, preferSftpOverScp);
     }
 }

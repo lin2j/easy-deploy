@@ -42,6 +42,14 @@ public class PluginSetting {
     private String defaultExportImportPath;
     private ExportOptions exportOptions;
 
+    // SSH Console Logging
+    private boolean sshLogEnabled = true;
+    private String sshLogDirectory = "~/logs";
+    private int logRetentionDays = 30;
+
+    // SFTP/SCP
+    private boolean preferSftpOverScp = true;
+
 
     public boolean isUpdateCheck() {
         return updateCheck;
@@ -166,5 +174,40 @@ public class PluginSetting {
 
     public void setHistoryPathSize(Integer historyPathSize) {
         this.historyPathSize = historyPathSize;
+    }
+
+    public boolean isSshLogEnabled() {
+        return sshLogEnabled;
+    }
+
+    public void setSshLogEnabled(boolean sshLogEnabled) {
+        this.sshLogEnabled = sshLogEnabled;
+    }
+
+    public String getSshLogDirectory() {
+        if (sshLogDirectory == null || sshLogDirectory.isEmpty()) {
+            sshLogDirectory = "~/logs";
+        }
+        return sshLogDirectory;
+    }
+
+    public void setSshLogDirectory(String sshLogDirectory) {
+        this.sshLogDirectory = sshLogDirectory;
+    }
+
+    public int getLogRetentionDays() {
+        return logRetentionDays > 0 ? logRetentionDays : 30;
+    }
+
+    public void setLogRetentionDays(int logRetentionDays) {
+        this.logRetentionDays = logRetentionDays;
+    }
+
+    public boolean isPreferSftpOverScp() {
+        return preferSftpOverScp;
+    }
+
+    public void setPreferSftpOverScp(boolean preferSftpOverScp) {
+        this.preferSftpOverScp = preferSftpOverScp;
     }
 }

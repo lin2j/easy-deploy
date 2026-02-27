@@ -7,7 +7,13 @@ import net.schmizz.sshj.transport.TransportException;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
+import tech.lin2j.idea.plugin.model.PluginSetting;
+import tech.lin2j.idea.plugin.ssh.CommandCompleter;
+import tech.lin2j.idea.plugin.ssh.CommandHistoryManager;
 import tech.lin2j.idea.plugin.ssh.CustomTtyConnector;
+import tech.lin2j.idea.plugin.ssh.SessionLogger;
+import tech.lin2j.idea.plugin.ssh.SshServer;
 
 import java.awt.*;
 import java.io.IOException;
@@ -37,11 +43,37 @@ public class SshjTtyConnector implements CustomTtyConnector {
     private Dimension pendingPixelSize;
     private final AtomicBoolean isInitiated = new AtomicBoolean(false);
 
+    // Session logger for command logging
+    private SessionLogger sessionLogger;
+    private final boolean sshLogEnabled;
+
+    // Command completer for auto-completion
+    private CommandCompleter commandCompleter;
+    private CommandHistoryManager commandHistoryManager;
+
     public SshjTtyConnector(SshjConnection connection, String workingDirectory) {
         this.connection = connection;
         this.sshClient = connection.getSshClient();
         this.workingDirectory = workingDirectory;
         this.initConnector();
+        this.initLogging();
+        this.initCommandCompleter();
+    }
+
+    private void initLogging() {
+        PluginSetting setting = ConfigHelper.pluginSetting();
+        this.sshLogEnabled = setting.isSshLogEnabled();
+
+        if (sshLogEnabled && connection.getServer() != null) {
+            SshServer server = connection.getServer();
+            String logDir = setting.getSshLogDirectory();
+            this.sessionLogger = new SessionLogger(null, server, logDir);
+        }
+    }
+
+    private void initCommandCompleter() {
+        this.commandHistoryManager = new CommandHistoryManager();
+        this.commandCompleter = new CommandCompleter(commandHistoryManager);
     }
 
     public void initConnector() {
@@ -153,6 +185,11 @@ public class SshjTtyConnector implements CustomTtyConnector {
         if (outputStream != null) {
             outputStream.write(bytes);
             outputStream.flush();
+            // Log command if session logger is enabled
+            if (sessionLogger != null && sshLogEnabled) {
+                String command = new String(bytes, StandardCharsets.UTF_8);
+                sessionLogger.print(command);
+            }
         }
     }
 
@@ -193,5 +230,34 @@ public class SshjTtyConnector implements CustomTtyConnector {
             }
         }
         return escapedPath.toString();
+    }
+
+    /**
+     * Get the command completer for auto-completion.
+     *
+     * @return the command completer
+     */
+    public CommandCompleter getCommandCompleter() {
+        return commandCompleter;
+    }
+
+    /**
+     * Get the command history manager.
+     *
+     * @return the command history manager
+     */
+    public CommandHistoryManager getCommandHistoryManager() {
+        return commandHistoryManager;
+    }
+
+    /**
+     * Add a command to the history.
+     *
+     * @param command the command to add
+     */
+    public void addCommandToHistory(String command) {
+        if (commandHistoryManager != null) {
+            commandHistoryManager.addCommand(command);
+        }
     }
 }

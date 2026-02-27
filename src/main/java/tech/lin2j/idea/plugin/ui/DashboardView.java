@@ -157,7 +157,7 @@ public class DashboardView extends SimpleToolWindowPanel implements ApplicationL
         for (int i = 0; i < sshServers.size(); i++) {
             SshServer sshServer = sshServers.get(i);
             data[i][0] = sshServer.getId();
-            data[i][1] = sshServer.getIp() + ":" + sshServer.getPort();
+            data[i][1] = String.join(", ", sshServer.getIpList()) + ":" + sshServer.getPort();
             data[i][2] = sshServer.getUsername();
             data[i][3] = sshServer.getTag();
             data[i][4] = sshServer.getDescription();

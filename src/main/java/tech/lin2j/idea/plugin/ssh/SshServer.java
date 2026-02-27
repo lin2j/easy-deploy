@@ -8,6 +8,9 @@ import com.intellij.util.xmlb.annotations.Transient;
 import tech.lin2j.idea.plugin.enums.AuthType;
 import tech.lin2j.idea.plugin.model.UniqueModel;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -23,6 +26,8 @@ public class SshServer implements Cloneable, UniqueModel {
     private String uid;
 
     private String ip;
+
+    private List<String> ips;
 
     private Integer port;
 
@@ -92,6 +97,24 @@ public class SshServer implements Cloneable, UniqueModel {
 
     public void setIp(String ip) {
         this.ip = ip;
+    }
+
+    public List<String> getIps() {
+        return ips;
+    }
+
+    public void setIps(List<String> ips) {
+        this.ips = ips;
+    }
+
+    public List<String> getIpList() {
+        if (ips != null && !ips.isEmpty()) {
+            return ips;
+        }
+        if (ip != null && !ip.isEmpty()) {
+            return Arrays.asList(ip.split(","));
+        }
+        return new ArrayList<>();
     }
 
     public Integer getPort() {

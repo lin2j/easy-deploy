@@ -65,6 +65,10 @@ public class SshjConnection implements SshConnection {
         return sshClient;
     }
 
+    public SshServer getServer() {
+        return server;
+    }
+
     @Override
     public boolean isConnected() {
         return sshClient.isConnected();
