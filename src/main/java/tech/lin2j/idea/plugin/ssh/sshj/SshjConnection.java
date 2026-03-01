@@ -38,14 +38,30 @@ public class SshjConnection implements SshConnection {
     private final SshServer server;
     private final Deque<SSHClient> clients;
     private final SSHClient sshClient;
-    private final SFTPClient sftpClient;
+    private SFTPClient sftpClient;
     private SCPFileTransfer scpFileTransfer;
 
     public SshjConnection(Deque<SSHClient> clients, SshServer server) throws IOException {
+        this(clients, server, false);
+    }
+
+    public SshjConnection(Deque<SSHClient> clients, SshServer server, boolean preferSftpOverScp) throws IOException {
         this.server = server;
         this.clients = clients;
         this.sshClient = clients.getLast();
-        this.sftpClient = sshClient.newSFTPClient();
+        
+        // Support servers without SFTP functionality
+        try {
+            this.sftpClient = sshClient.newSFTPClient();
+        } catch (IOException e) {
+            log.warn("Failed to create SFTP client, falling back to SCP mode: " + e.getMessage());
+            this.sftpClient = null;
+            // Force SCP mode if SFTP is not available
+            if (!ConfigHelper.isSCPTransferMode()) {
+                scpFileTransfer = sshClient.newSCPFileTransfer();
+            }
+        }
+        
         if (ConfigHelper.isSCPTransferMode()) {
             scpFileTransfer = sshClient.newSCPFileTransfer();
         }
@@ -55,8 +71,10 @@ public class SshjConnection implements SshConnection {
         if (transferListener == null) {
             return;
         }
-        sftpClient.getFileTransfer().setTransferListener(transferListener);
-        if (ConfigHelper.isSCPTransferMode()) {
+        if (sftpClient != null) {
+            sftpClient.getFileTransfer().setTransferListener(transferListener);
+        }
+        if (ConfigHelper.isSCPTransferMode() && scpFileTransfer != null) {
             scpFileTransfer.setTransferListener(transferListener);
         }
     }
@@ -76,7 +94,7 @@ public class SshjConnection implements SshConnection {
 
     @Override
     public void upload(String local, String dest) throws IOException {
-        if (ConfigHelper.isSCPTransferMode()) {
+        if (ConfigHelper.isSCPTransferMode() || sftpClient == null) {
             scpUpload(local, dest);
             return;
         }
@@ -102,7 +120,7 @@ public class SshjConnection implements SshConnection {
 
     @Override
     public void download(String remote, String dest) throws IOException {
-        if (ConfigHelper.isSCPTransferMode()) {
+        if (ConfigHelper.isSCPTransferMode() || sftpClient == null) {
             scpDownload(remote, dest);
             return;
         }
@@ -221,7 +239,12 @@ public class SshjConnection implements SshConnection {
 
     @Override
     public void mkdirs(String dir) throws IOException {
-        sftpClient.mkdirs(dir);
+        if (sftpClient != null) {
+            sftpClient.mkdirs(dir);
+        } else {
+            // Fallback to SCP mode - use execute to create directory
+            execute("mkdir -p " + dir);
+        }
     }
 
     @Override
