@@ -188,7 +188,7 @@ public class SshjTtyConnector implements CustomTtyConnector {
             // Log command if session logger is enabled
             if (sessionLogger != null && sshLogEnabled) {
                 String command = new String(bytes, StandardCharsets.UTF_8);
-//                sessionLogger.print(command);
+                sessionLogger.print(command);
             }
         }
     }

@@ -43,7 +43,7 @@ public class PluginSetting {
     private ExportOptions exportOptions;
 
     // SSH Console Logging
-    private boolean sshLogEnabled = true;
+    private boolean sshLogEnabled = false;
     private String sshLogDirectory = "~/logs";
     private int logRetentionDays = 30;
 
