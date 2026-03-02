@@ -41,6 +41,11 @@ public class MessagesBundle {
         return getText(key, Locale.getDefault());
     }
 
+    public static String getText(String key, Object... args) {
+        String value = getText(key);
+        return java.text.MessageFormat.format(value, args);
+    }
+
     private static String getText(String key, Locale locale) {
         ResourceBundle bundle = ResourceBundle.getBundle("messages", locale);
         return bundle.getString(key);

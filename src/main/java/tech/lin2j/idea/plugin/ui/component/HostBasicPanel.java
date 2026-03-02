@@ -197,12 +197,14 @@ public class HostBasicPanel {
             server.setUid(UUID.randomUUID().toString());
         }
         if (setText(ipInput, true, ipString -> {
+            server.setIp(ipString);
             if (ipString.contains(",")) {
-                server.setIp(ipString);
-                List<String> ipList = Arrays.asList(ipString.split(","));
+                List<String> ipList = Arrays.stream(ipString.split(","))
+                        .map(String::trim)
+                        .filter(s -> !s.isEmpty())
+                        .collect(java.util.stream.Collectors.toList());
                 server.setIps(ipList);
             } else {
-                server.setIp(ipString);
                 server.setIps(null);
             }
         })) {

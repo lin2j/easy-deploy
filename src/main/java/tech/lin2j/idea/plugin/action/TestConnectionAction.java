@@ -37,15 +37,49 @@ public class TestConnectionAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        String title = String.format("Testing %s:%s", sshServer.getIp(), sshServer.getPort());
-        ProgressManager.getInstance().run(new Task.Backgroundable(project, title) {
+        String testTitle = MessagesBundle.getText("dialog.panel.host.test-connect.testing");
+        ProgressManager.getInstance().run(new Task.Backgroundable(project, testTitle) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
-                SshStatus status = sshService.isValid(sshServer);
+                java.util.List<String> ipList = sshServer.getIpList();
+                if (ipList.isEmpty()) {
+                    notificationService.showNotification(project,
+                        MessagesBundle.getText("dialog.panel.host.test-connect.title"),
+                        MessagesBundle.getText("dialog.panel.host.test-connect.no-ip"));
+                    return;
+                }
+
+                SshStatus lastStatus = null;
+                String currentIp = "";
+                String password = sshServer.getPassword();
+                String passPhrase = sshServer.getPassPhrase();
+                for (String ip : ipList) {
+                    currentIp = ip.trim();
+                    if (currentIp.isEmpty()) continue;
+
+                    indicator.setText(String.format("%s %s:%s", testTitle, currentIp, sshServer.getPort()));
+
+                    SshServer testServer = sshServer.clone();
+                    testServer.setIp(currentIp);
+                    testServer.setPassword(password);
+                    testServer.setPassPhrase(passPhrase);
+                    lastStatus = sshService.isValid(testServer);
+
+                    if (!lastStatus.isSuccess()) {
+                        break;
+                    }
+                }
 
                 String title = MessagesBundle.getText("dialog.panel.host.test-connect.title");
                 String tip = MessagesBundle.getText("dialog.panel.host.test-connect.tip");
-                String msg = status.isSuccess() ? tip : status.getMessage();
+                String msg;
+                if (lastStatus == null) {
+                    msg = MessagesBundle.getText("dialog.panel.host.test-connect.no-ip");
+                } else if (lastStatus.isSuccess()) {
+                    msg = tip;
+                } else {
+                    msg = MessagesBundle.getText("dialog.panel.host.test-connect.failed", currentIp, lastStatus.getMessage());
+                }
                 notificationService.showNotification(project, title, msg);
             }
         });
