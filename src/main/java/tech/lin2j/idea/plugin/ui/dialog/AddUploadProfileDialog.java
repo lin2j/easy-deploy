@@ -115,9 +115,7 @@ public class AddUploadProfileDialog extends DialogWrapper {
         String exclude = excludeInput.getText();
         System.out.println("includeCurrentDir = " + includeCurrentDir);
         // update config if profile is exist
-        Integer sshId = profile.getSshId();
         if (profile.getId() != null) {
-            profile.setSshId(sshId);
             profile.setName(trim(name));
             profile.setFile(trim(file));
             profile.setIncludeCurrentDir(includeCurrentDir);
@@ -132,7 +130,6 @@ public class AddUploadProfileDialog extends DialogWrapper {
             UploadProfile newProfile = new UploadProfile();
             newProfile.setId(ConfigHelper.maxUploadProfileId() + 1);
             newProfile.setName(trim(name));
-            newProfile.setSshId(sshId);
             newProfile.setFile(trim(file));
             newProfile.setIncludeCurrentDir(includeCurrentDir);
             newProfile.setExclude(trim(exclude));
@@ -182,24 +179,20 @@ public class AddUploadProfileDialog extends DialogWrapper {
     }
 
     private void initCommandBoxes() {
-        Integer sshId = profile.getSshId();
-
         List<Command> data = new ArrayList<>();
         data.add(NoneCommand.INSTANCE);
-        data.addAll(ConfigHelper.getCommandsBySshId(sshId));
-        data.add(SeparatorCommand.INSTANCE);
-        data.addAll(ConfigHelper.getSharableCommands(sshId));
+        data.addAll(ConfigHelper.getAllCommands());
 
         // Pre-upload command box
         preCommandBox = new ComboBox<>(new CollectionComboBoxModel<>(new ArrayList<>(data)));
         preCommandBox.setSwingPopup(false);
-        preCommandBox.setRenderer(new CommandColoredListCellRenderer(sshId));
+        preCommandBox.setRenderer(new CommandColoredListCellRenderer());
         preCommandBox.addItemListener(e -> updateCommandPreview());
 
         // Post-upload command box
         postCommandBox = new ComboBox<>(new CollectionComboBoxModel<>(new ArrayList<>(data)));
         postCommandBox.setSwingPopup(false);
-        postCommandBox.setRenderer(new CommandColoredListCellRenderer(sshId));
+        postCommandBox.setRenderer(new CommandColoredListCellRenderer());
         postCommandBox.addItemListener(e -> updateCommandPreview());
 
         // Initialize command preview components
@@ -208,7 +201,7 @@ public class AddUploadProfileDialog extends DialogWrapper {
 
         // Add command button for pre-upload
         DefaultActionGroup preGroup = new DefaultActionGroup();
-        preGroup.add(new AddCommandAction(project, sshId, cmd -> addNewCommand(cmd, true)));
+        preGroup.add(new AddCommandAction(project, cmd -> addNewCommand(cmd, true)));
         ActionToolbar preToolbar = ActionManager.getInstance()
                 .createActionToolbar("AddUploadProfile@AddPreCommand", preGroup, true);
         preToolbar.setTargetComponent(null);
@@ -221,7 +214,7 @@ public class AddUploadProfileDialog extends DialogWrapper {
 
         // Add command button for post-upload
         DefaultActionGroup postGroup = new DefaultActionGroup();
-        postGroup.add(new AddCommandAction(project, sshId, cmd -> addNewCommand(cmd, false)));
+        postGroup.add(new AddCommandAction(project, cmd -> addNewCommand(cmd, false)));
         ActionToolbar postToolbar = ActionManager.getInstance()
                 .createActionToolbar("AddUploadProfile@AddPostCommand", postGroup, true);
         postToolbar.setTargetComponent(null);

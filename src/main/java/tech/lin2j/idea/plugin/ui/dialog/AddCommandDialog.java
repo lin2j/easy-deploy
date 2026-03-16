@@ -87,16 +87,17 @@ public class AddCommandDialog extends DialogWrapper {
 
         // update config if command is exist
         Integer cmdId = command.getId();
-        Integer sshId = command.getSshId();
         if (cmdId != null) {
-            Command command = ConfigHelper.getCommandById(cmdId);
-            command.setTitle(title);
-            command.setDir(dir);
-            command.setContent(cmdStr);
-            command.setSharable(shareCommand);
+            Command existingCommand = ConfigHelper.getCommandById(cmdId);
+            if (existingCommand != null) {
+                existingCommand.setTitle(title);
+                existingCommand.setDir(dir);
+                existingCommand.setContent(cmdStr);
+                existingCommand.setSharable(shareCommand);
+            }
         } else {
             cmdId = ConfigHelper.maxCommandId() + 1;
-            Command cmd = new Command(cmdId, sshId, title, dir, cmdStr, shareCommand);
+            Command cmd = new Command(cmdId, title, dir, cmdStr, shareCommand);
             cmd.setUid(UUID.randomUUID().toString());
             ConfigHelper.addCommand(cmd);
         }

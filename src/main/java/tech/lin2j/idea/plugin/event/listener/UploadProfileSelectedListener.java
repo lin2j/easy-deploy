@@ -15,7 +15,7 @@ public class UploadProfileSelectedListener implements ApplicationListener<Upload
     @Override
     public void onApplicationEvent(UploadProfileSelectedEvent event) {
         UploadProfile profile = (UploadProfile) event.getSource();
-        ConfigHelper.getUploadProfileBySshId(profile.getSshId()).forEach(s -> {
+        ConfigHelper.getAllUploadProfiles().forEach(s -> {
             if (!Objects.equals(profile, s)) {
                 s.setSelected(false);
             }

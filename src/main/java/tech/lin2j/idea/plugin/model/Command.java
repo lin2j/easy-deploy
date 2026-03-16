@@ -14,6 +14,10 @@ public class Command implements UniqueModel {
 
     private String uid;
 
+    /**
+     * @deprecated sshId binding is deprecated. Commands are now global.
+     */
+    @Deprecated
     private Integer sshId;
 
     private String title;
@@ -30,22 +34,16 @@ public class Command implements UniqueModel {
     public Command(Command command) {
         this.id = command.id;
         this.uid = command.uid;
-        this.sshId = command.sshId;
         this.title = command.title;
         this.dir = command.dir;
         this.content = command.content;
         this.sharable = command.sharable;
     }
 
-    public Command(Integer sshId) {
-        this.sshId = sshId;
-    }
-
-    public Command(Integer id, Integer sshId, String title,
+    public Command(Integer id, String title,
                    String dir, String content, Boolean sharable) {
         super();
         this.id = id;
-        this.sshId = sshId;
         this.title = title;
         this.dir = dir;
         this.content = content;
@@ -62,21 +60,12 @@ public class Command implements UniqueModel {
 
     public String generateCmdLine(String overrideDir) {
         String workingDir = (overrideDir != null && !overrideDir.trim().isEmpty()) ? overrideDir : dir;
-        if (StringUtil.isEmpty(dir)) {
+        if (StringUtil.isEmpty(workingDir)) {
             return content;
         } else {
             return "cd " + workingDir + "; " + content;
         }
     }
-
-    public Integer getSshId() {
-        return sshId;
-    }
-
-    public void setSshId(Integer sshId) {
-        this.sshId = sshId;
-    }
-
 
     public String getDir() {
         return dir;
@@ -121,6 +110,16 @@ public class Command implements UniqueModel {
         this.sharable = sharable;
     }
 
+    @Deprecated
+    public Integer getSshId() {
+        return sshId;
+    }
+
+    @Deprecated
+    public void setSshId(Integer sshId) {
+        this.sshId = sshId;
+    }
+
     @Override
     public String toString() {
         return toDisplayString(null);
@@ -151,15 +150,14 @@ public class Command implements UniqueModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Command command = (Command) o;
-        return Objects.equals(sshId, command.sshId)
-                && Objects.equals(title, command.title)
+        return Objects.equals(title, command.title)
                 && Objects.equals(dir, command.dir)
                 && Objects.equals(content, command.content);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(sshId, title, dir, content);
+        return Objects.hash(title, dir, content);
     }
 
     @Override

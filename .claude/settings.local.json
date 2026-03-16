@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(cd \"D:\\\\Project\\\\github\\\\yueryou\\\\easy-deploy\" && ./gradlew tasks --all 2>&1 | head -100)",
+      "Bash(cd \"D:\\\\Project\\\\github\\\\yueryou\\\\easy-deploy\" && ./gradlew buildPlugin --no-daemon 2>&1 | head -200)",
+      "Bash(cd \"D:\\\\Project\\\\github\\\\yueryou\\\\easy-deploy\" && ./gradlew compileJava --no-daemon 2>&1 | tail -50)",
+      "Bash(cd \"D:\\\\Project\\\\github\\\\yueryou\\\\easy-deploy\" && ./gradlew compileJava --no-daemon 2>&1 | tail -30)",
+      "Bash(cd \"D:\\\\Project\\\\github\\\\yueryou\\\\easy-deploy\" && ./gradlew buildPlugin --no-daemon 2>&1 | tail -50)",
+      "Bash(cd \"D:\\\\Project\\\\github\\\\yueryou\\\\easy-deploy\" && ./gradlew test --no-daemon 2>&1 | tail -50)"
+    ]
+  }
+}

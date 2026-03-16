@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 /**
@@ -28,9 +29,7 @@ public class ConfigHelper {
 
     private static List<Command> COMMAND_LIST;
 
-    private static Map<Integer, List<Command>> COMMAND_MAP;
-
-    private static Map<Integer, List<UploadProfile>> UPLOAD_PROFILE_MAP;
+    private static List<UploadProfile> UPLOAD_PROFILE_LIST;
 
     public static void ensureConfigLoadInMemory() {
         if (CONFIG_PERSISTENCE == null) {
@@ -54,14 +53,125 @@ public class ConfigHelper {
         SSH_SERVER_MAP = CONFIG_PERSISTENCE.getSshServers().stream()
                 .collect(Collectors.toMap(SshServer::getId, s -> s, (s1, s2) -> s1));
 
+        // Migrate old configs with sshId to new global configs
+        migrateOldConfigsWithSshId();
+
         COMMAND_LIST = CONFIG_PERSISTENCE.getCommands();
 
-        COMMAND_MAP = COMMAND_LIST.stream()
-                .filter(it -> Objects.nonNull(it.getSshId()))
-                .collect(Collectors.groupingBy(Command::getSshId));
+        UPLOAD_PROFILE_LIST = CONFIG_PERSISTENCE.getUploadProfiles();
+    }
 
-        UPLOAD_PROFILE_MAP = CONFIG_PERSISTENCE.getUploadProfiles().stream()
-                .collect(Collectors.groupingBy(UploadProfile::getSshId));
+    /**
+     * Migrate old configuration where Command and UploadProfile were bound to sshId.
+     * Old format: Command and UploadProfile had sshId field, IDs were only unique per server.
+     * New format: Command and UploadProfile are global, IDs are globally unique.
+     */
+    private static void migrateOldConfigsWithSshId() {
+        List<Command> commands = CONFIG_PERSISTENCE.getCommands();
+        List<UploadProfile> profiles = CONFIG_PERSISTENCE.getUploadProfiles();
+
+        boolean hasOldCommand = commands.stream().anyMatch(cmd -> cmd.getSshId() != null);
+        boolean hasOldProfile = profiles.stream().anyMatch(p -> p.getSshId() != null);
+
+        if (!hasOldCommand && !hasOldProfile) {
+            return; // No migration needed
+        }
+
+        log.info("Starting migration of old configs with sshId binding");
+
+        // Migrate Commands first - create new global commands for each sshId+id combination
+        Map<String, Integer> commandIdMigrationMap = new java.util.HashMap<>();
+        if (hasOldCommand) {
+            List<Command> oldCommands = commands.stream()
+                    .filter(cmd -> cmd.getSshId() != null)
+                    .toList();
+
+            int maxCommandId = commands.stream()
+                    .map(Command::getId)
+                    .filter(Objects::nonNull)
+                    .max(Integer::compareTo).orElse(0);
+
+            for (Command oldCmd : oldCommands) {
+                // Create new global command with unique ID
+                Command newCmd = new Command();
+                newCmd.setId(++maxCommandId);
+                newCmd.setUid(UUID.randomUUID().toString());
+                newCmd.setTitle(oldCmd.getTitle());
+                newCmd.setDir(oldCmd.getDir());
+                newCmd.setContent(oldCmd.getContent());
+                newCmd.setSharable(oldCmd.getSharable());
+                commands.add(newCmd);
+
+                // Record the mapping: old sshId+id -> new global id
+                String oldKey = oldCmd.getSshId() + "_" + oldCmd.getId();
+                commandIdMigrationMap.put(oldKey, newCmd.getId());
+
+                log.info("Migrated Command: sshId=" + oldCmd.getSshId() + ", oldId=" + oldCmd.getId() +
+                        " -> newId=" + newCmd.getId() + ", title=" + newCmd.getTitle());
+            }
+
+            // Remove old commands with sshId
+            commands.removeIf(cmd -> cmd.getSshId() != null);
+        }
+
+        // Migrate UploadProfiles - create new global profiles for each sshId+id combination
+        if (hasOldProfile) {
+            List<UploadProfile> oldProfiles = profiles.stream()
+                    .filter(p -> p.getSshId() != null)
+                    .toList();
+
+            int maxProfileId = profiles.stream()
+                    .map(UploadProfile::getId)
+                    .filter(Objects::nonNull)
+                    .max(Integer::compareTo).orElse(0);
+
+            for (UploadProfile oldProfile : oldProfiles) {
+                // Create new global profile with unique ID
+                UploadProfile newProfile = new UploadProfile();
+                newProfile.setId(++maxProfileId);
+                newProfile.setUid(UUID.randomUUID().toString());
+                newProfile.setName(oldProfile.getName());
+                newProfile.setFile(oldProfile.getFile());
+                newProfile.setLocation(oldProfile.getLocation());
+                newProfile.setExclude(oldProfile.getExclude());
+                newProfile.setIncludeCurrentDir(oldProfile.getIncludeCurrentDir());
+                newProfile.setUseUploadPath(oldProfile.getUseUploadPath());
+
+                // Migrate command IDs using the migration map
+                if (oldProfile.getPreCommandId() != null) {
+                    String oldKey = oldProfile.getSshId() + "_" + oldProfile.getPreCommandId();
+                    Integer newCmdId = commandIdMigrationMap.get(oldKey);
+                    if (newCmdId != null) {
+                        newProfile.setPreCommandId(newCmdId);
+                    }
+                }
+                if (oldProfile.getPostCommandId() != null) {
+                    String oldKey = oldProfile.getSshId() + "_" + oldProfile.getPostCommandId();
+                    Integer newCmdId = commandIdMigrationMap.get(oldKey);
+                    if (newCmdId != null) {
+                        newProfile.setPostCommandId(newCmdId);
+                    }
+                }
+                // Handle backward compatibility for commandId field
+                if (oldProfile.getCommandId() != null) {
+                    String oldKey = oldProfile.getSshId() + "_" + oldProfile.getCommandId();
+                    Integer newCmdId = commandIdMigrationMap.get(oldKey);
+                    if (newCmdId != null) {
+                        newProfile.setCommandId(newCmdId);
+                    }
+                }
+
+                profiles.add(newProfile);
+
+                log.info("Migrated UploadProfile: sshId=" + oldProfile.getSshId() + ", oldId=" + oldProfile.getId() +
+                        " -> newId=" + newProfile.getId() + ", name=" + newProfile.getName());
+            }
+
+            // Remove old profiles with sshId
+            profiles.removeIf(p -> p.getSshId() != null);
+        }
+
+        log.info("Migration of old configs completed");
     }
 
     public static void cleanConfig() {
@@ -126,47 +236,31 @@ public class ConfigHelper {
             return;
         }
         removeSshServer(sshServer);
-        // delete command
-        List<Command> commands = getCommandsBySshId(id);
-        COMMAND_MAP.remove(id);
-        commands.forEach(cmd -> CONFIG_PERSISTENCE.getCommands().remove(cmd));
-        COMMAND_LIST =  CONFIG_PERSISTENCE.getCommands();
-        // delete upload profile
-        List<UploadProfile> profiles = getUploadProfileBySshId(id);
-        UPLOAD_PROFILE_MAP.remove(id);
-        profiles.forEach(profile -> CONFIG_PERSISTENCE.getUploadProfiles().remove(profile));
+        // Note: Commands and UploadProfiles are now global and not deleted when server is removed
     }
 
-
-    public static List<Command> getCommandsBySshId(int sshId) {
+    public static List<Command> getAllCommands() {
         ensureConfigLoadInMemory();
-        return COMMAND_MAP.getOrDefault(sshId, new ArrayList<>());
+        return COMMAND_LIST;
     }
 
-    public static List<Command> getSharableCommands(Integer excludeSshId) {
+    public static List<Command> getSharableCommands() {
         ensureConfigLoadInMemory();
-        return CONFIG_PERSISTENCE.getCommands().stream()
+        return COMMAND_LIST.stream()
                 .filter(Command::getSharable)
-                .filter(cmd -> !Objects.equals(cmd.getSshId(), excludeSshId))
                 .toList();
     }
 
     public static void addCommand(Command command) {
         ensureConfigLoadInMemory();
         CONFIG_PERSISTENCE.getCommands().add(command);
-        COMMAND_LIST =  CONFIG_PERSISTENCE.getCommands();
-        COMMAND_MAP = COMMAND_LIST.stream()
-                .filter(it -> Objects.nonNull(it.getSshId()))
-                .collect(Collectors.groupingBy(Command::getSshId));
+        COMMAND_LIST = CONFIG_PERSISTENCE.getCommands();
     }
 
     public static void removeCommand(Command command) {
         ensureConfigLoadInMemory();
         CONFIG_PERSISTENCE.getCommands().remove(command);
-        COMMAND_LIST =  CONFIG_PERSISTENCE.getCommands();
-        COMMAND_MAP = COMMAND_LIST.stream()
-                .filter(it -> Objects.nonNull(it.getSshId()))
-                .collect(Collectors.groupingBy(Command::getSshId));
+        COMMAND_LIST = CONFIG_PERSISTENCE.getCommands();
     }
 
     public static Integer maxCommandId() {
@@ -179,32 +273,30 @@ public class ConfigHelper {
     public static Command getCommandById(int id) {
         ensureConfigLoadInMemory();
         return CONFIG_PERSISTENCE.getCommands().stream()
-                .filter(command -> command.getId() == id)
+                .filter(command -> Objects.equals(command.getId(), id))
                 .findFirst().orElse(null);
     }
 
-    public static List<UploadProfile> getUploadProfileBySshId(int sshId) {
+    public static List<UploadProfile> getAllUploadProfiles() {
         ensureConfigLoadInMemory();
-        return UPLOAD_PROFILE_MAP.getOrDefault(sshId, new ArrayList<>());
+        return UPLOAD_PROFILE_LIST;
     }
 
     public static void addUploadProfile(UploadProfile uploadProfile) {
         ensureConfigLoadInMemory();
         CONFIG_PERSISTENCE.getUploadProfiles().add(uploadProfile);
-        UPLOAD_PROFILE_MAP = CONFIG_PERSISTENCE.getUploadProfiles().stream()
-                .collect(Collectors.groupingBy(UploadProfile::getSshId));
+        UPLOAD_PROFILE_LIST = CONFIG_PERSISTENCE.getUploadProfiles();
     }
 
     public static void removeUploadProfile(UploadProfile uploadProfile) {
         ensureConfigLoadInMemory();
         CONFIG_PERSISTENCE.getUploadProfiles().remove(uploadProfile);
-        UPLOAD_PROFILE_MAP = CONFIG_PERSISTENCE.getUploadProfiles().stream()
-                .collect(Collectors.groupingBy(UploadProfile::getSshId));
+        UPLOAD_PROFILE_LIST = CONFIG_PERSISTENCE.getUploadProfiles();
     }
 
     public static int maxUploadProfileId() {
         ensureConfigLoadInMemory();
-        return CONFIG_PERSISTENCE.getUploadProfiles().stream()
+        return UPLOAD_PROFILE_LIST.stream()
                 .filter(Objects::nonNull)
                 .map(UploadProfile::getId)
                 .max(Integer::compareTo).orElse(1);
@@ -212,8 +304,15 @@ public class ConfigHelper {
 
     public static boolean isUploadProfileExist(int profileId) {
         ensureConfigLoadInMemory();
-        return CONFIG_PERSISTENCE.getUploadProfiles().stream()
+        return UPLOAD_PROFILE_LIST.stream()
                 .anyMatch(profile -> Objects.equals(profile.getId(), profileId));
+    }
+
+    public static UploadProfile getUploadProfileById(int profileId) {
+        ensureConfigLoadInMemory();
+        return UPLOAD_PROFILE_LIST.stream()
+                .filter(p -> Objects.equals(p.getId(), profileId))
+                .findFirst().orElse(null);
     }
 
     public static List<String> getServerTags() {
@@ -224,13 +323,6 @@ public class ConfigHelper {
     public static void setSshServerTags(List<String> newTags) {
         ensureConfigLoadInMemory();
         CONFIG_PERSISTENCE.setServerTags(newTags);
-    }
-
-    public static UploadProfile getOneUploadProfileById(int sshId, int profileId) {
-        ensureConfigLoadInMemory();
-        return getUploadProfileBySshId(sshId).stream()
-                .filter(p -> Objects.equals(p.getId(), profileId))
-                .findFirst().orElse(null);
     }
 
     public static PluginSetting pluginSetting() {

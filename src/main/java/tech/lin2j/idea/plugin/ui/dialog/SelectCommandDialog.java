@@ -52,10 +52,10 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
     private JBList<Command> commandList;
     private Command selectedCommand;
 
-    private final int sshId;
     private final Project project;
+    private final Integer sshId;
 
-    public SelectCommandDialog(Project project, int sshId) {
+    public SelectCommandDialog(Project project, Integer sshId) {
         super(project);
         this.sshId = sshId;
         this.project = project;
@@ -132,7 +132,7 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
 
     private void initCommandList() {
         commandList = new JBList<>();
-        commandList.setCellRenderer(new CommandColoredListCellRenderer(sshId));
+        commandList.setCellRenderer(new CommandColoredListCellRenderer());
         commandList.addListSelectionListener(e -> {
             Command command = commandList.getSelectedValue();
             if (command != null) {
@@ -160,7 +160,6 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
                 .setRemoveActionUpdater(e -> isEditable())
                 .setAddAction(e -> {
                     Command command = new Command();
-                    command.setSshId(sshId);
                     new AddCommandDialog(project, command).showAndGet();
                 })
                 .setRemoveAction(e -> {
@@ -191,20 +190,11 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
         return !(selectedValue instanceof SeparatorCommand);
     }
 
-public List<Command> loadCommandList() {
-        List<Command> commands = ConfigHelper.getCommandsBySshId(sshId);
-        List<Command> sharableCommands = ConfigHelper.getSharableCommands(sshId);
+    public List<Command> loadCommandList() {
+        List<Command> commands = ConfigHelper.getAllCommands();
 
-        List<Command> data = new ArrayList<>(commands);
-        data.add(new SeparatorCommand());
-        data.addAll(sharableCommands);
-
-        if (data.size() == 1) {
-            data = new ArrayList<>();
-        }
-
-        commandList.setListData(data.toArray(new Command[0]));
-        return data;
+        commandList.setListData(commands.toArray(new Command[0]));
+        return commands;
     }
 
     private void runCommand() {

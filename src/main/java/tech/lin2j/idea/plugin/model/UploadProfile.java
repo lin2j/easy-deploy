@@ -15,6 +15,10 @@ public class UploadProfile implements Cloneable, UniqueModel {
 
     private String name;
 
+    /**
+     * @deprecated sshId binding is deprecated. UploadProfiles are now global.
+     */
+    @Deprecated
     private Integer sshId;
 
     private String file;
@@ -68,10 +72,12 @@ public class UploadProfile implements Cloneable, UniqueModel {
         this.name = name;
     }
 
+    @Deprecated
     public Integer getSshId() {
         return sshId;
     }
 
+    @Deprecated
     public void setSshId(Integer sshId) {
         this.sshId = sshId;
     }
@@ -171,8 +177,7 @@ public class UploadProfile implements Cloneable, UniqueModel {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         UploadProfile that = (UploadProfile) o;
-        return Objects.equals(sshId, that.sshId)
-                && Objects.equals(name, that.name)
+        return Objects.equals(name, that.name)
                 && Objects.equals(file, that.file)
                 && Objects.equals(location, that.location)
                 && Objects.equals(commandId, that.commandId);
@@ -180,6 +185,6 @@ public class UploadProfile implements Cloneable, UniqueModel {
 
     @Override
     public int hashCode() {
-        return Objects.hash(sshId, name, file, location, commandId, isSelected);
+        return Objects.hash(name, file, location, commandId, isSelected);
     }
 }

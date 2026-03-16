@@ -30,14 +30,14 @@ public class DeployProfile {
         this.profileId = resolvedProfile[UPLOAD_PROFILE_IDX];
 
         this.server = ConfigHelper.getSshServerById(sshId);
-        this.uploadProfile = ConfigHelper.getOneUploadProfileById(sshId, profileId);
+        this.uploadProfile = ConfigHelper.getUploadProfileById(profileId);
 
         Command cmd;
         Integer cmdId = uploadProfile.getCommandId();
         if (cmdId == null) {
             cmd = NoneCommand.INSTANCE;
         } else {
-            cmd = ConfigHelper.getCommandById(uploadProfile.getCommandId());
+            cmd = ConfigHelper.getCommandById(cmdId);
             if (cmd == null) {
                 cmd = NoneCommand.INSTANCE;
             }

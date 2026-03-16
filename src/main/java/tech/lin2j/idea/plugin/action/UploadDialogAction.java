@@ -24,7 +24,7 @@ public class UploadDialogAction implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        UploadProfileDialog dialog = new UploadProfileDialog(project, ConfigHelper.getSshServerById(sshId));
+        UploadProfileDialog dialog = new UploadProfileDialog(project, sshId);
         ApplicationContext.getApplicationContext().addApplicationListener(dialog);
         dialog.showAndGet();
     }

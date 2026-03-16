@@ -20,23 +20,21 @@ public class AddCommandAction extends NewUpdateThreadAction {
 
     private static final String text = MessagesBundle.getText("action.common.command.add.text");
 
-    private final int sshId;
     private final Project project;
     private final Consumer<Command> action;
 
-    public AddCommandAction(Project project, int sshId, Consumer<Command> action) {
+    public AddCommandAction(Project project, Consumer<Command> action) {
         super(text, text, MyIcons.Actions.Add);
-        this.sshId = sshId;
         this.project = project;
         this.action = action;
     }
 
     @Override
     public void actionPerformed(@NotNull AnActionEvent e) {
-        Command tmp = new Command(sshId);
+        Command tmp = new Command();
         boolean exitOk = new AddCommandDialog(project, tmp).showAndGet();
         if (exitOk && action != null) {
-            List<Command> list = ConfigHelper.getCommandsBySshId(sshId);
+            List<Command> list = ConfigHelper.getAllCommands();
             Command newCmd = list.get(list.size() - 1);
             action.accept(newCmd);
         }

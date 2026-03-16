@@ -48,20 +48,19 @@ public class ImportExportUtil {
             ConfigImportExport.HostInfo hostInfo = new ConfigImportExport.HostInfo();
             hostInfo.setServer(server.clone());
 
-            int sshId = server.getId();
-            // clone command
-            if (options.isCommand() && ConfigHelper.getCommandsBySshId(sshId) != null) {
+            // Commands and upload profiles are now global, not per-server
+            // Export all commands and profiles
+            if (options.isCommand()) {
                 List<Command> cloneCommands = new ArrayList<>();
-                for (Command command : ConfigHelper.getCommandsBySshId(sshId)) {
+                for (Command command : ConfigHelper.getAllCommands()) {
                     cloneCommands.add(new Command(command));
                 }
                 hostInfo.setCommands(cloneCommands);
             }
 
-            // clone upload profile
-            if (options.isUploadProfile() && ConfigHelper.getUploadProfileBySshId(sshId) != null) {
+            if (options.isUploadProfile()) {
                 List<UploadProfile> cloneProfiles = new ArrayList<>();
-                for (UploadProfile uploadProfile : ConfigHelper.getUploadProfileBySshId(sshId)) {
+                for (UploadProfile uploadProfile : ConfigHelper.getAllUploadProfiles()) {
                     cloneProfiles.add(uploadProfile.clone());
                 }
                 hostInfo.setUploadProfiles(cloneProfiles);
@@ -106,22 +105,24 @@ public class ImportExportUtil {
             ConfigHelper.addSshServer(newSever);
             sshIdMap.put(oldSshId, newSshId);
             // command
+            // Commands are now global, import without sshId binding
             if (options.isCommand() && CollectionUtils.isNotEmpty(hostInfo.getCommands())) {
                 hostInfo.getCommands().forEach(newCmd -> {
                     int oldCmdId = newCmd.getId();
                     int newCmdId = ConfigHelper.maxCommandId() + 1;
                     newCmd.setId(newCmdId);
-                    newCmd.setSshId(newSshId);
+                    newCmd.setSshId(null); // Clear sshId for new global format
                     ConfigHelper.addCommand(newCmd);
 
                     commandIdMap.put(oldCmdId, newCmdId);
                 });
             }
             // upload profile
+            // Upload profiles are now global, import without sshId binding
             if (options.isUploadProfile() && CollectionUtils.isNotEmpty(hostInfo.getUploadProfiles())) {
                 hostInfo.getUploadProfiles().forEach(newProfile -> {
                     newProfile.setId(ConfigHelper.maxUploadProfileId() + 1);
-                    newProfile.setSshId(newSshId);
+                    newProfile.setSshId(null); // Clear sshId for new global format
                     if (newProfile.getCommandId() != null) {
                         newProfile.setCommandId(commandIdMap.get(newProfile.getCommandId()));
                     }

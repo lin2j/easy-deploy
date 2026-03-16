@@ -61,12 +61,14 @@ public class UploadProfileDialog extends DialogWrapper implements ApplicationLis
     private SimpleColoredComponent postCommandLabel;
 
     private final Project project;
-    private final SshServer server;
+    private final int sshId;
+    private SshServer server;
 
-    public UploadProfileDialog(@NotNull Project project, SshServer server) {
+    public UploadProfileDialog(@NotNull Project project, int sshId) {
         super(project);
         this.project = project;
-        this.server = server;
+        this.sshId = sshId;
+        this.server = ConfigHelper.getSshServerById(sshId);
 
         initLabel();
         initActionButton();
@@ -179,7 +181,6 @@ public class UploadProfileDialog extends DialogWrapper implements ApplicationLis
                     @Override
                     public void actionPerformed(ActionEvent e) {
                         UploadProfile profile = new UploadProfile();
-                        profile.setSshId(server.getId());
                         new AddUploadProfileDialog(project, profile).showAndGet();
                     }
                 }));
@@ -276,7 +277,7 @@ public class UploadProfileDialog extends DialogWrapper implements ApplicationLis
 
     private void reloadProfileBox() {
         profileBox.removeAllItems();
-        List<UploadProfile> profiles = ConfigHelper.getUploadProfileBySshId(server.getId());
+        List<UploadProfile> profiles = ConfigHelper.getAllUploadProfiles();
         if (!profiles.isEmpty()) {
             int i = 0;
             boolean hasSelected = false;

@@ -157,7 +157,7 @@ public class CommandManagePanel extends JPanel implements ApplicationListener<Co
 
     private void initCommandList() {
         commandList = new JBList<>();
-        commandList.setCellRenderer(new CommandColoredListCellRenderer(null));
+        commandList.setCellRenderer(new CommandColoredListCellRenderer());
         commandList.addListSelectionListener(e -> {
             Command command = commandList.getSelectedValue();
             if (command != null) {
