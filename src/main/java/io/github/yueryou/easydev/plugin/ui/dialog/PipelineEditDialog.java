@@ -1,0 +1,205 @@
+package io.github.yueryou.easydev.plugin.ui.dialog;
+
+import com.intellij.openapi.project.Project;
+import com.intellij.openapi.ui.DialogWrapper;
+import com.intellij.openapi.ui.Messages;
+import com.intellij.ui.ToolbarDecorator;
+import com.intellij.ui.components.JBList;
+import com.intellij.util.ui.FormBuilder;
+import io.github.yueryou.easydev.plugin.model.FailureStrategy;
+import io.github.yueryou.easydev.plugin.model.Pipeline;
+import io.github.yueryou.easydev.plugin.model.PipelineConfigPersistence;
+import io.github.yueryou.easydev.plugin.model.PipelineStep;
+import io.github.yueryou.easydev.plugin.ui.render.PipelineStepListCellRenderer;
+import org.jetbrains.annotations.Nullable;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
+import tech.lin2j.idea.plugin.ssh.SshServer;
+
+import javax.swing.*;
+import java.util.ArrayList;
+import java.util.List;
+
+/**
+ * 流水线编辑对话框
+ */
+public class PipelineEditDialog extends DialogWrapper {
+
+    private final Project project;
+    private final Pipeline pipeline;
+
+    private JTextField nameField;
+    private JComboBox<String> serverComboBox;
+    private JComboBox<FailureStrategy> failureStrategyComboBox;
+    private JBList<PipelineStep> stepList;
+    private DefaultListModel<PipelineStep> stepListModel;
+
+    public PipelineEditDialog(Project project, Pipeline pipeline) {
+        super(project);
+        this.project = project;
+        this.pipeline = pipeline;
+
+        setTitle(pipeline.getId() != null ? "编辑流水线" : "新建流水线");
+
+        init();
+    }
+
+    @Nullable
+    @Override
+    protected JComponent createCenterPanel() {
+        nameField = new JTextField(30);
+        if (pipeline.getName() != null) {
+            nameField.setText(pipeline.getName());
+        }
+
+        // 服务器选择
+        List<String> serverItems = new ArrayList<>();
+        List<SshServer> servers = ConfigHelper.sshServers();
+        serverItems.add(""); // 空选项
+        for (SshServer server : servers) {
+            serverItems.add(server.getId() + " - " + server.getIp() + ":" + server.getPort());
+        }
+        serverComboBox = new JComboBox<>(serverItems.toArray(new String[0]));
+        if (pipeline.getServerId() != null) {
+            String selectedValue = pipeline.getServerId() + " - ";
+            for (SshServer server : servers) {
+                if (server.getId().equals(pipeline.getServerId())) {
+                    selectedValue = server.getId() + " - " + server.getIp() + ":" + server.getPort();
+                    break;
+                }
+            }
+            serverComboBox.setSelectedItem(selectedValue);
+        }
+
+        // 失败策略选择
+        failureStrategyComboBox = new JComboBox<>(FailureStrategy.values());
+        if (pipeline.getOnFailure() != null) {
+            failureStrategyComboBox.setSelectedItem(pipeline.getOnFailure());
+        }
+
+        // 步骤列表
+        stepListModel = new DefaultListModel<>();
+        if (pipeline.getSteps() != null) {
+            for (PipelineStep step : pipeline.getSteps()) {
+                stepListModel.addElement(step);
+            }
+        }
+        stepList = new JBList<>(stepListModel);
+        stepList.setCellRenderer(new PipelineStepListCellRenderer());
+
+        JPanel stepToolbarPanel = ToolbarDecorator.createDecorator(stepList)
+                .setAddAction(e -> addStep())
+                .setEditAction(e -> editStep())
+                .setRemoveAction(e -> removeStep())
+                .setMoveUpAction(e -> moveStepUp())
+                .setMoveDownAction(e -> moveStepDown())
+                .createPanel();
+
+        return FormBuilder.createFormBuilder()
+                .addLabeledComponent("名称", nameField)
+                .addLabeledComponent("服务器", serverComboBox)
+                .addLabeledComponent("失败策略", failureStrategyComboBox)
+                .addLabeledComponent("步骤", stepToolbarPanel, true)
+                .getPanel();
+    }
+
+    @Override
+    protected void doOKAction() {
+        String name = nameField.getText();
+        if (name == null || name.trim().isEmpty()) {
+            Messages.showErrorDialog("请输入流水线名称", "验证失败");
+            return;
+        }
+
+        String serverSelectedItem = (String) serverComboBox.getSelectedItem();
+        String serverId = null;
+        if (serverSelectedItem != null && !serverSelectedItem.isEmpty()) {
+            String[] parts = serverSelectedItem.split(" - ");
+            if (parts.length > 0) {
+                serverId = parts[0];
+            }
+        }
+
+        if (serverId == null) {
+            Messages.showErrorDialog("请选择服务器", "验证失败");
+            return;
+        }
+
+        FailureStrategy failureStrategy = (FailureStrategy) failureStrategyComboBox.getSelectedItem();
+
+        // 保存配置
+        pipeline.setName(name.trim());
+        pipeline.setServerId(serverId);
+        pipeline.setOnFailure(failureStrategy);
+
+        // 收集步骤
+        List<PipelineStep> steps = new ArrayList<>();
+        for (int i = 0; i < stepListModel.size(); i++) {
+            steps.add(stepListModel.getElementAt(i));
+        }
+        pipeline.setSteps(steps);
+
+        if (pipeline.getId() == null) {
+            PipelineConfigPersistence.addPipeline(pipeline);
+        } else {
+            PipelineConfigPersistence.updatePipeline(pipeline);
+        }
+
+        super.doOKAction();
+    }
+
+    private void addStep() {
+        StepEditDialog dialog = new StepEditDialog(project, null);
+        if (dialog.showAndGet()) {
+            PipelineStep step = dialog.getStep();
+            stepListModel.addElement(step);
+        }
+    }
+
+    private void editStep() {
+        PipelineStep selectedStep = stepList.getSelectedValue();
+        if (selectedStep == null) {
+            return;
+        }
+
+        StepEditDialog dialog = new StepEditDialog(project, selectedStep);
+        if (dialog.showAndGet()) {
+            int index = stepList.getSelectedIndex();
+            stepListModel.set(index, dialog.getStep());
+        }
+    }
+
+    private void removeStep() {
+        PipelineStep selectedStep = stepList.getSelectedValue();
+        if (selectedStep == null) {
+            return;
+        }
+
+        int confirm = Messages.showYesNoDialog(
+                "确定要删除步骤 \"" + selectedStep.getName() + "\" 吗？",
+                "确认删除",
+                Messages.getQuestionIcon()
+        );
+
+        if (confirm == Messages.YES) {
+            stepListModel.removeElement(selectedStep);
+        }
+    }
+
+    private void moveStepUp() {
+        int index = stepList.getSelectedIndex();
+        if (index > 0) {
+            PipelineStep step = stepListModel.remove(index);
+            stepListModel.add(index - 1, step);
+            stepList.setSelectedIndex(index - 1);
+        }
+    }
+
+    private void moveStepDown() {
+        int index = stepList.getSelectedIndex();
+        if (index >= 0 && index < stepListModel.size() - 1) {
+            PipelineStep step = stepListModel.remove(index);
+            stepListModel.add(index + 1, step);
+            stepList.setSelectedIndex(index + 1);
+        }
+    }
+}
