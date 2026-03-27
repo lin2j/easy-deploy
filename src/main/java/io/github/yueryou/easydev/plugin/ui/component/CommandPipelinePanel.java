@@ -13,6 +13,7 @@ import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import io.github.yueryou.easydev.plugin.model.Pipeline;
 import io.github.yueryou.easydev.plugin.model.PipelineConfigPersistence;
+import io.github.yueryou.easydev.plugin.ui.dialog.PipelineEditDialog;
 import io.github.yueryou.easydev.plugin.ui.render.PipelineListCellRenderer;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.service.impl.PluginNotificationService;
@@ -91,12 +92,20 @@ public class CommandPipelinePanel extends JPanel {
                 .setToolbarPosition(ActionToolbarPosition.TOP)
                 .disableUpDownActions()
                 .setAddAction(e -> {
-                    // TODO: 移动到 Task 6 实现
-                    notificationService.showNotification(project, "提示", "PipelineEditDialog 开发中...");
+                    Pipeline pipeline = new Pipeline();
+                    PipelineEditDialog dialog = new PipelineEditDialog(project, pipeline);
+                    if (dialog.showAndGet()) {
+                        loadPipelineList();
+                    }
                 })
                 .setEditAction(e -> {
-                    // TODO: 移动到 Task 6 实现
-                    notificationService.showNotification(project, "提示", "PipelineEditDialog 开发中...");
+                    Pipeline pipeline = pipelineList.getSelectedValue();
+                    if (pipeline != null) {
+                        PipelineEditDialog dialog = new PipelineEditDialog(project, pipeline);
+                        if (dialog.showAndGet()) {
+                            loadPipelineList();
+                        }
+                    }
                 })
                 .setRemoveAction(e -> {
                     Pipeline pipeline = pipelineList.getSelectedValue();
