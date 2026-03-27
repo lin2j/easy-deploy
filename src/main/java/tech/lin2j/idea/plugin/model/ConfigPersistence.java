@@ -35,6 +35,8 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
 
     private PluginSetting setting;
 
+    private List<io.github.yueryou.easydev.plugin.model.Pipeline> pipelines;
+
     @Override
     public @Nullable ConfigPersistence getState() {
         return this;
@@ -111,6 +113,18 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
 
     public void setSetting(PluginSetting setting) {
         this.setting = setting;
+    }
+
+    public List<io.github.yueryou.easydev.plugin.model.Pipeline> getPipelines() {
+        if (pipelines == null) {
+            pipelines = new CopyOnWriteArrayList<>();
+        }
+        checkUid(pipelines);
+        return pipelines;
+    }
+
+    public void setPipelines(List<io.github.yueryou.easydev.plugin.model.Pipeline> pipelines) {
+        this.pipelines = pipelines;
     }
 
     private void checkUid(List<? extends UniqueModel> list) {

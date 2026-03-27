@@ -31,6 +31,8 @@ public class ConfigHelper {
 
     private static List<UploadProfile> UPLOAD_PROFILE_LIST;
 
+    private static List<io.github.yueryou.easydev.plugin.model.Pipeline> PIPELINE_LIST;
+
     public static void ensureConfigLoadInMemory() {
         if (CONFIG_PERSISTENCE == null) {
             synchronized (ConfigHelper.class) {
@@ -59,6 +61,8 @@ public class ConfigHelper {
         COMMAND_LIST = CONFIG_PERSISTENCE.getCommands();
 
         UPLOAD_PROFILE_LIST = CONFIG_PERSISTENCE.getUploadProfiles();
+
+        PIPELINE_LIST = CONFIG_PERSISTENCE.getPipelines();
     }
 
     /**
@@ -323,6 +327,39 @@ public class ConfigHelper {
     public static void setSshServerTags(List<String> newTags) {
         ensureConfigLoadInMemory();
         CONFIG_PERSISTENCE.setServerTags(newTags);
+    }
+
+    // Pipeline methods
+
+    public static List<io.github.yueryou.easydev.plugin.model.Pipeline> getAllPipelines() {
+        ensureConfigLoadInMemory();
+        return PIPELINE_LIST;
+    }
+
+    public static io.github.yueryou.easydev.plugin.model.Pipeline getPipelineById(String id) {
+        ensureConfigLoadInMemory();
+        return PIPELINE_LIST.stream()
+                .filter(p -> Objects.equals(p.getId(), id))
+                .findFirst().orElse(null);
+    }
+
+    public static io.github.yueryou.easydev.plugin.model.Pipeline getPipelineByUid(String uid) {
+        ensureConfigLoadInMemory();
+        return PIPELINE_LIST.stream()
+                .filter(p -> Objects.equals(p.getUid(), uid))
+                .findFirst().orElse(null);
+    }
+
+    public static void addPipeline(io.github.yueryou.easydev.plugin.model.Pipeline pipeline) {
+        ensureConfigLoadInMemory();
+        CONFIG_PERSISTENCE.getPipelines().add(pipeline);
+        PIPELINE_LIST = CONFIG_PERSISTENCE.getPipelines();
+    }
+
+    public static void removePipeline(io.github.yueryou.easydev.plugin.model.Pipeline pipeline) {
+        ensureConfigLoadInMemory();
+        CONFIG_PERSISTENCE.getPipelines().remove(pipeline);
+        PIPELINE_LIST = CONFIG_PERSISTENCE.getPipelines();
     }
 
     public static PluginSetting pluginSetting() {
