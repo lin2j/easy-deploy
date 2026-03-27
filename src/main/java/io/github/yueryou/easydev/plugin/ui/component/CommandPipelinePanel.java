@@ -26,6 +26,7 @@ import java.util.List;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
 
 /**
  * 自定义任务流水线面板
@@ -154,6 +155,10 @@ public class CommandPipelinePanel extends JPanel {
     }
 
     private void executePipeline() {
+        executePipelineFromStep(0);
+    }
+
+    private void executePipelineFromStep(int startIndex) {
         if (selectedPipeline == null) {
             notificationService.showNotification(project, "运行流水线", MessagesBundle.getText("pipeline.error.no.selected"));
             return;
@@ -172,8 +177,52 @@ public class CommandPipelinePanel extends JPanel {
         ProgressManager.getInstance().run(new Task.Backgroundable(project, MessagesBundle.getText("pipeline.running") + selectedPipeline.getName()) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
-                // TODO: 实现流水线执行逻辑（Task 8）
-                notificationService.showNotification(project, "运行流水线", "功能开发中...");
+                try {
+                    // 获取服务器配置
+                    tech.lin2j.idea.plugin.ssh.SshServer server =
+                        ConfigHelper.getSshServerById(Integer.parseInt(selectedPipeline.getServerId()));
+
+                    if (server == null) {
+                        notificationService.showNotification(project, "运行流水线", "未找到服务器配置");
+                        return;
+                    }
+
+                    // 构建日志输出
+                    StringBuilder logOutput = new StringBuilder();
+                    java.util.function.Consumer<String> logConsumer = logOutput::append;
+
+                    // 执行流水线
+                    io.github.yueryou.easydev.plugin.model.PipelineResult result =
+                        io.github.yueryou.easydev.plugin.executor.PipelineExecutor.executeFromStep(
+                            selectedPipeline,
+                            server,
+                            project,
+                            logConsumer,
+                            startIndex
+                        );
+
+                    // 显示结果
+                    ApplicationManager.getApplication().invokeLater(() -> {
+                        if (result.isSuccess()) {
+                            notificationService.showNotification(
+                                project,
+                                "流水线执行成功",
+                                selectedPipeline.getName()
+                            );
+                        } else {
+                            notificationService.showNotification(
+                                project,
+                                "流水线执行失败",
+                                "失败步骤：" + (result.getFailedStep() != null ? result.getFailedStep().getName() : "未知")
+                            );
+                        }
+                    });
+
+                } catch (NumberFormatException e) {
+                    notificationService.showNotification(project, "运行流水线", "服务器 ID 格式错误：" + e.getMessage());
+                } catch (Exception e) {
+                    notificationService.showNotification(project, "运行流水线", "执行异常：" + e.getMessage());
+                }
             }
         });
     }
