@@ -1,0 +1,120 @@
+package io.github.yueryou.easydev.plugin.model;
+
+import tech.lin2j.idea.plugin.model.UniqueModel;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+/**
+ * 流水线配置类
+ */
+public class Pipeline implements UniqueModel {
+
+    private String id;
+    private String uid;
+    private String name;
+    private String serverId;
+    private List<PipelineStep> steps;
+    private FailureStrategy onFailure;
+    private long createdAt;
+    private long updatedAt;
+
+    public Pipeline() {
+        this.steps = new ArrayList<>();
+        this.onFailure = FailureStrategy.STOP;
+        this.createdAt = System.currentTimeMillis();
+        this.updatedAt = this.createdAt;
+    }
+
+    public Pipeline(String name, String serverId) {
+        this();
+        this.name = name;
+        this.serverId = serverId;
+    }
+
+    @Override
+    public String getUid() {
+        return uid;
+    }
+
+    @Override
+    public void setUid(String uid) {
+        this.uid = uid;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(String serverId) {
+        this.serverId = serverId;
+    }
+
+    public List<PipelineStep> getSteps() {
+        return steps;
+    }
+
+    public void setSteps(List<PipelineStep> steps) {
+        this.steps = steps;
+    }
+
+    public FailureStrategy getOnFailure() {
+        return onFailure;
+    }
+
+    public void setOnFailure(FailureStrategy onFailure) {
+        this.onFailure = onFailure;
+    }
+
+    public long getCreatedAt() {
+        return createdAt;
+    }
+
+    public void setCreatedAt(long createdAt) {
+        this.createdAt = createdAt;
+    }
+
+    public long getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public void setUpdatedAt(long updatedAt) {
+        this.updatedAt = updatedAt;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Pipeline pipeline = (Pipeline) o;
+        if (id != null && pipeline.id != null) {
+            return Objects.equals(id, pipeline.id);
+        }
+        return Objects.equals(uid, pipeline.uid);
+    }
+
+    @Override
+    public int hashCode() {
+        if (id != null) {
+            return Objects.hash(id);
+        }
+        return Objects.hash(uid);
+    }
+}
