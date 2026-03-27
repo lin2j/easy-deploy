@@ -16,7 +16,9 @@ import io.github.yueryou.easydev.plugin.model.PipelineConfigPersistence;
 import io.github.yueryou.easydev.plugin.ui.dialog.PipelineEditDialog;
 import io.github.yueryou.easydev.plugin.ui.render.PipelineListCellRenderer;
 import org.jetbrains.annotations.NotNull;
+import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.service.impl.PluginNotificationService;
+import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
 
@@ -24,10 +26,12 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import java.awt.*;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
-import tech.lin2j.idea.plugin.model.ConfigHelper;
+import io.github.yueryou.easydev.plugin.executor.PipelineExecutor;
+import io.github.yueryou.easydev.plugin.model.PipelineResult;
 
 /**
  * 自定义任务流水线面板
@@ -46,11 +50,6 @@ public class CommandPipelinePanel extends JPanel {
      * 流水线列表
      */
     private JBList<Pipeline> pipelineList;
-
-    /**
-     * 已选择的流水线
-     */
-    private transient Pipeline selectedPipeline;
 
     private final PluginNotificationService notificationService;
 
@@ -77,34 +76,17 @@ public class CommandPipelinePanel extends JPanel {
     private void initPipelineList() {
         pipelineList = new JBList<>();
         pipelineList.setCellRenderer(new PipelineListCellRenderer());
-        pipelineList.addListSelectionListener(e -> {
-            Pipeline pipeline = pipelineList.getSelectedValue();
-            if (pipeline != null) {
-                selectedPipeline = pipeline;
-            } else {
-                selectedPipeline = null;
-            }
-        });
     }
 
     private JPanel createPipelineToolbarPanel() {
         return ToolbarDecorator.createDecorator(pipelineList)
                 .setToolbarPosition(ActionToolbarPosition.TOP)
                 .disableUpDownActions()
-                .setAddAction(e -> {
-                    Pipeline pipeline = new Pipeline();
-                    PipelineEditDialog dialog = new PipelineEditDialog(project, pipeline);
-                    if (dialog.showAndGet()) {
-                        loadPipelineList();
-                    }
-                })
+                .setAddAction(e -> showPipelineEditDialog(new Pipeline()))
                 .setEditAction(e -> {
                     Pipeline pipeline = pipelineList.getSelectedValue();
                     if (pipeline != null) {
-                        PipelineEditDialog dialog = new PipelineEditDialog(project, pipeline);
-                        if (dialog.showAndGet()) {
-                            loadPipelineList();
-                        }
+                        showPipelineEditDialog(pipeline);
                     }
                 })
                 .setRemoveAction(e -> {
@@ -120,6 +102,13 @@ public class CommandPipelinePanel extends JPanel {
                 })
                 .addExtraAction(new RunPipelineAction())
                 .createPanel();
+    }
+
+    private void showPipelineEditDialog(Pipeline pipeline) {
+        PipelineEditDialog dialog = new PipelineEditDialog(project, pipeline);
+        if (dialog.showAndGet()) {
+            loadPipelineList();
+        }
     }
 
     private void bindInputChangeListener(List<Pipeline> pipelines) {
@@ -168,69 +157,63 @@ public class CommandPipelinePanel extends JPanel {
     }
 
     private void executePipelineFromStep(int startIndex) {
-        if (selectedPipeline == null) {
-            notificationService.showNotification(project, "运行流水线", MessagesBundle.getText("pipeline.error.no.selected"));
+        Pipeline pipeline = pipelineList.getSelectedValue();
+        if (pipeline == null) {
+            notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
+                MessagesBundle.getText("pipeline.error.no.selected"));
             return;
         }
 
-        if (selectedPipeline.getServerId() == null) {
-            notificationService.showNotification(project, "运行流水线", MessagesBundle.getText("pipeline.error.no.server"));
+        if (pipeline.getServerId() == null) {
+            notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
+                MessagesBundle.getText("pipeline.error.no.server"));
             return;
         }
 
-        if (selectedPipeline.getSteps() == null || selectedPipeline.getSteps().isEmpty()) {
-            notificationService.showNotification(project, "运行流水线", MessagesBundle.getText("pipeline.error.no.steps"));
+        if (pipeline.getSteps() == null || pipeline.getSteps().isEmpty()) {
+            notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
+                MessagesBundle.getText("pipeline.error.no.steps"));
             return;
         }
 
-        ProgressManager.getInstance().run(new Task.Backgroundable(project, MessagesBundle.getText("pipeline.running") + selectedPipeline.getName()) {
+        ProgressManager.getInstance().run(new Task.Backgroundable(project, MessagesBundle.getText("pipeline.running") + pipeline.getName()) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 try {
-                    // 获取服务器配置
-                    tech.lin2j.idea.plugin.ssh.SshServer server =
-                        ConfigHelper.getSshServerById(Integer.parseInt(selectedPipeline.getServerId()));
+                    SshServer server = ConfigHelper.getSshServerById(Integer.parseInt(pipeline.getServerId()));
 
                     if (server == null) {
-                        notificationService.showNotification(project, "运行流水线", "未找到服务器配置");
+                        notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
+                            MessagesBundle.getText("pipeline.notification.server.not.found"));
                         return;
                     }
 
-                    // 构建日志输出
-                    StringBuilder logOutput = new StringBuilder();
-                    java.util.function.Consumer<String> logConsumer = logOutput::append;
+                    Consumer<String> logConsumer = message -> {};
 
-                    // 执行流水线
-                    io.github.yueryou.easydev.plugin.model.PipelineResult result =
-                        io.github.yueryou.easydev.plugin.executor.PipelineExecutor.executeFromStep(
-                            selectedPipeline,
-                            server,
-                            project,
-                            logConsumer,
-                            startIndex
-                        );
+                    PipelineResult result = PipelineExecutor.executeFromStep(pipeline, server, project, logConsumer, startIndex);
 
-                    // 显示结果
                     ApplicationManager.getApplication().invokeLater(() -> {
-                        if (result.isSuccess()) {
-                            notificationService.showNotification(
-                                project,
-                                "流水线执行成功",
-                                selectedPipeline.getName()
-                            );
+                        String title = result.isSuccess()
+                            ? MessagesBundle.getText("pipeline.notification.success.title")
+                            : MessagesBundle.getText("pipeline.notification.failure.title");
+
+                        StringBuilder message = new StringBuilder();
+                        if (!result.isSuccess() && result.getFailedStep() != null) {
+                            message.append(MessagesBundle.getText("pipeline.notification.failure.step"))
+                                   .append(result.getFailedStep().getName());
                         } else {
-                            notificationService.showNotification(
-                                project,
-                                "流水线执行失败",
-                                "失败步骤：" + (result.getFailedStep() != null ? result.getFailedStep().getName() : "未知")
-                            );
+                            message.append(pipeline.getName());
                         }
+
+                        notificationService.showNotification(project, title, message.toString());
                     });
 
                 } catch (NumberFormatException e) {
-                    notificationService.showNotification(project, "运行流水线", "服务器 ID 格式错误：" + e.getMessage());
+                    notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
+                        MessagesBundle.getText("pipeline.notification.server.id.error") + e.getMessage());
                 } catch (Exception e) {
-                    notificationService.showNotification(project, "运行流水线", "执行异常：" + e.getMessage());
+                    notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
+                        MessagesBundle.getText("pipeline.notification.execution.error") + e.getMessage());
                 }
             }
         });

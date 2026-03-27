@@ -55,19 +55,19 @@ public class PipelineEditDialog extends DialogWrapper {
         List<String> serverItems = new ArrayList<>();
         List<SshServer> servers = ConfigHelper.sshServers();
         serverItems.add(""); // 空选项
+        // 使用 Map 避免二次遍历
+        java.util.Map<Integer, SshServer> serverMap = new java.util.HashMap<>();
         for (SshServer server : servers) {
-            serverItems.add(server.getId() + " - " + server.getIp() + ":" + server.getPort());
+            String item = server.getId() + " - " + server.getIp() + ":" + server.getPort();
+            serverItems.add(item);
+            serverMap.put(server.getId(), server);
         }
         serverComboBox = new JComboBox<>(serverItems.toArray(new String[0]));
         if (pipeline.getServerId() != null) {
-            String selectedValue = pipeline.getServerId() + " - ";
-            for (SshServer server : servers) {
-                if (server.getId().equals(pipeline.getServerId())) {
-                    selectedValue = server.getId() + " - " + server.getIp() + ":" + server.getPort();
-                    break;
-                }
+            SshServer selectedServer = serverMap.get(Integer.parseInt(pipeline.getServerId()));
+            if (selectedServer != null) {
+                serverComboBox.setSelectedItem(selectedServer.getId() + " - " + selectedServer.getIp() + ":" + selectedServer.getPort());
             }
-            serverComboBox.setSelectedItem(selectedValue);
         }
 
         // 失败策略选择

@@ -158,12 +158,12 @@ public class StepEditDialog extends DialogWrapper {
                 localWorkingDirField.setText(localStep.getWorkingDir());
                 timeoutField.setText(String.valueOf(localStep.getTimeout()));
                 if (localStep.getCommandId() != null) {
-                    selectCommandInComboBox(localCommandComboBox, localStep.getCommandId());
+                    selectItemInComboBox(localCommandComboBox, localStep.getCommandId());
                 }
                 break;
             case UPLOAD:
                 UploadStep uploadStep = (UploadStep) step;
-                selectProfileInComboBox(uploadProfileComboBox, uploadStep.getUploadProfileId());
+                selectItemInComboBox(uploadProfileComboBox, uploadStep.getUploadProfileId());
                 createRemoteDirCheckBox.setSelected(uploadStep.isCreateRemoteDir());
                 break;
             case REMOTE_COMMAND:
@@ -171,26 +171,16 @@ public class StepEditDialog extends DialogWrapper {
                 remoteCommandField.setText(remoteStep.getCommand());
                 remoteWorkingDirField.setText(remoteStep.getWorkingDir());
                 if (remoteStep.getCommandId() != null) {
-                    selectCommandInComboBox(remoteCommandComboBox, remoteStep.getCommandId());
+                    selectItemInComboBox(remoteCommandComboBox, remoteStep.getCommandId());
                 }
                 break;
         }
     }
 
-    private void selectCommandInComboBox(JComboBox<String> comboBox, String commandId) {
+    private void selectItemInComboBox(JComboBox<String> comboBox, String id) {
         for (int i = 0; i < comboBox.getItemCount(); i++) {
             String item = comboBox.getItemAt(i);
-            if (item != null && item.startsWith(commandId + " - ")) {
-                comboBox.setSelectedIndex(i);
-                break;
-            }
-        }
-    }
-
-    private void selectProfileInComboBox(JComboBox<String> comboBox, String profileId) {
-        for (int i = 0; i < comboBox.getItemCount(); i++) {
-            String item = comboBox.getItemAt(i);
-            if (item != null && item.startsWith(profileId + " - ")) {
+            if (item != null && item.startsWith(id + " - ")) {
                 comboBox.setSelectedIndex(i);
                 break;
             }
