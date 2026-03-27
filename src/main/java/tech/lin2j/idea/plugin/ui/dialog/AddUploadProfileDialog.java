@@ -253,7 +253,12 @@ public class AddUploadProfileDialog extends DialogWrapper {
             FileChooserDescriptor descriptor = allButNoMultipleChoose();
             VirtualFile virtualFile = FileChooser.chooseFile(descriptor, fileBrowser, project, getCurrentWorkingDir());
             if (virtualFile != null) {
-                fileBrowser.setText(virtualFile.getPath());
+                String path = virtualFile.getPath();
+                // 移除 JAR 文件路径中可能附加的 "!/" 后缀
+                if (path.endsWith("!/")) {
+                    path = path.substring(0, path.length() - 2);
+                }
+                fileBrowser.setText(path);
             }
         });
 
