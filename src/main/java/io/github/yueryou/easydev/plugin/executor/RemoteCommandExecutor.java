@@ -20,13 +20,18 @@ public class RemoteCommandExecutor {
         throw new IllegalStateException("Utility class");
     }
 
-    public static StepResult execute(PipelineStep step, ExecutionContext context) {
+    public static StepResult execute(PipelineStep step, ExecutionContext context, SshServer server) {
         if (!(step instanceof RemoteCommandStep)) {
             return StepResult.failure("Invalid step type: expected RemoteCommandStep");
         }
 
         RemoteCommandStep remoteStep = (RemoteCommandStep) step;
         context.getLogConsumer().accept("[RemoteCommand] 开始执行：" + remoteStep.getName());
+
+        // 验证 Server 配置
+        if (server == null) {
+            return StepResult.failure("SSH 服务器未配置");
+        }
 
         // 解析变量
         String command = context.resolve(remoteStep.getCommand());
@@ -46,12 +51,6 @@ public class RemoteCommandExecutor {
         context.getLogConsumer().accept("[RemoteCommand] 执行命令：" + command);
 
         try {
-            // 获取 SSH 服务器
-            SshServer server = context.getServer();
-            if (server == null) {
-                return StepResult.failure("SSH 服务器未配置");
-            }
-
             ISshService sshService = new SshjSshService();
 
             // 执行远程命令（同步）

@@ -6,8 +6,10 @@ import io.github.yueryou.easydev.plugin.model.FailureStrategy;
 import io.github.yueryou.easydev.plugin.model.Pipeline;
 import io.github.yueryou.easydev.plugin.model.PipelineResult;
 import io.github.yueryou.easydev.plugin.model.PipelineStep;
+import io.github.yueryou.easydev.plugin.model.RemoteCommandStep;
 import io.github.yueryou.easydev.plugin.model.StepResult;
 import io.github.yueryou.easydev.plugin.model.StepType;
+import io.github.yueryou.easydev.plugin.model.UploadStep;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.ssh.SshServer;
 
@@ -57,7 +59,6 @@ public class PipelineExecutor {
         List<PipelineStep> steps = pipeline.getSteps();
 
         logConsumer.accept("========== 流水线开始：" + pipeline.getName() + " ==========");
-        logConsumer.accept("服务器：" + server.getIp() + ":" + server.getPort());
         logConsumer.accept("失败策略：" + pipeline.getOnFailure());
         logConsumer.accept("从步骤 " + startIndex + " 开始执行");
 
@@ -146,9 +147,27 @@ public class PipelineExecutor {
             case LOCAL_COMMAND:
                 return LocalCommandExecutor.execute(step, context);
             case UPLOAD:
-                return UploadExecutor.execute(step, context);
+                UploadStep uploadStep = (UploadStep) step;
+                if (uploadStep.getServerId() != null) {
+                    SshServer uploadServer = ConfigHelper.getSshServerById(
+                        Integer.parseInt(uploadStep.getServerId())
+                    );
+                    return UploadExecutor.execute(step, context, uploadServer);
+                } else {
+                    context.getLogConsumer().accept("[错误] Upload 步骤未配置 Server: " + step.getName());
+                    return StepResult.failure("Upload 步骤未配置 Server");
+                }
             case REMOTE_COMMAND:
-                return RemoteCommandExecutor.execute(step, context);
+                RemoteCommandStep remoteStep = (RemoteCommandStep) step;
+                if (remoteStep.getServerId() != null) {
+                    SshServer remoteServer = ConfigHelper.getSshServerById(
+                        Integer.parseInt(remoteStep.getServerId())
+                    );
+                    return RemoteCommandExecutor.execute(step, context, remoteServer);
+                } else {
+                    context.getLogConsumer().accept("[错误] RemoteCommand 步骤未配置 Server: " + step.getName());
+                    return StepResult.failure("RemoteCommand 步骤未配置 Server");
+                }
             default:
                 return StepResult.failure("不支持的步骤类型：" + step.getType());
         }

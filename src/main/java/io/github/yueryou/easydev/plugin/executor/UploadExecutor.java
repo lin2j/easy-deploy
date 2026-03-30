@@ -26,13 +26,18 @@ public class UploadExecutor {
         throw new IllegalStateException("Utility class");
     }
 
-    public static StepResult execute(PipelineStep step, ExecutionContext context) {
+    public static StepResult execute(PipelineStep step, ExecutionContext context, SshServer server) {
         if (!(step instanceof UploadStep)) {
             return StepResult.failure("Invalid step type: expected UploadStep");
         }
 
         UploadStep uploadStep = (UploadStep) step;
         context.getLogConsumer().accept("[Upload] 开始执行：" + uploadStep.getName());
+
+        // 验证 Server 配置
+        if (server == null) {
+            return StepResult.failure("SSH 服务器未配置");
+        }
 
         // 获取 UploadProfile
         String profileId = uploadStep.getUploadProfileId();
@@ -66,12 +71,6 @@ public class UploadExecutor {
         context.getLogConsumer().accept("[Upload] 远程目录：" + remoteDir);
 
         try {
-            // 获取 SSH 服务
-            SshServer server = context.getServer();
-            if (server == null) {
-                return StepResult.failure("SSH 服务器未配置");
-            }
-
             ISshService sshService = new SshjSshService();
             SshjConnection connection = SshConnectionManager.makeSshjConnection(server);
             if (connection == null) {
