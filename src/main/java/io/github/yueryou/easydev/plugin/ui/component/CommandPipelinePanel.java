@@ -169,16 +169,6 @@ public class CommandPipelinePanel extends JPanel {
             return;
         }
 
-        // 检查是否需要 Server（上传步骤或远程命令步骤需要 Server）
-        boolean needServer = pipeline.getSteps().stream().anyMatch(step ->
-            step.getType() == StepType.UPLOAD || step.getType() == StepType.REMOTE_COMMAND);
-
-        if (needServer && pipeline.getServerId() == null) {
-            notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
-                MessagesBundle.getText("pipeline.error.no.server"));
-            return;
-        }
-
         // 获取控制台视图
         ConsoleLogView consoleLogView = project.getService(ConsoleLogView.class);
         if (consoleLogView == null) {
@@ -222,21 +212,7 @@ public class CommandPipelinePanel extends JPanel {
 
                     logConsumer.accept("========== 流水线开始：" + pipeline.getName() + " ==========");
 
-                    SshServer server = ConfigHelper.getSshServerById(Integer.parseInt(pipeline.getServerId()));
-
-                    if (server == null) {
-                        logConsumer.accept("服务器配置未找到");
-                        notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
-                            MessagesBundle.getText("pipeline.notification.server.not.found"));
-                        return;
-                    }
-
-                    logConsumer.accept("服务器：" + server.getIp() + ":" + server.getPort());
-                    logConsumer.accept("失败策略：" + pipeline.getOnFailure());
-                    logConsumer.accept("从步骤 " + startIndex + " 开始执行");
-                    logConsumer.accept("");
-
-                    PipelineResult result = PipelineExecutor.executeFromStep(pipeline, server, project, logConsumer, startIndex);
+                    PipelineResult result = PipelineExecutor.executeFromStep(pipeline, null, project, logConsumer, startIndex);
 
                     // 显示执行结果通知
                     ApplicationManager.getApplication().invokeLater(() -> {

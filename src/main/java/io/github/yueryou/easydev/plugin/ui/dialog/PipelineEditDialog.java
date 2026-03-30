@@ -13,8 +13,6 @@ import io.github.yueryou.easydev.plugin.model.PipelineStep;
 import io.github.yueryou.easydev.plugin.model.StepType;
 import io.github.yueryou.easydev.plugin.ui.render.PipelineStepListCellRenderer;
 import org.jetbrains.annotations.Nullable;
-import tech.lin2j.idea.plugin.model.ConfigHelper;
-import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.*;
@@ -30,7 +28,6 @@ public class PipelineEditDialog extends DialogWrapper {
     private final Pipeline pipeline;
 
     private JTextField nameField;
-    private JComboBox<String> serverComboBox;
     private JComboBox<FailureStrategy> failureStrategyComboBox;
     private JBList<PipelineStep> stepList;
     private DefaultListModel<PipelineStep> stepListModel;
@@ -63,24 +60,6 @@ public class PipelineEditDialog extends DialogWrapper {
             nameField.setText(pipeline.getName());
         }
 
-        // 服务器选择
-        List<String> serverItems = new ArrayList<>();
-        List<SshServer> servers = ConfigHelper.sshServers();
-        serverItems.add("");
-        java.util.Map<Integer, SshServer> serverMap = new java.util.HashMap<>();
-        for (SshServer server : servers) {
-            String item = server.getId() + " - " + server.getIp() + ":" + server.getPort();
-            serverItems.add(item);
-            serverMap.put(server.getId(), server);
-        }
-        serverComboBox = new JComboBox<>(serverItems.toArray(new String[0]));
-        if (pipeline.getServerId() != null) {
-            SshServer selectedServer = serverMap.get(Integer.parseInt(pipeline.getServerId()));
-            if (selectedServer != null) {
-                serverComboBox.setSelectedItem(selectedServer.getId() + " - " + selectedServer.getIp() + ":" + selectedServer.getPort());
-            }
-        }
-
         // 失败策略选择
         failureStrategyComboBox = new JComboBox<>(FailureStrategy.values());
         if (pipeline.getOnFailure() != null) {
@@ -107,7 +86,6 @@ public class PipelineEditDialog extends DialogWrapper {
 
         return FormBuilder.createFormBuilder()
                 .addLabeledComponent(MessagesBundle.getText("pipeline.edit.name"), nameField)
-                .addLabeledComponent(MessagesBundle.getText("pipeline.edit.server"), serverComboBox)
                 .addLabeledComponent(MessagesBundle.getText("pipeline.edit.failure.strategy"), failureStrategyComboBox)
                 .addLabeledComponent(MessagesBundle.getText("pipeline.edit.steps"), stepToolbarPanel, true)
                 .getPanel();
@@ -131,30 +109,10 @@ public class PipelineEditDialog extends DialogWrapper {
             return;
         }
 
-        // 检查是否需要 Server（上传步骤或远程命令步骤需要 Server）
-        boolean needServer = steps.stream().anyMatch(step ->
-            step.getType() == StepType.UPLOAD || step.getType() == StepType.REMOTE_COMMAND);
-
-        String serverId = null;
-        if (needServer) {
-            String serverSelectedItem = (String) serverComboBox.getSelectedItem();
-            if (serverSelectedItem != null && !serverSelectedItem.isEmpty()) {
-                String[] parts = serverSelectedItem.split(" - ");
-                if (parts.length > 0) {
-                    serverId = parts[0];
-                }
-            }
-            if (serverId == null) {
-                Messages.showErrorDialog(MessagesBundle.getText("pipeline.error.no.server"), "Error");
-                return;
-            }
-        }
-
         FailureStrategy failureStrategy = (FailureStrategy) failureStrategyComboBox.getSelectedItem();
 
         // 保存配置
         pipeline.setName(name.trim());
-        pipeline.setServerId(serverId);
         pipeline.setOnFailure(failureStrategy);
         pipeline.setSteps(steps);
 

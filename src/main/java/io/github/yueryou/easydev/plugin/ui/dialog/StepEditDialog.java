@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.model.Command;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.model.UploadProfile;
+import tech.lin2j.idea.plugin.ssh.SshServer;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
 
@@ -40,12 +41,14 @@ public class StepEditDialog extends DialogWrapper {
 
     // Upload fields
     private JComboBox<String> uploadProfileComboBox;
+    private JComboBox<String> uploadServerComboBox;
     private JCheckBox createRemoteDirCheckBox;
 
     // Remote command fields
     private JTextField remoteCommandField;
     private JTextField remoteWorkingDirField;
     private JComboBox<String> remoteCommandComboBox;
+    private JComboBox<String> remoteServerComboBox;
 
     private JPanel cardsPanel;
     private CardLayout cardLayout;
@@ -84,6 +87,13 @@ public class StepEditDialog extends DialogWrapper {
         uploadProfileComboBox = new JComboBox<>(profileItems.toArray(new String[0]));
         createRemoteDirCheckBox = new JCheckBox(MessagesBundle.getText("pipeline.step.upload.create.dir"), true);
 
+        // Server 选择组件
+        List<String> serverItems = new ArrayList<>();
+        serverItems.add("");
+        for (SshServer server : ConfigHelper.sshServers()) {
+            serverItems.add(server.getId() + " - " + server.getIp() + ":" + server.getPort());
+        }
+
         // 远程命令组件
         remoteCommandField = new JTextField(30);
         remoteWorkingDirField = new JTextField(30);
@@ -96,6 +106,10 @@ public class StepEditDialog extends DialogWrapper {
         }
         localCommandComboBox = new JComboBox<>(commandItems.toArray(new String[0]));
         remoteCommandComboBox = new JComboBox<>(commandItems.toArray(new String[0]));
+
+        // Server 选择下拉框
+        uploadServerComboBox = new JComboBox<>(serverItems.toArray(new String[0]));
+        remoteServerComboBox = new JComboBox<>(serverItems.toArray(new String[0]));
 
         // 卡片面板
         cardLayout = new CardLayout();
@@ -132,6 +146,7 @@ public class StepEditDialog extends DialogWrapper {
 
     private JPanel createUploadPanel() {
         return FormBuilder.createFormBuilder()
+                .addLabeledComponent(MessagesBundle.getText("pipeline.step.server"), uploadServerComboBox)
                 .addLabeledComponent(MessagesBundle.getText("pipeline.step.upload.profile"), uploadProfileComboBox)
                 .addComponent(createRemoteDirCheckBox)
                 .getPanel();
@@ -139,6 +154,7 @@ public class StepEditDialog extends DialogWrapper {
 
     private JPanel createRemoteCommandPanel() {
         return FormBuilder.createFormBuilder()
+                .addLabeledComponent(MessagesBundle.getText("pipeline.step.server"), remoteServerComboBox)
                 .addLabeledComponent(MessagesBundle.getText("pipeline.step.remote.command"), remoteCommandField)
                 .addLabeledComponent(MessagesBundle.getText("pipeline.step.remote.working.dir"), remoteWorkingDirField)
                 .addLabeledComponent(MessagesBundle.getText("pipeline.step.remote.use.command"), remoteCommandComboBox)
@@ -165,11 +181,13 @@ public class StepEditDialog extends DialogWrapper {
                 break;
             case UPLOAD:
                 UploadStep uploadStep = (UploadStep) step;
+                selectItemInComboBox(uploadServerComboBox, uploadStep.getServerId());
                 selectItemInComboBox(uploadProfileComboBox, uploadStep.getUploadProfileId());
                 createRemoteDirCheckBox.setSelected(uploadStep.isCreateRemoteDir());
                 break;
             case REMOTE_COMMAND:
                 RemoteCommandStep remoteStep = (RemoteCommandStep) step;
+                selectItemInComboBox(remoteServerComboBox, remoteStep.getServerId());
                 remoteCommandField.setText(remoteStep.getCommand());
                 remoteWorkingDirField.setText(remoteStep.getWorkingDir());
                 if (remoteStep.getCommandId() != null) {
@@ -264,6 +282,11 @@ public class StepEditDialog extends DialogWrapper {
                 if (profileId != null) {
                     uploadStep.setUploadProfileId(profileId);
                 }
+                // 设置 ServerId
+                String selectedServer = (String) uploadServerComboBox.getSelectedItem();
+                String serverId = UiUtil.extractIdFromComboBoxItem(selectedServer);
+                uploadStep.setServerId(serverId);
+
                 uploadStep.setCreateRemoteDir(createRemoteDirCheckBox.isSelected());
                 return uploadStep;
 
@@ -271,6 +294,11 @@ public class StepEditDialog extends DialogWrapper {
                 RemoteCommandStep remoteStep = new RemoteCommandStep();
                 remoteStep.setCommand(remoteCommandField.getText());
                 remoteStep.setWorkingDir(remoteWorkingDirField.getText());
+
+                // 设置 ServerId
+                String selectedRemoteServer = (String) remoteServerComboBox.getSelectedItem();
+                String remoteServerId = UiUtil.extractIdFromComboBoxItem(selectedRemoteServer);
+                remoteStep.setServerId(remoteServerId);
 
                 // 检查是否选择了已有命令
                 String selectedRemoteCommand = (String) remoteCommandComboBox.getSelectedItem();
