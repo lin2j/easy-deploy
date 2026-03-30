@@ -175,6 +175,12 @@ public class CommandPipelinePanel extends JPanel {
             return;
         }
 
+        // 使用 StringBuilder 收集日志
+        StringBuilder logBuilder = new StringBuilder();
+        java.util.function.Consumer<String> logConsumer = message -> {
+            logBuilder.append(message).append("\n");
+        };
+
         ProgressManager.getInstance().run(new Task.Backgroundable(project, MessagesBundle.getText("pipeline.running") + pipeline.getName()) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
@@ -187,9 +193,16 @@ public class CommandPipelinePanel extends JPanel {
                         return;
                     }
 
-                    PipelineResult result = PipelineExecutor.executeFromStep(pipeline, server, project, message -> {}, startIndex);
+                    PipelineResult result = PipelineExecutor.executeFromStep(pipeline, server, project, logConsumer, startIndex);
 
+                    // 在 IDEA 日志窗口中显示执行日志
                     ApplicationManager.getApplication().invokeLater(() -> {
+                        // 使用 IDE 日志输出
+                        com.intellij.openapi.diagnostic.Logger logger = com.intellij.openapi.diagnostic.Logger.getInstance(CommandPipelinePanel.class);
+                        logger.info("========== Pipeline Execution Log: " + pipeline.getName() + " ==========");
+                        logBuilder.toString().lines().forEach(line -> logger.info(line));
+
+                        // 显示执行结果通知
                         String title = result.isSuccess()
                             ? MessagesBundle.getText("pipeline.notification.success.title")
                             : MessagesBundle.getText("pipeline.notification.failure.title");
