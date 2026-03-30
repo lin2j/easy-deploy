@@ -111,6 +111,17 @@ public class CommandPipelinePanel extends JPanel {
             loadPipelineList();
             // 保存后直接运行流水线
             if (dialog.shouldRunAfterSave()) {
+                // 选中刚保存的流水线
+                Pipeline savedPipeline = dialog.getPipeline();
+                if (savedPipeline != null) {
+                    for (int i = 0; i < pipelineList.getModel().getSize(); i++) {
+                        Pipeline p = pipelineList.getModel().getElementAt(i);
+                        if (p.getId() != null && p.getId().equals(savedPipeline.getId())) {
+                            pipelineList.setSelectedIndex(i);
+                            break;
+                        }
+                    }
+                }
                 executePipelineFromStep(0);
             }
         }
