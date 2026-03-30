@@ -31,8 +31,6 @@ import java.awt.*;
 import java.util.List;
 import java.util.function.Consumer;
 
-import com.intellij.openapi.actionSystem.AnAction;
-import com.intellij.openapi.actionSystem.AnActionEvent;
 import com.intellij.execution.ui.ConsoleViewContentType;
 import io.github.yueryou.easydev.plugin.executor.PipelineExecutor;
 import io.github.yueryou.easydev.plugin.model.PipelineResult;
@@ -104,7 +102,6 @@ public class CommandPipelinePanel extends JPanel {
                         loadPipelineList();
                     }
                 })
-                .addExtraAction(new RunPipelineAction())
                 .createPanel();
     }
 
@@ -112,6 +109,10 @@ public class CommandPipelinePanel extends JPanel {
         PipelineEditDialog dialog = new PipelineEditDialog(project, pipeline);
         if (dialog.showAndGet()) {
             loadPipelineList();
+            // 保存后直接运行流水线
+            if (dialog.shouldRunAfterSave()) {
+                executePipelineFromStep(0);
+            }
         }
     }
 
@@ -140,24 +141,6 @@ public class CommandPipelinePanel extends JPanel {
 
     public JPanel createUI() {
         return root;
-    }
-
-    /**
-     * 运行流水线操作
-     */
-    private class RunPipelineAction extends AnAction {
-        public RunPipelineAction() {
-            super(MessagesBundle.getText("pipeline.run"), null, com.intellij.icons.AllIcons.Actions.Execute);
-        }
-
-        @Override
-        public void actionPerformed(@NotNull AnActionEvent e) {
-            executePipeline();
-        }
-    }
-
-    private void executePipeline() {
-        executePipelineFromStep(0);
     }
 
     private void executePipelineFromStep(int startIndex) {

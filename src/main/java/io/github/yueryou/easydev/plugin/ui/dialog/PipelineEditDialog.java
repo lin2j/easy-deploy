@@ -36,13 +36,6 @@ public class PipelineEditDialog extends DialogWrapper {
 
     private boolean runAfterSave = false;
 
-    /**
-     * 设置保存后是否运行流水线
-     */
-    public void setRunAfterSave(boolean runAfterSave) {
-        this.runAfterSave = runAfterSave;
-    }
-
     public boolean shouldRunAfterSave() {
         return runAfterSave;
     }
@@ -160,6 +153,9 @@ public class PipelineEditDialog extends DialogWrapper {
         } else {
             PipelineConfigPersistence.updatePipeline(pipeline);
         }
+
+        // 设置保存后运行流水线
+        this.runAfterSave = true;
 
         super.doOKAction();
     }
