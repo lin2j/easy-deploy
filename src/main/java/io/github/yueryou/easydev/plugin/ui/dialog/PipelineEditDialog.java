@@ -55,8 +55,7 @@ public class PipelineEditDialog extends DialogWrapper {
         // 服务器选择
         List<String> serverItems = new ArrayList<>();
         List<SshServer> servers = ConfigHelper.sshServers();
-        serverItems.add(""); // 空选项
-        // 使用 Map 避免二次遍历
+        serverItems.add("");
         java.util.Map<Integer, SshServer> serverMap = new java.util.HashMap<>();
         for (SshServer server : servers) {
             String item = server.getId() + " - " + server.getIp() + ":" + server.getPort();
@@ -107,7 +106,7 @@ public class PipelineEditDialog extends DialogWrapper {
     protected void doOKAction() {
         String name = nameField.getText();
         if (name == null || name.trim().isEmpty()) {
-            Messages.showErrorDialog(MessagesBundle.getText("pipeline.step.validation.error.name"), MessagesBundle.getText("pipeline.step.validation.error.name"));
+            Messages.showErrorDialog(MessagesBundle.getText("pipeline.step.validation.error.name"), "Error");
             return;
         }
 
@@ -121,7 +120,7 @@ public class PipelineEditDialog extends DialogWrapper {
         }
 
         if (serverId == null) {
-            Messages.showErrorDialog(MessagesBundle.getText("pipeline.error.no.server"), MessagesBundle.getText("pipeline.step.validation.error.name"));
+            Messages.showErrorDialog(MessagesBundle.getText("pipeline.error.no.server"), "Error");
             return;
         }
 

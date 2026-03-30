@@ -26,7 +26,6 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import java.awt.*;
 import java.util.List;
-import java.util.function.Consumer;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
@@ -188,9 +187,7 @@ public class CommandPipelinePanel extends JPanel {
                         return;
                     }
 
-                    Consumer<String> logConsumer = message -> {};
-
-                    PipelineResult result = PipelineExecutor.executeFromStep(pipeline, server, project, logConsumer, startIndex);
+                    PipelineResult result = PipelineExecutor.executeFromStep(pipeline, server, project, message -> {}, startIndex);
 
                     ApplicationManager.getApplication().invokeLater(() -> {
                         String title = result.isSuccess()

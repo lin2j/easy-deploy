@@ -68,4 +68,19 @@ public class UiUtil {
         table.setShowHorizontalLines(false);
         table.setShowVerticalLines(false);
     }
+
+    /**
+     * 从 ComboBox 显示项中提取 ID
+     * ComboBox 项格式为："ID - DisplayText"
+     *
+     * @param item ComboBox 显示项
+     * @return 提取的 ID，如果输入为空则返回 null
+     */
+    public static String extractIdFromComboBoxItem(String item) {
+        if (item == null || item.isEmpty()) {
+            return null;
+        }
+        int separatorIndex = item.indexOf(" - ");
+        return separatorIndex > 0 ? item.substring(0, separatorIndex) : item;
+    }
 }

@@ -14,6 +14,7 @@ import tech.lin2j.idea.plugin.model.Command;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.model.UploadProfile;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
+import tech.lin2j.idea.plugin.uitl.UiUtil;
 
 import javax.swing.*;
 import java.awt.*;
@@ -195,7 +196,7 @@ public class StepEditDialog extends DialogWrapper {
             javax.swing.JOptionPane.showMessageDialog(
                     getContentPane(),
                     MessagesBundle.getText("pipeline.step.validation.error.name"),
-                    MessagesBundle.getText("pipeline.step.validation.error.name"),
+                    "Error",
                     javax.swing.JOptionPane.ERROR_MESSAGE
             );
             return;
@@ -203,6 +204,9 @@ public class StepEditDialog extends DialogWrapper {
 
         StepType type = (StepType) typeComboBox.getSelectedItem();
         PipelineStep step = createStepFromFields(type);
+        if (step == null) {
+            return;
+        }
         step.setName(name.trim());
 
         // 将步骤存储在对话框中供获取
@@ -218,21 +222,37 @@ public class StepEditDialog extends DialogWrapper {
                 localStep.setCommand(commandField.getText());
                 localStep.setWorkingDir(localWorkingDirField.getText());
 
-                String timeoutText = timeoutField.getText();
-                try {
-                    int timeout = Integer.parseInt(timeoutText);
-                    localStep.setTimeout(timeout > 0 ? timeout : 0);
-                } catch (NumberFormatException e) {
-                    localStep.setTimeout(0);
+                String timeoutText = timeoutField.getText().trim();
+                int timeout = 0;
+                if (!timeoutText.isEmpty()) {
+                    try {
+                        timeout = Integer.parseInt(timeoutText);
+                        if (timeout < 0) {
+                            javax.swing.JOptionPane.showMessageDialog(
+                                    getContentPane(),
+                                    "超时时间不能为负数",
+                                    "验证失败",
+                                    javax.swing.JOptionPane.WARNING_MESSAGE
+                            );
+                            return null;
+                        }
+                    } catch (NumberFormatException e) {
+                        javax.swing.JOptionPane.showMessageDialog(
+                                getContentPane(),
+                                "超时时间必须是有效数字",
+                                "验证失败",
+                                javax.swing.JOptionPane.WARNING_MESSAGE
+                        );
+                        return null;
+                    }
                 }
+                localStep.setTimeout(timeout);
 
                 // 检查是否选择了已有命令
                 String selectedCommand = (String) localCommandComboBox.getSelectedItem();
-                if (selectedCommand != null && !selectedCommand.isEmpty()) {
-                    String[] parts = selectedCommand.split(" - ");
-                    if (parts.length > 0) {
-                        localStep.setCommandId(parts[0]);
-                    }
+                String commandId = UiUtil.extractIdFromComboBoxItem(selectedCommand);
+                if (commandId != null) {
+                    localStep.setCommandId(commandId);
                 }
 
                 return localStep;
@@ -240,11 +260,9 @@ public class StepEditDialog extends DialogWrapper {
             case UPLOAD:
                 UploadStep uploadStep = new UploadStep();
                 String selectedProfile = (String) uploadProfileComboBox.getSelectedItem();
-                if (selectedProfile != null && !selectedProfile.isEmpty()) {
-                    String[] parts = selectedProfile.split(" - ");
-                    if (parts.length > 0) {
-                        uploadStep.setUploadProfileId(parts[0]);
-                    }
+                String profileId = UiUtil.extractIdFromComboBoxItem(selectedProfile);
+                if (profileId != null) {
+                    uploadStep.setUploadProfileId(profileId);
                 }
                 uploadStep.setCreateRemoteDir(createRemoteDirCheckBox.isSelected());
                 return uploadStep;
@@ -256,11 +274,9 @@ public class StepEditDialog extends DialogWrapper {
 
                 // 检查是否选择了已有命令
                 String selectedRemoteCommand = (String) remoteCommandComboBox.getSelectedItem();
-                if (selectedRemoteCommand != null && !selectedRemoteCommand.isEmpty()) {
-                    String[] parts = selectedRemoteCommand.split(" - ");
-                    if (parts.length > 0) {
-                        remoteStep.setCommandId(parts[0]);
-                    }
+                String remoteCommandId = UiUtil.extractIdFromComboBoxItem(selectedRemoteCommand);
+                if (remoteCommandId != null) {
+                    remoteStep.setCommandId(remoteCommandId);
                 }
 
                 return remoteStep;
