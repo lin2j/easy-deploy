@@ -8,6 +8,10 @@ import java.util.UUID;
 
 /**
  * 流水线配置持久化工具类
+ *
+ * 注意：从 2026-03-30 版本开始，Server 配置从 Pipeline 级别移动到步骤级别。
+ * 旧版本的 Pipeline 配置中的 serverId 字段在加载时会被忽略，用户需要重新编辑
+ * 每个包含 UPLOAD 或 REMOTE_COMMAND 步骤的流水线，为每个步骤配置 Server。
  */
 public class PipelineConfigPersistence {
 
