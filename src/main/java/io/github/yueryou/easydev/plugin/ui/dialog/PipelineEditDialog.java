@@ -161,10 +161,18 @@ public class PipelineEditDialog extends DialogWrapper {
     }
 
     private void addStep() {
-        StepEditDialog dialog = new StepEditDialog(project, null);
-        if (dialog.showAndGet()) {
-            PipelineStep step = dialog.getStep();
-            stepListModel.addElement(step);
+        try {
+            StepEditDialog dialog = new StepEditDialog(project, null);
+            boolean result = dialog.showAndGet();
+            if (result) {
+                PipelineStep step = dialog.getStep();
+                if (step != null) {
+                    stepListModel.addElement(step);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            Messages.showErrorDialog("添加步骤失败：" + e.getMessage(), "Error");
         }
     }
 
