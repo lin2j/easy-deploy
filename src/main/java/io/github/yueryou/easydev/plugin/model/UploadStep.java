@@ -6,6 +6,7 @@ package io.github.yueryou.easydev.plugin.model;
 public class UploadStep extends PipelineStep {
 
     private String uploadProfileId;
+    private String serverId;
     private boolean createRemoteDir;
 
     public UploadStep() {
@@ -22,6 +23,14 @@ public class UploadStep extends PipelineStep {
 
     public void setUploadProfileId(String uploadProfileId) {
         this.uploadProfileId = uploadProfileId;
+    }
+
+    public String getServerId() {
+        return serverId;
+    }
+
+    public void setServerId(String serverId) {
+        this.serverId = serverId;
     }
 
     public boolean isCreateRemoteDir() {

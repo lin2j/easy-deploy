@@ -14,7 +14,6 @@ public class Pipeline implements UniqueModel {
     private String id;
     private String uid;
     private String name;
-    private String serverId;
     private List<PipelineStep> steps;
     private FailureStrategy onFailure;
     private long createdAt;
@@ -25,12 +24,6 @@ public class Pipeline implements UniqueModel {
         this.onFailure = FailureStrategy.STOP;
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = this.createdAt;
-    }
-
-    public Pipeline(String name, String serverId) {
-        this();
-        this.name = name;
-        this.serverId = serverId;
     }
 
     @Override
@@ -57,14 +50,6 @@ public class Pipeline implements UniqueModel {
 
     public void setName(String name) {
         this.name = name;
-    }
-
-    public String getServerId() {
-        return serverId;
-    }
-
-    public void setServerId(String serverId) {
-        this.serverId = serverId;
     }
 
     public List<PipelineStep> getSteps() {
