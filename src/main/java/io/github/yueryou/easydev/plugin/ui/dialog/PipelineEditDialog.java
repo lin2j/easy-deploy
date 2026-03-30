@@ -14,6 +14,7 @@ import io.github.yueryou.easydev.plugin.ui.render.PipelineStepListCellRenderer;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.*;
 import java.util.ArrayList;
@@ -38,7 +39,7 @@ public class PipelineEditDialog extends DialogWrapper {
         this.project = project;
         this.pipeline = pipeline;
 
-        setTitle(pipeline.getId() != null ? "编辑流水线" : "新建流水线");
+        setTitle(pipeline.getId() != null ? MessagesBundle.getText("pipeline.edit.title") : MessagesBundle.getText("pipeline.edit.new.title"));
 
         init();
     }
@@ -95,10 +96,10 @@ public class PipelineEditDialog extends DialogWrapper {
                 .createPanel();
 
         return FormBuilder.createFormBuilder()
-                .addLabeledComponent("名称", nameField)
-                .addLabeledComponent("服务器", serverComboBox)
-                .addLabeledComponent("失败策略", failureStrategyComboBox)
-                .addLabeledComponent("步骤", stepToolbarPanel, true)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.edit.name"), nameField)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.edit.server"), serverComboBox)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.edit.failure.strategy"), failureStrategyComboBox)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.edit.steps"), stepToolbarPanel, true)
                 .getPanel();
     }
 
@@ -106,7 +107,7 @@ public class PipelineEditDialog extends DialogWrapper {
     protected void doOKAction() {
         String name = nameField.getText();
         if (name == null || name.trim().isEmpty()) {
-            Messages.showErrorDialog("请输入流水线名称", "验证失败");
+            Messages.showErrorDialog(MessagesBundle.getText("pipeline.step.validation.error.name"), MessagesBundle.getText("pipeline.step.validation.error.name"));
             return;
         }
 
@@ -120,7 +121,7 @@ public class PipelineEditDialog extends DialogWrapper {
         }
 
         if (serverId == null) {
-            Messages.showErrorDialog("请选择服务器", "验证失败");
+            Messages.showErrorDialog(MessagesBundle.getText("pipeline.error.no.server"), MessagesBundle.getText("pipeline.step.validation.error.name"));
             return;
         }
 
@@ -175,8 +176,8 @@ public class PipelineEditDialog extends DialogWrapper {
         }
 
         int confirm = Messages.showYesNoDialog(
-                "确定要删除步骤 \"" + selectedStep.getName() + "\" 吗？",
-                "确认删除",
+                MessagesBundle.getText("pipeline.action.remove") + " \"" + selectedStep.getName() + "\"?",
+                MessagesBundle.getText("pipeline.action.remove"),
                 Messages.getQuestionIcon()
         );
 

@@ -13,6 +13,7 @@ import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.model.Command;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.model.UploadProfile;
+import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 
 import javax.swing.*;
 import java.awt.*;
@@ -55,7 +56,7 @@ public class StepEditDialog extends DialogWrapper {
         this.project = project;
         this.existingStep = existingStep;
 
-        setTitle(existingStep != null ? "编辑步骤" : "添加步骤");
+        setTitle(existingStep != null ? MessagesBundle.getText("pipeline.step.edit.title") : MessagesBundle.getText("pipeline.step.add.title"));
 
         init();
     }
@@ -80,7 +81,7 @@ public class StepEditDialog extends DialogWrapper {
             profileItems.add(profile.getId() + " - " + profile.getName());
         }
         uploadProfileComboBox = new JComboBox<>(profileItems.toArray(new String[0]));
-        createRemoteDirCheckBox = new JCheckBox("创建远程目录", true);
+        createRemoteDirCheckBox = new JCheckBox(MessagesBundle.getText("pipeline.step.upload.create.dir"), true);
 
         // 远程命令组件
         remoteCommandField = new JTextField(30);
@@ -113,33 +114,33 @@ public class StepEditDialog extends DialogWrapper {
         onTypeChanged();
 
         return FormBuilder.createFormBuilder()
-                .addLabeledComponent("步骤类型", typeComboBox)
-                .addLabeledComponent("步骤名称", nameField)
-                .addLabeledComponent("配置", cardsPanel, true)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.step.type"), typeComboBox)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.step.name"), nameField)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.step.config"), cardsPanel, true)
                 .getPanel();
     }
 
     private JPanel createLocalCommandPanel() {
         return FormBuilder.createFormBuilder()
-                .addLabeledComponent("命令", commandField)
-                .addLabeledComponent("工作目录", localWorkingDirField)
-                .addLabeledComponent("超时时间 (秒，0=不限制)", timeoutField)
-                .addLabeledComponent("或使用已有命令", localCommandComboBox)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.step.local.command"), commandField)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.step.local.working.dir"), localWorkingDirField)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.step.local.timeout"), timeoutField)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.step.local.use.command"), localCommandComboBox)
                 .getPanel();
     }
 
     private JPanel createUploadPanel() {
         return FormBuilder.createFormBuilder()
-                .addLabeledComponent("上传配置", uploadProfileComboBox)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.step.upload.profile"), uploadProfileComboBox)
                 .addComponent(createRemoteDirCheckBox)
                 .getPanel();
     }
 
     private JPanel createRemoteCommandPanel() {
         return FormBuilder.createFormBuilder()
-                .addLabeledComponent("命令", remoteCommandField)
-                .addLabeledComponent("工作目录", remoteWorkingDirField)
-                .addLabeledComponent("或使用已有命令", remoteCommandComboBox)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.step.remote.command"), remoteCommandField)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.step.remote.working.dir"), remoteWorkingDirField)
+                .addLabeledComponent(MessagesBundle.getText("pipeline.step.remote.use.command"), remoteCommandComboBox)
                 .getPanel();
     }
 
@@ -193,8 +194,8 @@ public class StepEditDialog extends DialogWrapper {
         if (name == null || name.trim().isEmpty()) {
             javax.swing.JOptionPane.showMessageDialog(
                     getContentPane(),
-                    "请输入步骤名称",
-                    "验证失败",
+                    MessagesBundle.getText("pipeline.step.validation.error.name"),
+                    MessagesBundle.getText("pipeline.step.validation.error.name"),
                     javax.swing.JOptionPane.ERROR_MESSAGE
             );
             return;
