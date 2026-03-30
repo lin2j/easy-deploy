@@ -6,6 +6,7 @@ import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.progress.ProgressManager;
 import com.intellij.openapi.progress.Task;
 import com.intellij.openapi.project.Project;
+import com.intellij.openapi.wm.ToolWindowManager;
 import com.intellij.ui.DocumentAdapter;
 import com.intellij.ui.ToolbarDecorator;
 import com.intellij.ui.components.JBList;
@@ -18,7 +19,9 @@ import io.github.yueryou.easydev.plugin.ui.render.PipelineListCellRenderer;
 import org.jetbrains.annotations.NotNull;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
 import tech.lin2j.idea.plugin.service.impl.PluginNotificationService;
+import tech.lin2j.idea.plugin.ssh.CommandLog;
 import tech.lin2j.idea.plugin.ssh.SshServer;
+import tech.lin2j.idea.plugin.ui.module.ConsoleLogView;
 import tech.lin2j.idea.plugin.uitl.MessagesBundle;
 import tech.lin2j.idea.plugin.uitl.UiUtil;
 
@@ -26,9 +29,11 @@ import javax.swing.*;
 import javax.swing.event.DocumentEvent;
 import java.awt.*;
 import java.util.List;
+import java.util.function.Consumer;
 
 import com.intellij.openapi.actionSystem.AnAction;
 import com.intellij.openapi.actionSystem.AnActionEvent;
+import com.intellij.execution.ui.ConsoleViewContentType;
 import io.github.yueryou.easydev.plugin.executor.PipelineExecutor;
 import io.github.yueryou.easydev.plugin.model.PipelineResult;
 
@@ -175,34 +180,67 @@ public class CommandPipelinePanel extends JPanel {
             return;
         }
 
-        // 使用 StringBuilder 收集日志
-        StringBuilder logBuilder = new StringBuilder();
-        java.util.function.Consumer<String> logConsumer = message -> {
-            logBuilder.append(message).append("\n");
+        // 获取控制台视图
+        ConsoleLogView consoleLogView = project.getService(ConsoleLogView.class);
+        if (consoleLogView == null) {
+            consoleLogView = new ConsoleLogView(project);
+            consoleLogView.attachProject();
+        }
+        ConsoleLogView finalConsoleLogView = consoleLogView;
+        CommandLog commandLog = project.getUserData(CommandLog.COMMAND_LOG_KEY);
+        if (commandLog == null) {
+            commandLog = finalConsoleLogView;
+        }
+        CommandLog finalCommandLog = commandLog;
+
+        // 创建日志消费者
+        Consumer<String> logConsumer = message -> {
+            if (finalCommandLog != null) {
+                finalCommandLog.print(message + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+            }
         };
+
+        // 激活 Easy Dev 工具窗口
+        ApplicationManager.getApplication().invokeLater(() -> {
+            ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
+            com.intellij.openapi.wm.ToolWindow toolWindow = toolWindowManager.getToolWindow("Easy Dev");
+            if (toolWindow != null) {
+                toolWindow.show(() -> {
+                    // 激活 Console 标签页
+                    toolWindow.getContentManager().findContent("Console");
+                });
+            }
+        });
 
         ProgressManager.getInstance().run(new Task.Backgroundable(project, MessagesBundle.getText("pipeline.running") + pipeline.getName()) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 try {
+                    // 清空控制台
+                    if (finalCommandLog != null) {
+                        finalCommandLog.getConsole().clear();
+                    }
+
+                    logConsumer.accept("========== 流水线开始：" + pipeline.getName() + " ==========");
+
                     SshServer server = ConfigHelper.getSshServerById(Integer.parseInt(pipeline.getServerId()));
 
                     if (server == null) {
+                        logConsumer.accept("服务器配置未找到");
                         notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
                             MessagesBundle.getText("pipeline.notification.server.not.found"));
                         return;
                     }
 
+                    logConsumer.accept("服务器：" + server.getIp() + ":" + server.getPort());
+                    logConsumer.accept("失败策略：" + pipeline.getOnFailure());
+                    logConsumer.accept("从步骤 " + startIndex + " 开始执行");
+                    logConsumer.accept("");
+
                     PipelineResult result = PipelineExecutor.executeFromStep(pipeline, server, project, logConsumer, startIndex);
 
-                    // 在 IDEA 日志窗口中显示执行日志
+                    // 显示执行结果通知
                     ApplicationManager.getApplication().invokeLater(() -> {
-                        // 使用 IDE 日志输出
-                        com.intellij.openapi.diagnostic.Logger logger = com.intellij.openapi.diagnostic.Logger.getInstance(CommandPipelinePanel.class);
-                        logger.info("========== Pipeline Execution Log: " + pipeline.getName() + " ==========");
-                        logBuilder.toString().lines().forEach(line -> logger.info(line));
-
-                        // 显示执行结果通知
                         String title = result.isSuccess()
                             ? MessagesBundle.getText("pipeline.notification.success.title")
                             : MessagesBundle.getText("pipeline.notification.failure.title");
@@ -219,9 +257,11 @@ public class CommandPipelinePanel extends JPanel {
                     });
 
                 } catch (NumberFormatException e) {
+                    logConsumer.accept("服务器 ID 格式错误：" + e.getMessage());
                     notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
                         MessagesBundle.getText("pipeline.notification.server.id.error") + e.getMessage());
                 } catch (Exception e) {
+                    logConsumer.accept("执行异常：" + e.getMessage());
                     notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
                         MessagesBundle.getText("pipeline.notification.execution.error") + e.getMessage());
                 }
