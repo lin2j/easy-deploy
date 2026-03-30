@@ -14,6 +14,7 @@ import com.intellij.ui.components.JBTextField;
 import com.intellij.util.ui.FormBuilder;
 import io.github.yueryou.easydev.plugin.model.Pipeline;
 import io.github.yueryou.easydev.plugin.model.PipelineConfigPersistence;
+import io.github.yueryou.easydev.plugin.model.StepType;
 import io.github.yueryou.easydev.plugin.ui.dialog.PipelineEditDialog;
 import io.github.yueryou.easydev.plugin.ui.render.PipelineListCellRenderer;
 import org.jetbrains.annotations.NotNull;
@@ -162,15 +163,19 @@ public class CommandPipelinePanel extends JPanel {
             return;
         }
 
-        if (pipeline.getServerId() == null) {
-            notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
-                MessagesBundle.getText("pipeline.error.no.server"));
-            return;
-        }
-
         if (pipeline.getSteps() == null || pipeline.getSteps().isEmpty()) {
             notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
                 MessagesBundle.getText("pipeline.error.no.steps"));
+            return;
+        }
+
+        // 检查是否需要 Server（上传步骤或远程命令步骤需要 Server）
+        boolean needServer = pipeline.getSteps().stream().anyMatch(step ->
+            step.getType() == StepType.UPLOAD || step.getType() == StepType.REMOTE_COMMAND);
+
+        if (needServer && pipeline.getServerId() == null) {
+            notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
+                MessagesBundle.getText("pipeline.error.no.server"));
             return;
         }
 

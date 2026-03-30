@@ -10,6 +10,7 @@ import io.github.yueryou.easydev.plugin.model.FailureStrategy;
 import io.github.yueryou.easydev.plugin.model.Pipeline;
 import io.github.yueryou.easydev.plugin.model.PipelineConfigPersistence;
 import io.github.yueryou.easydev.plugin.model.PipelineStep;
+import io.github.yueryou.easydev.plugin.model.StepType;
 import io.github.yueryou.easydev.plugin.ui.render.PipelineStepListCellRenderer;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.model.ConfigHelper;
@@ -120,18 +121,33 @@ public class PipelineEditDialog extends DialogWrapper {
             return;
         }
 
-        String serverSelectedItem = (String) serverComboBox.getSelectedItem();
-        String serverId = null;
-        if (serverSelectedItem != null && !serverSelectedItem.isEmpty()) {
-            String[] parts = serverSelectedItem.split(" - ");
-            if (parts.length > 0) {
-                serverId = parts[0];
-            }
+        // 收集步骤
+        List<PipelineStep> steps = new ArrayList<>();
+        for (int i = 0; i < stepListModel.size(); i++) {
+            steps.add(stepListModel.getElementAt(i));
+        }
+        if (steps.isEmpty()) {
+            Messages.showErrorDialog(MessagesBundle.getText("pipeline.error.no.steps"), "Error");
+            return;
         }
 
-        if (serverId == null) {
-            Messages.showErrorDialog(MessagesBundle.getText("pipeline.error.no.server"), "Error");
-            return;
+        // 检查是否需要 Server（上传步骤或远程命令步骤需要 Server）
+        boolean needServer = steps.stream().anyMatch(step ->
+            step.getType() == StepType.UPLOAD || step.getType() == StepType.REMOTE_COMMAND);
+
+        String serverId = null;
+        if (needServer) {
+            String serverSelectedItem = (String) serverComboBox.getSelectedItem();
+            if (serverSelectedItem != null && !serverSelectedItem.isEmpty()) {
+                String[] parts = serverSelectedItem.split(" - ");
+                if (parts.length > 0) {
+                    serverId = parts[0];
+                }
+            }
+            if (serverId == null) {
+                Messages.showErrorDialog(MessagesBundle.getText("pipeline.error.no.server"), "Error");
+                return;
+            }
         }
 
         FailureStrategy failureStrategy = (FailureStrategy) failureStrategyComboBox.getSelectedItem();
@@ -140,12 +156,6 @@ public class PipelineEditDialog extends DialogWrapper {
         pipeline.setName(name.trim());
         pipeline.setServerId(serverId);
         pipeline.setOnFailure(failureStrategy);
-
-        // 收集步骤
-        List<PipelineStep> steps = new ArrayList<>();
-        for (int i = 0; i < stepListModel.size(); i++) {
-            steps.add(stepListModel.getElementAt(i));
-        }
         pipeline.setSteps(steps);
 
         if (pipeline.getId() == null) {
