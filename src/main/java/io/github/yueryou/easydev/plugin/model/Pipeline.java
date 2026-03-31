@@ -7,12 +7,13 @@ import tech.lin2j.idea.plugin.model.UniqueModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 流水线配置类
  *
  * 注意：steps 字段存储多态类型（LocalCommandStep, UploadStep, RemoteCommandStep）
- * 使用 JSON 序列化步骤列表以避免 XMLB 多态问题
+ * 使用 PipelineStepWrapper 进行 XmlSerializer 序列化
  */
 @Tag("pipeline")
 public class Pipeline implements UniqueModel {
@@ -22,13 +23,13 @@ public class Pipeline implements UniqueModel {
     private String name;
 
     @OptionTag("steps")
-    private List<PipelineStep> steps;
+    private List<PipelineStepWrapper> stepWrappers;
     private FailureStrategy onFailure;
     private long createdAt;
     private long updatedAt;
 
     public Pipeline() {
-        this.steps = new ArrayList<>();
+        this.stepWrappers = new ArrayList<>();
         this.onFailure = FailureStrategy.STOP;
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = this.createdAt;
@@ -61,17 +62,23 @@ public class Pipeline implements UniqueModel {
     }
 
     public List<PipelineStep> getSteps() {
-        // 过滤 null 元素（可能由于 XML 反序列化失败导致）
-        if (steps == null) {
+        if (stepWrappers == null) {
             return new ArrayList<>();
         }
-        return steps.stream()
+        return stepWrappers.stream()
+                .filter(wrapper -> wrapper != null)
+                .map(PipelineStepWrapper::toStep)
                 .filter(step -> step != null)
-                .toList();
+                .collect(Collectors.toList());
     }
 
     public void setSteps(List<PipelineStep> steps) {
-        this.steps = steps;
+        this.stepWrappers = new ArrayList<>();
+        if (steps != null) {
+            for (PipelineStep step : steps) {
+                stepWrappers.add(new PipelineStepWrapper(step));
+            }
+        }
     }
 
     public FailureStrategy getOnFailure() {
