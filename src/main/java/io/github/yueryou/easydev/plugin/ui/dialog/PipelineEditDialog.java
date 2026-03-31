@@ -62,8 +62,8 @@ public class PipelineEditDialog extends DialogWrapper {
 
         // 步骤列表
         stepListModel = new DefaultListModel<>();
-        if (pipeline.getSteps() != null) {
-            for (PipelineStep step : pipeline.getSteps()) {
+        if (pipeline.getPipelineSteps() != null) {
+            for (PipelineStep step : pipeline.getPipelineSteps()) {
                 stepListModel.addElement(step);
             }
         }
@@ -108,7 +108,7 @@ public class PipelineEditDialog extends DialogWrapper {
         // 保存配置
         pipeline.setName(name.trim());
         pipeline.setOnFailure(failureStrategy);
-        pipeline.setSteps(steps);
+        pipeline.setPipelineSteps(steps);
 
         if (pipeline.getId() == null) {
             PipelineConfigPersistence.addPipeline(pipeline);

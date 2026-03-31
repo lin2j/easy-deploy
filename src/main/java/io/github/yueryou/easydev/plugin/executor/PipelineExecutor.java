@@ -56,7 +56,7 @@ public class PipelineExecutor {
             int startIndex) {
 
         PipelineResult result = new PipelineResult();
-        List<PipelineStep> steps = pipeline.getSteps();
+        List<PipelineStep> steps = pipeline.getPipelineSteps();
 
         logConsumer.accept("========== 流水线开始：" + pipeline.getName() + " ==========");
         logConsumer.accept("失败策略：" + pipeline.getOnFailure());

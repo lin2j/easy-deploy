@@ -155,7 +155,7 @@ public class CommandPipelinePanel extends JPanel {
             return;
         }
 
-        if (pipeline.getSteps() == null || pipeline.getSteps().isEmpty()) {
+        if (pipeline.getPipelineSteps() == null || pipeline.getPipelineSteps().isEmpty()) {
             notificationService.showNotification(project, MessagesBundle.getText("pipeline.notification.title.running"),
                 MessagesBundle.getText("pipeline.error.no.steps"));
             return;
