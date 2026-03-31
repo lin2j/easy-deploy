@@ -42,22 +42,16 @@ public class CommandManageDialog extends DialogWrapper {
      */
     @Override
     protected void doOKAction() {
-        // 根据当前选中的标签页执行对应的操作
         if (tabs == null) {
             super.doOKAction();
             return;
         }
 
-        int selectedIndex = tabs.getSelectedIndex();
-        if (selectedIndex == 0) {
-            // 快捷命令标签页 - 执行发送命令
-            commandManagePanel.executeCommand();
-        } else if (selectedIndex == 1) {
-            // 任务编排标签页 - 执行选中的流水线
-            commandPipelinePanel.executeSelectedPipeline();
+        switch (tabs.getSelectedIndex()) {
+            case 0 -> commandManagePanel.executeCommand();
+            case 1 -> commandPipelinePanel.executeSelectedPipeline();
+            default -> super.doOKAction();
         }
-        // 设置标签页没有执行操作，直接关闭
-        super.doOKAction();
     }
 
     /**

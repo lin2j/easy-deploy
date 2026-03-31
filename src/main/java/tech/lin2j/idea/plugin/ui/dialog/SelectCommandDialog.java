@@ -123,10 +123,10 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
     }
 
     /**
-     * 覆盖 OK 按钮文本，显示为"运行"
+     * 覆盖 OK 按钮文本，显示为"运行"（中文）或"Run"（英文）
      */
     protected String getOKButtonText() {
-        return "运行";
+        return MessagesBundle.getText("pipeline.run");
     }
 
     @Override
@@ -232,23 +232,6 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
                 // 处理异常情况
                 return null;
             });
-        }
-    }
-
-    private class RunCommandAction extends AnAction {
-
-        public RunCommandAction() {
-            super("Run", "Run command", AllIcons.Actions.RunAll);
-        }
-
-        @Override
-        public void actionPerformed(@NotNull AnActionEvent e) {
-            runCommand();
-        }
-
-        @Override
-        public @NotNull ActionUpdateThread getActionUpdateThread() {
-            return ActionUpdateThread.BGT;
         }
     }
 }
