@@ -1,7 +1,6 @@
 package io.github.yueryou.easydev.plugin.model;
 
 import com.intellij.util.xmlb.annotations.OptionTag;
-import com.intellij.util.xmlb.annotations.Tag;
 import tech.lin2j.idea.plugin.model.UniqueModel;
 
 import java.util.ArrayList;
@@ -15,7 +14,6 @@ import java.util.stream.Collectors;
  * 注意：steps 字段存储多态类型（LocalCommandStep, UploadStep, RemoteCommandStep）
  * 使用 PipelineStepWrapper 进行 XmlSerializer 序列化
  */
-@Tag("pipeline")
 public class Pipeline implements UniqueModel {
 
     private String id;
