@@ -52,8 +52,10 @@ public class CommandManageDialog extends DialogWrapper {
         switch (tabs.getSelectedIndex()) {
             case 0 -> commandManagePanel.executeCommand();
             case 1 -> commandPipelinePanel.executeSelectedPipeline();
-            default -> super.doOKAction();
+            default -> {}
         }
+        // 执行操作后关闭对话框
+        super.doOKAction();
     }
 
     @Nullable

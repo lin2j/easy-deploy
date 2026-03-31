@@ -122,6 +122,8 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
     protected void doOKAction() {
         // 点击 OK 按钮时执行命令
         runCommand();
+        // 关闭对话框
+        super.doOKAction();
     }
 
     @Override

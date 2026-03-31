@@ -3,8 +3,10 @@ package tech.lin2j.idea.plugin.model;
 import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
+import com.intellij.util.xmlb.XmlSerializer;
 import com.intellij.util.xmlb.XmlSerializerUtil;
 import com.intellij.util.xmlb.annotations.OptionTag;
+import org.jdom.Element;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.ssh.SshServer;
@@ -36,7 +38,6 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
 
     private PluginSetting setting;
 
-    @OptionTag("pipelines")
     private List<io.github.yueryou.easydev.plugin.model.Pipeline> pipelines;
 
     @Override
