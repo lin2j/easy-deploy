@@ -10,6 +10,9 @@ import java.util.Objects;
 
 /**
  * 流水线配置类
+ *
+ * 注意：steps 字段存储多态类型（LocalCommandStep, UploadStep, RemoteCommandStep）
+ * 每个子类都有 @Tag 注解用于 XML 序列化
  */
 @Tag("pipeline")
 public class Pipeline implements UniqueModel {
@@ -17,7 +20,9 @@ public class Pipeline implements UniqueModel {
     private String id;
     private String uid;
     private String name;
+
     @OptionTag("steps")
+    @Tag("step")
     private List<PipelineStep> steps;
     private FailureStrategy onFailure;
     private long createdAt;

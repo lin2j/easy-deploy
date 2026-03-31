@@ -34,6 +34,8 @@ public class CommandManageDialog extends DialogWrapper {
 
         setTitle(MessagesBundle.getText("dialog.panel.command.title"));
         setSize(500, 0);
+        // 设置 OK 按钮文本为"运行"（中文）或"Run"（英文）
+        setOKButtonText(MessagesBundle.getText("pipeline.run"));
         init();
     }
 
@@ -52,13 +54,6 @@ public class CommandManageDialog extends DialogWrapper {
             case 1 -> commandPipelinePanel.executeSelectedPipeline();
             default -> super.doOKAction();
         }
-    }
-
-    /**
-     * 覆盖 OK 按钮文本，显示为"运行"（中文）或"Run"（英文）
-     */
-    protected String getOKButtonText() {
-        return MessagesBundle.getText("pipeline.run");
     }
 
     @Nullable

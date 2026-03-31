@@ -75,6 +75,8 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
         root.setPreferredSize(new Dimension(UiUtil.screenWidth() / 2, 600));
 
         setTitle(MessagesBundle.getText("dialog.command.select.frame"));
+        // 设置 OK 按钮文本为"运行"（中文）或"Run"（英文）
+        setOKButtonText(MessagesBundle.getText("pipeline.run"));
         init();
     }
 
@@ -120,13 +122,6 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
     protected void doOKAction() {
         // 点击 OK 按钮时执行命令
         runCommand();
-    }
-
-    /**
-     * 覆盖 OK 按钮文本，显示为"运行"（中文）或"Run"（英文）
-     */
-    protected String getOKButtonText() {
-        return MessagesBundle.getText("pipeline.run");
     }
 
     @Override
