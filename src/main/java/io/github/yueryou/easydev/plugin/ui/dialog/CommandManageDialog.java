@@ -38,9 +38,7 @@ public class CommandManageDialog extends DialogWrapper {
     }
 
     /**
-     * This method is invoked by default implementation of "OK" action. It just closes dialog
-     * with {@code OK_EXIT_CODE}. This is convenient place to override functionality of "OK" action.
-     * Note that the method does nothing if "OK" action isn't enabled.
+     * 点击 OK 按钮时执行对应标签页的操作
      */
     @Override
     protected void doOKAction() {
@@ -58,8 +56,15 @@ public class CommandManageDialog extends DialogWrapper {
             // 任务编排标签页 - 执行选中的流水线
             commandPipelinePanel.executeSelectedPipeline();
         }
-        // 设置标签页没有执行操作
+        // 设置标签页没有执行操作，直接关闭
         super.doOKAction();
+    }
+
+    /**
+     * 覆盖 OK 按钮文本，显示为"运行"（中文）或"Run"（英文）
+     */
+    protected String getOKButtonText() {
+        return MessagesBundle.getText("pipeline.run");
     }
 
     @Nullable

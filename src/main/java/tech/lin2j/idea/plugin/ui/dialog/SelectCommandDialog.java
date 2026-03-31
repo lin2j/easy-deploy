@@ -117,6 +117,19 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
     }
 
     @Override
+    protected void doOKAction() {
+        // 点击 OK 按钮时执行命令
+        runCommand();
+    }
+
+    /**
+     * 覆盖 OK 按钮文本，显示为"运行"
+     */
+    protected String getOKButtonText() {
+        return "运行";
+    }
+
+    @Override
     public void onApplicationEvent(CommandAddEvent event) {
         loadCommandList();
     }
@@ -181,7 +194,6 @@ public class SelectCommandDialog extends DialogWrapper implements ApplicationLis
                     new AddCommandDialog(project, cmd).showAndGet();
                 })
                 .addExtraAction(new CopyCommandAction(() -> selectedCommand))
-                .addExtraAction(new RunCommandAction())
                 .createPanel();
     }
 
