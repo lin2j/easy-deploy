@@ -73,6 +73,31 @@ public class ExecutionContext {
     }
 
     /**
+     * 解析路径，支持相对路径（相对于项目根目录）
+     * 如果路径是相对路径，则转换为相对于项目根目录的绝对路径
+     * 如果路径已经是绝对路径，则直接返回
+     *
+     * @param path 路径（可能是相对路径或绝对路径）
+     * @return 绝对路径
+     */
+    public String resolvePath(String path) {
+        if (path == null || path.isEmpty()) {
+            return path;
+        }
+        // 先解析变量
+        String resolvedPath = resolve(path);
+        // 判断是否是相对路径
+        java.io.File file = new java.io.File(resolvedPath);
+        if (!file.isAbsolute()) {
+            // 相对路径，转换为项目根目录下的绝对路径
+            if (project != null && project.getBasePath() != null) {
+                return new java.io.File(project.getBasePath(), resolvedPath).getAbsolutePath();
+            }
+        }
+        return resolvedPath;
+    }
+
+    /**
      * 添加步骤执行结果到上下文
      *
      * @param stepUid 步骤 UID

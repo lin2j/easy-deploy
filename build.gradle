@@ -8,7 +8,7 @@ plugins {
 }
 
 group 'io.github.yueryou'
-version '1.4.1-223'
+version '1.5.0-223'
 
 repositories {
     mavenCentral()

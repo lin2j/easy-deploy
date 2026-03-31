@@ -1,8 +1,11 @@
 package io.github.yueryou.easydev.plugin.model;
 
+import com.intellij.util.xmlb.annotations.Tag;
+
 /**
  * 远程命令步骤
  */
+@Tag("remote-command-step")
 public class RemoteCommandStep extends PipelineStep {
 
     private String command;

@@ -1,10 +1,12 @@
 package io.github.yueryou.easydev.plugin.model;
 
+import com.intellij.util.xmlb.annotations.Tag;
 import tech.lin2j.idea.plugin.model.UniqueModel;
 
 /**
  * 流水线步骤抽象基类
  */
+@Tag("step")
 public abstract class PipelineStep implements UniqueModel {
 
     private String uid;

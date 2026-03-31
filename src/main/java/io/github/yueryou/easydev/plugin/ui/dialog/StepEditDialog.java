@@ -239,6 +239,7 @@ public class StepEditDialog extends DialogWrapper {
                 LocalCommandStep localStep = new LocalCommandStep();
                 localStep.setCommand(commandField.getText());
                 localStep.setWorkingDir(localWorkingDirField.getText());
+                localStep.setEnabled(true);  // 默认启用步骤
 
                 String timeoutText = timeoutField.getText().trim();
                 int timeout = 0;
@@ -277,6 +278,7 @@ public class StepEditDialog extends DialogWrapper {
 
             case UPLOAD:
                 UploadStep uploadStep = new UploadStep();
+                uploadStep.setEnabled(true);  // 默认启用步骤
                 String selectedProfile = (String) uploadProfileComboBox.getSelectedItem();
                 String profileId = UiUtil.extractIdFromComboBoxItem(selectedProfile);
                 if (profileId != null) {
@@ -292,6 +294,7 @@ public class StepEditDialog extends DialogWrapper {
 
             case REMOTE_COMMAND:
                 RemoteCommandStep remoteStep = new RemoteCommandStep();
+                remoteStep.setEnabled(true);  // 默认启用步骤
                 remoteStep.setCommand(remoteCommandField.getText());
                 remoteStep.setWorkingDir(remoteWorkingDirField.getText());
 

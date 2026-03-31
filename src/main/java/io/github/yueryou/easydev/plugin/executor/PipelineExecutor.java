@@ -70,6 +70,12 @@ public class PipelineExecutor {
         for (int i = 0; i < steps.size(); i++) {
             PipelineStep step = steps.get(i);
 
+            // 跳过 null 步骤
+            if (step == null) {
+                logConsumer.accept("[警告] 步骤 " + i + " 为 null，已跳过");
+                continue;
+            }
+
             // 跳过 startIndex 之前的步骤
             if (i < startIndex) {
                 continue;

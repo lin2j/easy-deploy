@@ -1,8 +1,11 @@
 package io.github.yueryou.easydev.plugin.model;
 
+import com.intellij.util.xmlb.annotations.Tag;
+
 /**
  * 上传文件步骤
  */
+@Tag("upload-step")
 public class UploadStep extends PipelineStep {
 
     private String uploadProfileId;

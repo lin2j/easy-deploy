@@ -142,8 +142,14 @@ public class CommandUtil {
     // 新增私有方法，提取公共上传逻辑
     private static boolean performUpload(SshjConnection sshjConnection, ISshService sshService, ConsoleFileFilter filter,
                                          String targetFile, String remoteTargetDir, CommandLog commandLog, boolean preserveRoot) {
+        // 检查远程目录是否为空
+        if (remoteTargetDir == null || remoteTargetDir.trim().isEmpty()) {
+            commandLog.error("远程目录未配置，请在上传配置中设置目标路径");
+            return false;
+        }
         commandLog.info("Upload [" + targetFile + "] to [" + remoteTargetDir + "]");
-        sshjConnection.setTransferListener(new ConsoleTransferListener(targetFile, commandLog));
+        // 使用远程目录作为 relPath，而不是本地文件路径
+        sshjConnection.setTransferListener(new ConsoleTransferListener(remoteTargetDir, commandLog));
         return sshService.upload(filter, sshjConnection, targetFile, remoteTargetDir, commandLog, preserveRoot);
     }
     private static void executeCommand(Integer commandId, String timing, UploadProfile profile, SshServer server, 

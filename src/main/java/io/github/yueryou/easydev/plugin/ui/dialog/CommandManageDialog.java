@@ -20,6 +20,7 @@ public class CommandManageDialog extends DialogWrapper {
     private final CommandManagePanel commandManagePanel;
     private final CommandPipelinePanel commandPipelinePanel;
     private final CommandSettingPanel commandSettingsPanel;
+    private JBTabbedPane tabs;
 
     public CommandManageDialog(@Nullable Project project) {
         super(project);
@@ -43,8 +44,21 @@ public class CommandManageDialog extends DialogWrapper {
      */
     @Override
     protected void doOKAction() {
-        // 调用
-        commandManagePanel.executeCommand();
+        // 根据当前选中的标签页执行对应的操作
+        if (tabs == null) {
+            super.doOKAction();
+            return;
+        }
+
+        int selectedIndex = tabs.getSelectedIndex();
+        if (selectedIndex == 0) {
+            // 快捷命令标签页 - 执行发送命令
+            commandManagePanel.executeCommand();
+        } else if (selectedIndex == 1) {
+            // 任务编排标签页 - 执行选中的流水线
+            commandPipelinePanel.executeSelectedPipeline();
+        }
+        // 设置标签页没有执行操作
         super.doOKAction();
     }
 
@@ -55,7 +69,7 @@ public class CommandManageDialog extends DialogWrapper {
         String pipelineTab = MessagesBundle.getText("dialog.command.tab.task");
         String settingTab = MessagesBundle.getText("dialog.command.tab.setting");
 
-        JBTabbedPane tabs = new JBTabbedPane();
+        tabs = new JBTabbedPane();
         tabs.addTab(mangeTab, commandManagePanel.createUI());
         tabs.addTab(pipelineTab, commandPipelinePanel.createUI());
         tabs.addTab(settingTab, commandSettingsPanel.createUI());

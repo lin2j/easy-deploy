@@ -32,12 +32,6 @@ public class PipelineEditDialog extends DialogWrapper {
     private JBList<PipelineStep> stepList;
     private DefaultListModel<PipelineStep> stepListModel;
 
-    private boolean runAfterSave = false;
-
-    public boolean shouldRunAfterSave() {
-        return runAfterSave;
-    }
-
     public Pipeline getPipeline() {
         return pipeline;
     }
@@ -121,9 +115,6 @@ public class PipelineEditDialog extends DialogWrapper {
         } else {
             PipelineConfigPersistence.updatePipeline(pipeline);
         }
-
-        // 设置保存后运行流水线
-        this.runAfterSave = true;
 
         super.doOKAction();
     }

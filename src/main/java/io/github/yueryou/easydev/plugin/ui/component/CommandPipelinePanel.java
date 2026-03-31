@@ -110,21 +110,6 @@ public class CommandPipelinePanel extends JPanel {
         PipelineEditDialog dialog = new PipelineEditDialog(project, pipeline);
         if (dialog.showAndGet()) {
             loadPipelineList();
-            // 保存后直接运行流水线
-            if (dialog.shouldRunAfterSave()) {
-                // 选中刚保存的流水线
-                Pipeline savedPipeline = dialog.getPipeline();
-                if (savedPipeline != null) {
-                    for (int i = 0; i < pipelineList.getModel().getSize(); i++) {
-                        Pipeline p = pipelineList.getModel().getElementAt(i);
-                        if (p.getId() != null && p.getId().equals(savedPipeline.getId())) {
-                            pipelineList.setSelectedIndex(i);
-                            break;
-                        }
-                    }
-                }
-                executePipelineFromStep(0);
-            }
         }
     }
 
@@ -155,6 +140,13 @@ public class CommandPipelinePanel extends JPanel {
         return root;
     }
 
+    /**
+     * 执行选中的流水线
+     */
+    public void executeSelectedPipeline() {
+        executePipelineFromStep(0);
+    }
+
     private void executePipelineFromStep(int startIndex) {
         Pipeline pipeline = pipelineList.getSelectedValue();
         if (pipeline == null) {
@@ -169,49 +161,54 @@ public class CommandPipelinePanel extends JPanel {
             return;
         }
 
-        // 获取控制台视图
-        ConsoleLogView consoleLogView = project.getService(ConsoleLogView.class);
-        if (consoleLogView == null) {
-            consoleLogView = new ConsoleLogView(project);
-            consoleLogView.attachProject();
-        }
-        ConsoleLogView finalConsoleLogView = consoleLogView;
-        CommandLog commandLog = project.getUserData(CommandLog.COMMAND_LOG_KEY);
-        if (commandLog == null) {
-            commandLog = finalConsoleLogView;
-        }
-        CommandLog finalCommandLog = commandLog;
-
         // 创建日志消费者
         Consumer<String> logConsumer = message -> {
-            if (finalCommandLog != null) {
-                finalCommandLog.print(message + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
+            // 直接打印到控制台，稍后会显示工具窗口
+            CommandLog commandLog = project.getUserData(CommandLog.COMMAND_LOG_KEY);
+            if (commandLog != null) {
+                commandLog.print(message + "\n", ConsoleViewContentType.NORMAL_OUTPUT);
             }
         };
 
-        // 激活 Easy Dev 工具窗口
+        // 先激活 Easy Dev 工具窗口和 Console 标签页，确保控制台已初始化
         ApplicationManager.getApplication().invokeLater(() -> {
             ToolWindowManager toolWindowManager = ToolWindowManager.getInstance(project);
             com.intellij.openapi.wm.ToolWindow toolWindow = toolWindowManager.getToolWindow("Easy Dev");
             if (toolWindow != null) {
                 toolWindow.show(() -> {
                     // 激活 Console 标签页
-                    toolWindow.getContentManager().findContent("Console");
+                    var contentManager = toolWindow.getContentManager();
+                    var consoleContent = contentManager.findContent("Console");
+                    if (consoleContent != null) {
+                        contentManager.setSelectedContent(consoleContent);
+                        // 确保 ConsoleLogView 已附加到项目
+                        CommandLog commandLog = project.getUserData(CommandLog.COMMAND_LOG_KEY);
+                        if (commandLog == null && consoleContent.getComponent() instanceof ConsoleLogView) {
+                            ((ConsoleLogView) consoleContent.getComponent()).attachProject();
+                        }
+                        // 清空控制台
+                        if (commandLog != null && commandLog.getConsole() != null) {
+                            commandLog.getConsole().clear();
+                        }
+                        // 开始执行流水线
+                        executePipelineAsync(pipeline, startIndex, logConsumer);
+                    }
                 });
+            } else {
+                // 工具窗口不存在，直接执行
+                executePipelineAsync(pipeline, startIndex, logConsumer);
             }
         });
+    }
 
+    /**
+     * 异步执行流水线
+     */
+    private void executePipelineAsync(Pipeline pipeline, int startIndex, Consumer<String> logConsumer) {
         ProgressManager.getInstance().run(new Task.Backgroundable(project, MessagesBundle.getText("pipeline.running") + pipeline.getName()) {
             @Override
             public void run(@NotNull ProgressIndicator indicator) {
                 try {
-                    // 清空控制台
-                    if (finalCommandLog != null) {
-                        finalCommandLog.getConsole().clear();
-                    }
-
-                    logConsumer.accept("========== 流水线开始：" + pipeline.getName() + " ==========");
-
                     PipelineResult result = PipelineExecutor.executeFromStep(pipeline, null, project, logConsumer, startIndex);
 
                     // 显示执行结果通知

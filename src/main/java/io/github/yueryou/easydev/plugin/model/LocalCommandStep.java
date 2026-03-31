@@ -1,8 +1,11 @@
 package io.github.yueryou.easydev.plugin.model;
 
+import com.intellij.util.xmlb.annotations.Tag;
+
 /**
  * 本地命令步骤
  */
+@Tag("local-command-step")
 public class LocalCommandStep extends PipelineStep {
 
     private String command;

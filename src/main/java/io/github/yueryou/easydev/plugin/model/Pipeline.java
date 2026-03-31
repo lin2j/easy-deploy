@@ -1,5 +1,7 @@
 package io.github.yueryou.easydev.plugin.model;
 
+import com.intellij.util.xmlb.annotations.OptionTag;
+import com.intellij.util.xmlb.annotations.Tag;
 import tech.lin2j.idea.plugin.model.UniqueModel;
 
 import java.util.ArrayList;
@@ -9,11 +11,13 @@ import java.util.Objects;
 /**
  * 流水线配置类
  */
+@Tag("pipeline")
 public class Pipeline implements UniqueModel {
 
     private String id;
     private String uid;
     private String name;
+    @OptionTag("steps")
     private List<PipelineStep> steps;
     private FailureStrategy onFailure;
     private long createdAt;
@@ -53,7 +57,13 @@ public class Pipeline implements UniqueModel {
     }
 
     public List<PipelineStep> getSteps() {
-        return steps;
+        // 过滤 null 元素（可能由于 XML 反序列化失败导致）
+        if (steps == null) {
+            return new ArrayList<>();
+        }
+        return steps.stream()
+                .filter(step -> step != null)
+                .toList();
     }
 
     public void setSteps(List<PipelineStep> steps) {

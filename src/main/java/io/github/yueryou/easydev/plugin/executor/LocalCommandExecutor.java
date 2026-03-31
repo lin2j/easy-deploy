@@ -30,9 +30,11 @@ public class LocalCommandExecutor {
         LocalCommandStep localStep = (LocalCommandStep) step;
         context.getLogConsumer().accept("[LocalCommand] 开始执行：" + localStep.getName());
 
-        // 解析变量
+        // 解析变量和路径（支持相对路径）
         String command = context.resolve(localStep.getCommand());
-        String workingDir = localStep.getWorkingDir() != null ? context.resolve(localStep.getWorkingDir()) : null;
+        String workingDir = localStep.getWorkingDir() != null && !localStep.getWorkingDir().isEmpty()
+            ? context.resolvePath(localStep.getWorkingDir())
+            : null;
         int timeout = localStep.getTimeout() > 0 ? localStep.getTimeout() : 300;
 
         // 如果配置了 commandId，使用已有命令

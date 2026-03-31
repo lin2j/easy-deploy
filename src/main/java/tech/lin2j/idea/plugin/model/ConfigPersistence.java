@@ -4,6 +4,7 @@ import com.intellij.openapi.components.PersistentStateComponent;
 import com.intellij.openapi.components.State;
 import com.intellij.openapi.components.Storage;
 import com.intellij.util.xmlb.XmlSerializerUtil;
+import com.intellij.util.xmlb.annotations.OptionTag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import tech.lin2j.idea.plugin.ssh.SshServer;
@@ -35,6 +36,7 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
 
     private PluginSetting setting;
 
+    @OptionTag("pipelines")
     private List<io.github.yueryou.easydev.plugin.model.Pipeline> pipelines;
 
     @Override
@@ -45,6 +47,20 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
     @Override
     public void loadState(@NotNull ConfigPersistence state) {
         XmlSerializerUtil.copyBean(state, this);
+    }
+
+    public List<io.github.yueryou.easydev.plugin.model.Pipeline> getPipelines() {
+        if (pipelines == null) {
+            pipelines = new CopyOnWriteArrayList<>();
+        }
+        // 过滤 null 元素（可能由于 XML 反序列化失败导致）
+        pipelines.removeIf(p -> p == null);
+        checkUid(pipelines);
+        return pipelines;
+    }
+
+    public void setPipelines(List<io.github.yueryou.easydev.plugin.model.Pipeline> pipelines) {
+        this.pipelines = pipelines;
     }
 
     public List<SshServer> getSshServers() {
@@ -115,26 +131,16 @@ public class ConfigPersistence implements PersistentStateComponent<ConfigPersist
         this.setting = setting;
     }
 
-    public List<io.github.yueryou.easydev.plugin.model.Pipeline> getPipelines() {
-        if (pipelines == null) {
-            pipelines = new CopyOnWriteArrayList<>();
-        }
-        checkUid(pipelines);
-        return pipelines;
-    }
-
-    public void setPipelines(List<io.github.yueryou.easydev.plugin.model.Pipeline> pipelines) {
-        this.pipelines = pipelines;
-    }
-
     private void checkUid(List<? extends UniqueModel> list) {
         if (list == null || list.isEmpty()) {
             return;
         }
-        list.forEach(d -> {
-            if (d.getUid() == null) {
-                d.setUid(UUID.randomUUID().toString());
-            }
-        });
+        list.stream()
+            .filter(d -> d != null)  // 跳过 null 元素
+            .forEach(d -> {
+                if (d.getUid() == null) {
+                    d.setUid(UUID.randomUUID().toString());
+                }
+            });
     }
 }
