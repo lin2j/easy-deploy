@@ -3,7 +3,11 @@ package io.github.yueryou.easydev.plugin.model;
 import com.intellij.util.xmlb.annotations.Tag;
 
 /**
- * PipelineStep 的包装类，用于 XmlSerializer 序列化多态类型
+ * PipelineStep 的包装类，用于 XmlSerializer 序列化多态类型。
+ *
+ * 由于 IntelliJ 的 XmlSerializer 不支持多态类型的直接序列化，
+ * 需要将不同类型的步骤（LocalCommandStep, UploadStep, RemoteCommandStep）
+ * 转换为扁平结构存储，反序列化时再根据 type 字段重建原始类型。
  */
 @Tag("step")
 public class PipelineStepWrapper {
@@ -59,6 +63,10 @@ public class PipelineStepWrapper {
         }
     }
 
+    /**
+     * 将包装对象转换为具体的 PipelineStep 实例。
+     * 注意：此方法每次调用都会创建新对象，建议在 getSteps() 中缓存结果。
+     */
     public PipelineStep toStep() {
         if (type == null) return null;
 

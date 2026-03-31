@@ -28,11 +28,17 @@ public class Pipeline implements UniqueModel {
     private long createdAt;
     private long updatedAt;
 
+    // 缓存已转换的步骤列表，避免重复创建对象
+    private transient List<PipelineStep> cachedSteps;
+    // 标记缓存是否有效
+    private transient boolean stepsCacheValid;
+
     public Pipeline() {
         this.stepWrappers = new ArrayList<>();
         this.onFailure = FailureStrategy.STOP;
         this.createdAt = System.currentTimeMillis();
         this.updatedAt = this.createdAt;
+        this.stepsCacheValid = false;
     }
 
     @Override
@@ -61,15 +67,23 @@ public class Pipeline implements UniqueModel {
         this.name = name;
     }
 
+    /**
+     * 获取步骤列表。使用缓存避免每次调用都创建新对象。
+     */
     public List<PipelineStep> getSteps() {
-        if (stepWrappers == null) {
-            return new ArrayList<>();
+        if (!stepsCacheValid) {
+            if (stepWrappers == null) {
+                cachedSteps = new ArrayList<>();
+            } else {
+                cachedSteps = stepWrappers.stream()
+                        .filter(wrapper -> wrapper != null)
+                        .map(PipelineStepWrapper::toStep)
+                        .filter(step -> step != null)
+                        .collect(Collectors.toList());
+            }
+            stepsCacheValid = true;
         }
-        return stepWrappers.stream()
-                .filter(wrapper -> wrapper != null)
-                .map(PipelineStepWrapper::toStep)
-                .filter(step -> step != null)
-                .collect(Collectors.toList());
+        return cachedSteps != null ? cachedSteps : new ArrayList<>();
     }
 
     public void setSteps(List<PipelineStep> steps) {
@@ -79,6 +93,8 @@ public class Pipeline implements UniqueModel {
                 stepWrappers.add(new PipelineStepWrapper(step));
             }
         }
+        // 标记缓存失效
+        stepsCacheValid = false;
     }
 
     public FailureStrategy getOnFailure() {
