@@ -119,20 +119,21 @@ public class PipelineExecutor {
         }
 
         // 检查整体结果
-        boolean allSuccess = result.getStepResults().values().stream()
-                .filter(r -> r != null)
-                .allMatch(StepResult::isSuccess);
+        boolean allSuccess = true;
+        PipelineStep firstFailedStep = null;
+        for (PipelineStep step : steps) {
+            StepResult stepResult = result.getStepResult(step);
+            if (stepResult != null && !stepResult.isSuccess()) {
+                allSuccess = false;
+                if (firstFailedStep == null) {
+                    firstFailedStep = step;
+                }
+            }
+        }
 
         result.setSuccess(allSuccess);
         if (!allSuccess && result.getFailedStep() == null) {
-            // 查找失败的步骤
-            for (PipelineStep step : steps) {
-                StepResult stepResult = result.getStepResult(step);
-                if (stepResult != null && !stepResult.isSuccess()) {
-                    result.setFailedStep(step);
-                    break;
-                }
-            }
+            result.setFailedStep(firstFailedStep);
         }
 
         logConsumer.accept("");

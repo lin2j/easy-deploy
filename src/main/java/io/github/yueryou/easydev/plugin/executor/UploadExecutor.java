@@ -18,6 +18,7 @@ import tech.lin2j.idea.plugin.ssh.SshStatus;
 import tech.lin2j.idea.plugin.ssh.sshj.SshjConnection;
 
 import java.io.File;
+import java.util.concurrent.FutureTask;
 
 /**
  * 上传文件执行器
@@ -26,6 +27,44 @@ public class UploadExecutor {
 
     private UploadExecutor() {
         throw new IllegalStateException("Utility class");
+    }
+
+    /**
+     * 创建 CommandLog 实例，用于捕获 SSH 操作日志
+     *
+     * @param context 执行上下文
+     * @param prefix  日志前缀
+     * @return CommandLog 实例
+     */
+    private static CommandLog createCommandLog(ExecutionContext context, String prefix) {
+        return new CommandLog() {
+            @Override
+            public com.intellij.execution.ui.ConsoleView getConsole() {
+                return null;
+            }
+
+            @Override
+            public void print(String msg, com.intellij.execution.ui.ConsoleViewContentType contentType) {
+                context.getLogConsumer().accept(prefix + msg);
+            }
+
+            @Override
+            public void addTask(FutureTask<?> task) {
+            }
+
+            @Override
+            public void deleteTask(FutureTask<?> task) {
+            }
+
+            @Override
+            public void stopAllTasks() {
+            }
+
+            @Override
+            public int taskNum() {
+                return 0;
+            }
+        };
     }
 
     public static StepResult execute(PipelineStep step, ExecutionContext context, SshServer server) {
@@ -108,47 +147,11 @@ public class UploadExecutor {
             boolean createRemoteDir = uploadStep.isCreateRemoteDir();
             context.getLogConsumer().accept("[Upload] 是否创建远程目录：" + createRemoteDir);
 
-            CommandLog commandLog = new CommandLog() {
-                @Override
-                public com.intellij.execution.ui.ConsoleView getConsole() {
-                    return null;
-                }
-
-                @Override
-                public void print(String msg, com.intellij.execution.ui.ConsoleViewContentType contentType) {
-                    context.getLogConsumer().accept("[Upload] " + msg);
-                }
-
-                @Override
-                public void addTask(java.util.concurrent.FutureTask<?> task) {
-                }
-
-                @Override
-                public void deleteTask(java.util.concurrent.FutureTask<?> task) {
-                }
-
-                @Override
-                public void stopAllTasks() {
-                }
-
-                @Override
-                public int taskNum() {
-                    return 0;
-                }
-            };
+            CommandLog commandLog = createCommandLog(context, "[Upload] ");
             // 如果配置了 exclude 过滤规则，使用 RegexFileFilter；否则使用接受所有文件的默认 filter
-            FileFilter fileFilter;
-            if (profile.getExclude() != null && !profile.getExclude().isEmpty()) {
-                fileFilter = new RegexFileFilter(profile.getExclude(), commandLog);
-            } else {
-                // 默认接受所有文件
-                fileFilter = new FileFilter() {
-                    @Override
-                    public boolean accept(String filename) {
-                        return true;
-                    }
-                };
-            }
+            FileFilter fileFilter = profile.getExclude() != null && !profile.getExclude().isEmpty()
+                    ? new RegexFileFilter(profile.getExclude(), commandLog)
+                    : (filename) -> true;
             boolean success = sshService.upload(fileFilter, connection, localFile, remoteDir, commandLog, createRemoteDir);
 
             // 执行后置命令（同步）
@@ -220,34 +223,7 @@ public class UploadExecutor {
                 return StepResult.failure("SSH 连接建立失败");
             }
 
-            CommandLog commandLog = new CommandLog() {
-                @Override
-                public com.intellij.execution.ui.ConsoleView getConsole() {
-                    return null;
-                }
-
-                @Override
-                public void print(String msg, com.intellij.execution.ui.ConsoleViewContentType contentType) {
-                    context.getLogConsumer().accept("[命令] " + msg);
-                }
-
-                @Override
-                public void addTask(java.util.concurrent.FutureTask<?> task) {
-                }
-
-                @Override
-                public void deleteTask(java.util.concurrent.FutureTask<?> task) {
-                }
-
-                @Override
-                public void stopAllTasks() {
-                }
-
-                @Override
-                public int taskNum() {
-                    return 0;
-                }
-            };
+            CommandLog commandLog = createCommandLog(context, "[命令] ");
 
             SshStatus result = connection.execute(cmdContent, commandLog);
             connection.close();
